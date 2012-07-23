@@ -3349,7 +3349,7 @@ n=q.toolbarId||".toolbar";
 o=j.getValueAs(q.visible,"boolean");
 $.each(q.items,function(t,w){var u=j.capitaliseFirstLetter(w.id),v=q.items.length||1;
 a[w.id]=t;
-c[t]={id:w.id,buttonId:p+u,title:w.title,btnClass:w.btnClass,eventHandler:"on"+u+"Tap",isDisabled:false,isSelected:false,select:function(){var x=$("#"+c[t].buttonId),z=c[t].btnClass+"_on",y=c[t].btnClass+"_off";
+c[t]={id:w.id,buttonId:p+u,title:w.title,btnClass:w.btnClass,eventHandler:"on"+u+"Tap",isDisabled:false,isSelected:false,isHidden:false,select:function(){var x=$("#"+c[t].buttonId),z=c[t].btnClass+"_on",y=c[t].btnClass+"_off";
 x.removeClass(y);
 x.addClass(z);
 this.isSelected=true
@@ -3357,6 +3357,12 @@ this.isSelected=true
 x.removeClass(z);
 x.addClass(y);
 this.isSelected=false
+},show:function(){var x=$("#"+c[t].buttonId);
+x.show();
+this.isHidden=false
+},hide:function(){var x=$("#"+c[t].buttonId);
+x.hide();
+this.isHidden=true
 }};
 $(n).append($("<div>").addClass("toolbar_button "+c[t].btnClass+"_off").attr({id:c[t].buttonId,style:"right: "+(d*e+b)+"px;"}).on("click",function(z){var A=c[t].isSelected,y=c[t].btnClass+"_on",x=c[t].btnClass+"_off";
 k.log("toolbar button tapped!");
@@ -3797,7 +3803,7 @@ e.hide=d;
 e.updateAnalysisText=j;
 return e
 });
-WebAppLoader.addModule({name:"localizationManager",isShared:true},function(a){var e={},f=this.getConsole(),d=require("language");
+WebAppLoader.addModule({name:"localizationManager",isShared:true},function(a){var e={},f=this.getConsole(),d=require("express.language");
 e.sayHello=function(){f.log(d.hello)
 };
 function b(h){var g=d[h]||"";
@@ -4192,380 +4198,384 @@ j++){$(b.listLanguagesPages).append($("<li>").append($("<a>").attr({href:"#","da
 return g
 });
 var jQT=new $.jQTouch({addGlossToIcon:true,themeSelectionSelector:"#jqt #themes ul",useFastTouch:true,statusBar:"default",hoverDelay:10,pressDelay:2,preloadImages:["images/sw-slot-border.png","images/sw-alpha.png","images/sw-button-cancel.png","images/sw-button-done.png","images/sw-header.png"]});
-Zepto(function(a){var l={},g=WebAppLoader,h=g.getConsole(),d=g.getEventManager(),e=g.loadModule("helper"),b=g.loadModule("device"),i=g.getSharedModule("settings").siteUrls,c=g.getSharedModule("pageElements"),f=g.getSharedModule("localizationManager").getLanguage()||{};
+Zepto(function(a){var n={},g=WebAppLoader,h=g.getConsole(),d=g.getEventManager(),e=g.loadModule("helper"),b=g.loadModule("device"),k=g.getSharedModule("settings").siteUrls,c=g.getSharedModule("pageElements"),f=g.getSharedModule("localizationManager").getLanguage()||{};
 h.log("Hello from Dan & Asa!");
-l.lastUsernameUsed="";
-l.lastPasswordUsed="";
-l.lastFavouriteSelected="";
-l.lastAnalysisObjectUsed={portfolioId:"",portfolioName:"",analysisId:"performance",analysisName:"Performance",timePeriodId:"Earliest",timePeriodName:"Earliest",chartId:"performance_bar",timeStamp:""};
-l.defaultLanguage="en-US";
-l.repositories=g.loadModule("repositories");
-l.scroll=g.loadModule("scroll");
-l.nav=g.loadModule("nav");
-l.mask=g.loadModule("loadingMaskManager");
-l.settings=g.loadModule("settings");
-l.automaticLanguageDetection=l.settings.appSettings.automaticLanguageDetection;
-l.swipeView=g.loadModule("swipeView");
-l.analysisSettingsPage=g.loadModule("analysisSettingsPage");
-l.chartSettingsPage=g.loadModule("chartSettingsPage");
-l.chartComponents=g.loadModule("chartComponents");
-l.ajaxManager=g.loadModule("ajaxManager");
-l.swipeButton=g.loadModule("swipeButton");
-l.localStorage=g.loadModule("localStorageManager");
-l.presentationManager=g.loadModule("presentationManager");
-l.iOSLog=g.loadModule("blackbird");
-l.iOSLog.debug("Hello!");
-l.getLastAnalysisObjectUsed=function(){return l.lastAnalysisObjectUsed
+n.lastUsernameUsed="";
+n.lastPasswordUsed="";
+n.lastFavouriteSelected="";
+n.lastAnalysisObjectUsed={portfolioId:"",portfolioName:"",analysisId:"performance",analysisName:"Performance",timePeriodId:"Earliest",timePeriodName:"Earliest",chartId:"performance_bar",timeStamp:""};
+n.defaultLanguage="en-US";
+n.repositories=g.loadModule("repositories");
+n.scroll=g.loadModule("scroll");
+n.nav=g.loadModule("nav");
+n.mask=g.loadModule("loadingMaskManager");
+n.settings=g.loadModule("settings");
+n.automaticLanguageDetection=n.settings.appSettings.automaticLanguageDetection;
+n.swipeView=g.loadModule("swipeView");
+n.analysisSettingsPage=g.loadModule("analysisSettingsPage");
+n.chartSettingsPage=g.loadModule("chartSettingsPage");
+n.chartComponents=g.loadModule("chartComponents");
+n.ajaxManager=g.loadModule("ajaxManager");
+n.swipeButton=g.loadModule("swipeButton");
+n.localStorage=g.loadModule("localStorageManager");
+n.presentationManager=g.loadModule("presentationManager");
+n.iOSLog=g.loadModule("blackbird");
+var i=require("express.environment").env||"none";
+var j=require("express.os");
+n.iOSLog.debug(i);
+n.iOSLog.debug(JSON.stringify(j));
+n.getLastAnalysisObjectUsed=function(){return n.lastAnalysisObjectUsed
 };
-l.setLastAnalysisObjectUsed=function(n){for(var o in n){if(l.lastAnalysisObjectUsed.hasOwnProperty(o)){l.lastAnalysisObjectUsed[o]=n[o]
+n.setLastAnalysisObjectUsed=function(p){for(var q in p){if(n.lastAnalysisObjectUsed.hasOwnProperty(q)){n.lastAnalysisObjectUsed[q]=p[q]
 }}};
-l.getLanguage=function(){return e.getURLParameter("lang")||l.defaultLanguage
+n.getLanguage=function(){return e.getURLParameter("lang")||n.defaultLanguage
 };
-l.tryToChangeLanguage=function(o){var n=l.getLanguage();
-if(o&&n&&(o.toLowerCase()!==n.toLowerCase())){l.nav.reloadApp("?lang="+o);
+n.tryToChangeLanguage=function(q){var p=n.getLanguage();
+if(q&&p&&(q.toLowerCase()!==p.toLowerCase())){n.nav.reloadApp("?lang="+q);
 return true
 }return false
 };
-l.startHere=function(){var n=l.settings.loadData("appSettings"),t={},p="",o=b.language()||"",s="",q="";
-p=(n&&n.lastLoggedOnUser)?n.lastLoggedOnUser.toLowerCase():null;
-if(p){l.settings.loadData("userSettings",p);
-t=l.settings.getData("userSettings");
-s=t.username||"";
-q=t.password||"";
-o=t.language||"";
-if(l.automaticLanguageDetection){if(s!==""&&l.tryToChangeLanguage(o)){return
-}}else{if(s!==""){l.tryToChangeLanguage(o)
+n.startHere=function(){var p=n.settings.loadData("appSettings"),v={},s="",q=b.language()||"",u="",t="";
+s=(p&&p.lastLoggedOnUser)?p.lastLoggedOnUser.toLowerCase():null;
+if(s){n.settings.loadData("userSettings",s);
+v=n.settings.getData("userSettings");
+u=v.username||"";
+t=v.password||"";
+q=v.language||"";
+if(n.automaticLanguageDetection){if(u!==""&&n.tryToChangeLanguage(q)){return
+}}else{if(u!==""){n.tryToChangeLanguage(q)
 }}Date.CultureInfo=f.cultureInfo;
-if(t.automaticLogin){if(s&&q){l.doLogin(s,q)
-}else{l.goToLoginPage(s||p)
-}}else{l.goToLoginPage(s||p)
-}}else{if(l.automaticLanguageDetection){if(!l.tryToChangeLanguage(o)){l.goToLoginPage()
-}}else{l.goToLoginPage()
+if(v.automaticLogin){if(u&&t){n.doLogin(u,t)
+}else{n.goToLoginPage(u||s)
+}}else{n.goToLoginPage(u||s)
+}}else{if(n.automaticLanguageDetection){if(!n.tryToChangeLanguage(q)){n.goToLoginPage()
+}}else{n.goToLoginPage()
 }}};
-l.doLogin=function(o,n){l.lastUsernameUsed=o.toLowerCase();
-l.lastPasswordUsed=n;
-l.auth.doLogin(o,n,i.authenticate,l.getLanguage())
+n.doLogin=function(q,p){n.lastUsernameUsed=q.toLowerCase();
+n.lastPasswordUsed=p;
+n.auth.doLogin(q,p,k.authenticate,n.getLanguage())
 };
-l.goToLoginPage=function(n){l.tabbar.hide();
-a(c.userNameTextbox).val(n||"");
-setTimeout(function(){l.nav.goToPage(a(c.loginPage),"dissolve")
+n.goToLoginPage=function(p){n.tabbar.hide();
+a(c.userNameTextbox).val(p||"");
+setTimeout(function(){n.nav.goToPage(a(c.loginPage),"dissolve")
 },1000)
 };
-l.init=function(){var s="",p=false,n={};
-l.nav.goToPage(a(c.startupPage),"dissolve");
-l.tabbar.show();
-var o=l.settings.loadData("appSettings"),u=l.settings.loadData("userSettings",l.lastUsernameUsed);
-s=(o&&o.lastLoggedOnUser)?o.lastLoggedOnUser.toLowerCase():null;
-o.lastLoggedOnUser=l.lastUsernameUsed;
-l.settings.saveData("appSettings");
-u.username=l.lastUsernameUsed;
-u.password=l.lastPasswordUsed;
-if(u.lastUsedLanguage==="none"){u.language=l.getLanguage();
-u.lastUsedLanguage=u.language
-}l.settings.saveData("userSettings",l.lastUsernameUsed);
-p=e.getValueAs(u.automaticLogin,"boolean");
-var t=l.themesManager.loadData("theme",l.lastUsernameUsed);
-l.themesManager.switchStyle(t);
-var q=u.lastAnalysisObjectUsed||null;
-l.updateSettingsPage({email:l.lastUsernameUsed,automaticLogin:p});
-l.analysisManager.update(l.lastUsernameUsed);
-l.favouritesManager.update(l.lastUsernameUsed);
-l.updateAnalysisPage(q)
+n.init=function(){var u="",s=false,p={};
+n.nav.goToPage(a(c.startupPage),"dissolve");
+n.tabbar.show();
+var q=n.settings.loadData("appSettings"),w=n.settings.loadData("userSettings",n.lastUsernameUsed);
+u=(q&&q.lastLoggedOnUser)?q.lastLoggedOnUser.toLowerCase():null;
+q.lastLoggedOnUser=n.lastUsernameUsed;
+n.settings.saveData("appSettings");
+w.username=n.lastUsernameUsed;
+w.password=n.lastPasswordUsed;
+if(w.lastUsedLanguage==="none"){w.language=n.getLanguage();
+w.lastUsedLanguage=w.language
+}n.settings.saveData("userSettings",n.lastUsernameUsed);
+s=e.getValueAs(w.automaticLogin,"boolean");
+var v=n.themesManager.loadData("theme",n.lastUsernameUsed);
+n.themesManager.switchStyle(v);
+var t=w.lastAnalysisObjectUsed||null;
+n.updateSettingsPage({email:n.lastUsernameUsed,automaticLogin:s});
+n.analysisManager.update(n.lastUsernameUsed);
+n.favouritesManager.update(n.lastUsernameUsed);
+n.updateAnalysisPage(t)
 };
-l.updateAnalysisPage=function(o){var n=o||l.getLastAnalysisObjectUsed();
-l.tabbar.getButton("settings").setHighlight(false);
-l.nav.goToPage(a(c.analysisPage),"dissolve");
-function q(y){var w=[],u={},s={},z=y.code,A=y.name,t=null,v="",x;
-u=l.analysisManager.getData("analysisPages");
-s=jLinq.from(u.items).equals("id",n.analysisId).select();
-if(s[0]&&s[0].charts){t=s[0].charts;
-v=s[0].name
-}else{t=u.items[0].charts;
-v=u.items[0].name
-}w=jLinq.from(t).sort("order").select();
-a(c.analysisTitle).html(v);
-a.each(y.timePeriods,function(C,D){var E,B;
-if(D.code===n.timePeriodId){l.chartComponents.setTimePeriod(w,D);
-E=Date.parse(D.startDate);
-B=Date.parse(D.endDate);
-a(c.timePeriodStartDateText).html(E.toString("MMM d, yyyy"));
-a(c.timePeriodEndDateText).html(B.toString("MMM d, yyyy"));
+n.updateAnalysisPage=function(q){var p=q||n.getLastAnalysisObjectUsed();
+n.tabbar.getButton("settings").setHighlight(false);
+n.nav.goToPage(a(c.analysisPage),"dissolve");
+function t(A){var y=[],w={},u={},B=A.code,C=A.name,v=null,x="",z;
+w=n.analysisManager.getData("analysisPages");
+u=jLinq.from(w.items).equals("id",p.analysisId).select();
+if(u[0]&&u[0].charts){v=u[0].charts;
+x=u[0].name
+}else{v=w.items[0].charts;
+x=w.items[0].name
+}y=jLinq.from(v).sort("order").select();
+a(c.analysisTitle).html(x);
+a.each(A.timePeriods,function(E,F){var G,D;
+if(F.code===p.timePeriodId){n.chartComponents.setTimePeriod(y,F);
+G=Date.parse(F.startDate);
+D=Date.parse(F.endDate);
+a(c.timePeriodStartDateText).html(G.toString("MMM d, yyyy"));
+a(c.timePeriodEndDateText).html(D.toString("MMM d, yyyy"));
 return false
 }});
-l.setLastAnalysisObjectUsed(n);
-l.setLastAnalysisObjectUsed({portfolioId:z,portfolioName:A});
-l.tabbar.getButton("settings").setHighlight(false);
-l.saveLastAnalysisObjectUsed();
-l.synchronizeFavouriteButton();
-l.chartComponents.render(w,"#analysis_partial");
-l.synchronizeOrientation();
-a(c.analysisComponentFullScreenButton).on("click",function(C,D){var B=a(this).attr("data-chartId");
-l.presentationManager.enterPresentationMode(B)
+n.setLastAnalysisObjectUsed(p);
+n.setLastAnalysisObjectUsed({portfolioId:B,portfolioName:C});
+n.tabbar.getButton("settings").setHighlight(false);
+n.saveLastAnalysisObjectUsed();
+n.synchronizeFavouriteButton();
+n.chartComponents.render(y,"#analysis_partial");
+n.synchronizeOrientation();
+a(c.analysisComponentFullScreenButton).on("click",function(E,F){var D=a(this).attr("data-chartId");
+n.presentationManager.enterPresentationMode(D)
 })
-}function p(s){q(s)
-}l.portfolioManager.loadPortfolioAnalysis(n.portfolioId,p)
+}function s(u){t(u)
+}n.portfolioManager.loadPortfolioAnalysis(p.portfolioId,s)
 };
-l.saveLastAnalysisObjectUsed=function(){var n=l.settings.loadData("userSettings",l.lastUsernameUsed);
-n.lastAnalysisObjectUsed=l.getLastAnalysisObjectUsed();
-l.settings.saveData("userSettings",l.lastUsernameUsed)
+n.saveLastAnalysisObjectUsed=function(){var p=n.settings.loadData("userSettings",n.lastUsernameUsed);
+p.lastAnalysisObjectUsed=n.getLastAnalysisObjectUsed();
+n.settings.saveData("userSettings",n.lastUsernameUsed)
 };
-l.chartComponents.on("onAllChartsLoaded",function(){h.log("onAllChartsLoaded")
+n.chartComponents.on("onAllChartsLoaded",function(){h.log("onAllChartsLoaded")
 });
-l.chartComponents.on("onChartsLoading",function(n,o){h.log("onChartsLoading",n,o)
+n.chartComponents.on("onChartsLoading",function(p,q){h.log("onChartsLoading",p,q)
 });
-l.showAnalysisSettingsPage=function(){var o={},n;
-o=l.analysisManager.getData("analysisPages");
-n=jLinq.from(o.items).sort("order","userDefined").select(function(p){return{name:p.name,id:p.id,userDefined:p.userDefined}
+n.showAnalysisSettingsPage=function(){var q={},p;
+q=n.analysisManager.getData("analysisPages");
+p=jLinq.from(q.items).sort("order","userDefined").select(function(s){return{name:s.name,id:s.id,userDefined:s.userDefined}
 });
-l.analysisSettingsPage.create(n)
+n.analysisSettingsPage.create(p)
 };
-l.analysisSettingsPage.on("onClick",function(n){l.nav.goToPage(c.chartSettingsPage,"slideup");
-l.showChartSettingsPage(n)
+n.analysisSettingsPage.on("onClick",function(p){n.nav.goToPage(c.chartSettingsPage,"slideup");
+n.showChartSettingsPage(p)
 });
-l.analysisSettingsPage.on("onPageLoaded",function(){l.swipeButton.addTo("#listAnalysisSettingsUserPages","Delete",l.onUserPageDeleted,true)
+n.analysisSettingsPage.on("onPageLoaded",function(){n.swipeButton.addTo("#listAnalysisSettingsUserPages","Delete",n.onUserPageDeleted,true)
 });
-l.onUserPageDeleted=function(n){var p=n.parent().parent().data("link")||null,o;
-o=l.analysisManager.getData("analysisPages");
-if(e.removeObjectFromArray(o.items,"id",p)){l.analysisManager.saveData("analysisPages",l.lastUsernameUsed);
-l.updateAnalysisSlot(o)
+n.onUserPageDeleted=function(p){var s=p.parent().parent().data("link")||null,q;
+q=n.analysisManager.getData("analysisPages");
+if(e.removeObjectFromArray(q.items,"id",s)){n.analysisManager.saveData("analysisPages",n.lastUsernameUsed);
+n.updateAnalysisSlot(q)
 }};
-l.showChartSettingsPage=function(n){var p={},s={},o={},t=l.showChartSettingsPage.charts;
-if(!n){return
-}p=l.analysisManager.getData("analysisPages");
-s=l.chartComponents.getData("charts");
-o=jLinq.from(p.items).equals("id",n).select(function(u){return{name:u.name,id:u.id,charts:u.charts}
+n.showChartSettingsPage=function(p){var s={},u={},q={},v=n.showChartSettingsPage.charts;
+if(!p){return
+}s=n.analysisManager.getData("analysisPages");
+u=n.chartComponents.getData("charts");
+q=jLinq.from(s.items).equals("id",p).select(function(w){return{name:w.name,id:w.id,charts:w.charts}
 })[0]||null;
-if(!o){o={name:"",id:n,charts:[]}
-}if(t.length===0){for(var q in s){t.push({chartId:s[q].chartId,chartType:s[q].chartType,chartTitle:s[q].title})
-}l.chartSettingsPage.create(t)
-}l.chartSettingsPage.update(o)
+if(!q){q={name:"",id:p,charts:[]}
+}if(v.length===0){for(var t in u){v.push({chartId:u[t].chartId,chartType:u[t].chartType,chartTitle:u[t].title})
+}n.chartSettingsPage.create(v)
+}n.chartSettingsPage.update(q)
 };
-l.chartSettingsPage.on("onSettingsChanged",function(p){var n,o;
-p.name=p.name||"Untitled";
-o=l.analysisManager.getData("analysisPages");
-n=jLinq.from(o.items).equals("id",p.id).select()[0]||null;
-if(n){a.extend(n,p)
-}else{o.items.push(p)
-}l.analysisManager.saveData("analysisPages",l.lastUsernameUsed);
-l.updateAnalysisSlot(o);
-l.setLastAnalysisObjectUsed({analysisId:p.id,analysisName:p.name});
-l.updateAnalysisPage()
+n.chartSettingsPage.on("onSettingsChanged",function(s){var p,q;
+s.name=s.name||"Untitled";
+q=n.analysisManager.getData("analysisPages");
+p=jLinq.from(q.items).equals("id",s.id).select()[0]||null;
+if(p){a.extend(p,s)
+}else{q.items.push(s)
+}n.analysisManager.saveData("analysisPages",n.lastUsernameUsed);
+n.updateAnalysisSlot(q);
+n.setLastAnalysisObjectUsed({analysisId:s.id,analysisName:s.name});
+n.updateAnalysisPage()
 });
-l.showChartSettingsPage.charts=[];
-l.updateSettingsPage=function(p){var o=p.email||null,n=p.automaticLogin||false;
-if(o){a(c.userEmailLabel).html(l.lastUsernameUsed)
-}if(n){a(c.stayLoggedCheckbox).attr("checked",true)
+n.showChartSettingsPage.charts=[];
+n.updateSettingsPage=function(s){var q=s.email||null,p=s.automaticLogin||false;
+if(q){a(c.userEmailLabel).html(n.lastUsernameUsed)
+}if(p){a(c.stayLoggedCheckbox).attr("checked",true)
 }else{a(c.stayLoggedCheckbox).removeAttr("checked")
 }};
-l.languageSettingsPage=g.loadModule("languageSettingsPage");
-l.languageSettingsPage.create();
-l.languageSettingsPage.on("onLanguageSelected",function(n){var o=l.settings.loadData("userSettings",l.lastUsernameUsed);
-o.language=n.value;
-l.settings.saveData("userSettings",l.lastUsernameUsed);
-h.log("onLanguageSelected",n);
-l.nav.reloadApp("?lang="+n.value)
+n.languageSettingsPage=g.loadModule("languageSettingsPage");
+n.languageSettingsPage.create();
+n.languageSettingsPage.on("onLanguageSelected",function(p){var q=n.settings.loadData("userSettings",n.lastUsernameUsed);
+q.language=p.value;
+n.settings.saveData("userSettings",n.lastUsernameUsed);
+h.log("onLanguageSelected",p);
+n.nav.reloadApp("?lang="+p.value)
 });
-l.portfolioManager=g.loadModule("portfolioManager");
-l.portfolioManager.on("onPortfolioLoaded",function(n){l.repositories.timePeriodsSlot.setData(n.timePeriods);
-h.log("Loaded portfolio:",n)
+n.portfolioManager=g.loadModule("portfolioManager");
+n.portfolioManager.on("onPortfolioLoaded",function(p){n.repositories.timePeriodsSlot.setData(p.timePeriods);
+h.log("Loaded portfolio:",p)
 });
-l.portfolioManager.on("onAnalysisLoaded",function(n){l.updateAnalysisInfo(n);
-l.tabbar.show()
+n.portfolioManager.on("onAnalysisLoaded",function(p){n.updateAnalysisInfo(p);
+n.tabbar.show()
 });
-l.portfolioManager.on("onFailed",function(n){l.scroll.rebuild("error");
-a(c.errorMessageText).html(n);
-l.nav.goToPage(a(c.errorPage))
+n.portfolioManager.on("onFailed",function(p){n.scroll.rebuild("error");
+a(c.errorMessageText).html(p);
+n.nav.goToPage(a(c.errorPage))
 });
-l.updateAnalysisInfo=function(p){var q,o,n;
-if(p){if(p.name.indexOf(" ")===-1){a(c.summaryTitleName).attr("style","word-break: break-all;")
+n.updateAnalysisInfo=function(s){var t,q,p;
+if(s){if(s.name.indexOf(" ")===-1){a(c.summaryTitleName).attr("style","word-break: break-all;")
 }else{a(c.summaryTitleName).attr("style","word-break: normal;")
-}a(c.summaryTitleName).html(p.name);
-n=a(c.summaryTitleBenchmarkName);
-n.html("");
-o=p.analysis.benchmarks||[];
-for(q=0;
-q<o.length;
-q++){if(q>0){n.append(", ")
-}n.append(o[q].name)
+}a(c.summaryTitleName).html(s.name);
+p=a(c.summaryTitleBenchmarkName);
+p.html("");
+q=s.analysis.benchmarks||[];
+for(t=0;
+t<q.length;
+t++){if(t>0){p.append(", ")
+}p.append(q[t].name)
 }a(c.analysisPage+"_partial").html("")
 }};
-var m={toolbarId:"#analysis .toolbar",buttonPrefix:"toolbar_btn",visible:true,items:[{id:"favourite",title:f.tabbar.favourites,btnClass:"favourite"},{id:"console",title:"console",btnClass:"console"}]};
-l.toolbar=g.loadModule("toolbar");
-l.toolbar.create(m);
-l.toolbar.on("onTap",function(){l.scroll.goUp()
+var o={toolbarId:"#analysis .toolbar",buttonPrefix:"toolbar_btn",visible:true,items:[{id:"favourite",title:f.tabbar.favourites,btnClass:"favourite"},{id:"console",title:"console",btnClass:"console"}]};
+n.toolbar=g.loadModule("toolbar");
+n.toolbar.create(o);
+n.toolbar.on("onTap",function(){n.scroll.goUp()
 });
-l.toolbar.on("onFavouriteTap",function(n){if(n){l.addToFavourites()
-}else{l.removeFromFavourites()
+n.toolbar.on("onFavouriteTap",function(p){if(p){n.addToFavourites()
+}else{n.removeFromFavourites()
 }});
-l.toolbar.on("onTestTap",function(n){l.onTestApp()
+n.toolbar.on("onTestTap",function(p){n.onTestApp()
 });
-l.toolbar.on("onTestEvent",function(){alert("toolbar")
+n.toolbar.on("onTestEvent",function(){alert("toolbar")
 });
-l.toolbar.on("onConsoleTap",function(n){if(n){l.iOSLog.show()
-}else{l.iOSLog.hide()
+if(i!=="development"){n.toolbar.getButton("console").hide()
+}n.toolbar.on("onConsoleTap",function(p){if(p){n.iOSLog.show()
+}else{n.iOSLog.hide()
 }});
-l.iOSLog.on("show",function(){});
-l.iOSLog.on("hide",function(){l.toolbar.getButton("console").deselect()
+n.iOSLog.on("show",function(){});
+n.iOSLog.on("hide",function(){n.toolbar.getButton("console").deselect()
 });
-var k={tabbarId:c.tabbar,buttonPrefix:"tabbar_btn",visible:false,items:[{id:"favourites",title:f.tabbar.favourites,btnClass:"favourites"},{id:"portfolios",title:f.tabbar.portfolios,btnClass:"portfolios"},{id:"analysis",title:f.tabbar.analysis,btnClass:"analysis"},{id:"timePeriods",title:f.tabbar.timePeriods,btnClass:"timeperiods"},{id:"settings",title:f.tabbar.settings,btnClass:"settings",highlight:true}]};
-l.tabbar=g.loadModule("tabbar");
-l.tabbar.create(k);
-l.tabbar.on("onTestEvent",function(){alert("tabbar")
+var m={tabbarId:c.tabbar,buttonPrefix:"tabbar_btn",visible:false,items:[{id:"favourites",title:f.tabbar.favourites,btnClass:"favourites"},{id:"portfolios",title:f.tabbar.portfolios,btnClass:"portfolios"},{id:"analysis",title:f.tabbar.analysis,btnClass:"analysis"},{id:"timePeriods",title:f.tabbar.timePeriods,btnClass:"timeperiods"},{id:"settings",title:f.tabbar.settings,btnClass:"settings",highlight:true}]};
+n.tabbar=g.loadModule("tabbar");
+n.tabbar.create(m);
+n.tabbar.on("onTestEvent",function(){alert("tabbar")
 });
-l.tabbar.on("onFavouritesTap",function(){l.spinningWheel.getSlot("favourites").show(l.lastFavouriteSelected)
+n.tabbar.on("onFavouritesTap",function(){n.spinningWheel.getSlot("favourites").show(n.lastFavouriteSelected)
 });
-l.tabbar.on("onPortfoliosTap",function(){l.spinningWheel.getSlot("portfolios").show(l.getLastAnalysisObjectUsed().portfolioId)
+n.tabbar.on("onPortfoliosTap",function(){n.spinningWheel.getSlot("portfolios").show(n.getLastAnalysisObjectUsed().portfolioId)
 });
-l.tabbar.on("onAnalysisTap",function(){l.spinningWheel.getSlot("analysis").show(l.getLastAnalysisObjectUsed().analysisId)
+n.tabbar.on("onAnalysisTap",function(){n.spinningWheel.getSlot("analysis").show(n.getLastAnalysisObjectUsed().analysisId)
 });
-l.tabbar.on("onTimePeriodsTap",function(){l.spinningWheel.getSlot("timePeriods").show(l.getLastAnalysisObjectUsed().timePeriodId)
+n.tabbar.on("onTimePeriodsTap",function(){n.spinningWheel.getSlot("timePeriods").show(n.getLastAnalysisObjectUsed().timePeriodId)
 });
-l.tabbar.on("onSettingsTap",function(n){if(n.isHighlighted){l.nav.goToPage(a(c.settingsPage))
-}else{l.nav.goToPage(a(c.analysisPage))
+n.tabbar.on("onSettingsTap",function(p){if(p.isHighlighted){n.nav.goToPage(a(c.settingsPage))
+}else{n.nav.goToPage(a(c.analysisPage))
 }});
-var j={items:[{id:"favourites",repository:l.repositories.favouritesSlot},{id:"portfolios",repository:l.repositories.portfoliosSlot},{id:"analysis",repository:l.repositories.analysisSlot},{id:"timePeriods",repository:l.repositories.timePeriodsSlot}]};
-l.spinningWheel=g.loadModule("spinningWheel");
-l.spinningWheel.create(j);
-l.spinningWheel.on("onPortfoliosDone",function(n,o){l.setLastAnalysisObjectUsed({portfolioId:n,portfolioName:o});
-l.updateAnalysisPage()
+var l={items:[{id:"favourites",repository:n.repositories.favouritesSlot},{id:"portfolios",repository:n.repositories.portfoliosSlot},{id:"analysis",repository:n.repositories.analysisSlot},{id:"timePeriods",repository:n.repositories.timePeriodsSlot}]};
+n.spinningWheel=g.loadModule("spinningWheel");
+n.spinningWheel.create(l);
+n.spinningWheel.on("onPortfoliosDone",function(p,q){n.setLastAnalysisObjectUsed({portfolioId:p,portfolioName:q});
+n.updateAnalysisPage()
 });
-l.spinningWheel.on("onAnalysisDone",function(n,o){l.setLastAnalysisObjectUsed({analysisId:n,analysisName:o});
-l.updateAnalysisPage()
+n.spinningWheel.on("onAnalysisDone",function(p,q){n.setLastAnalysisObjectUsed({analysisId:p,analysisName:q});
+n.updateAnalysisPage()
 });
-l.spinningWheel.on("onTimePeriodsDone",function(n,o){l.setLastAnalysisObjectUsed({timePeriodId:n,timePeriodName:o});
-l.updateAnalysisPage()
+n.spinningWheel.on("onTimePeriodsDone",function(p,q){n.setLastAnalysisObjectUsed({timePeriodId:p,timePeriodName:q});
+n.updateAnalysisPage()
 });
-l.spinningWheel.on("onFavouritesDone",function(o,p){var n=l.favouritesManager.getAnalysisDataObjectFromFavourte(o);
-if(n){l.setLastAnalysisObjectUsed(n);
-l.updateAnalysisPage()
+n.spinningWheel.on("onFavouritesDone",function(q,s){var p=n.favouritesManager.getAnalysisDataObjectFromFavourte(q);
+if(p){n.setLastAnalysisObjectUsed(p);
+n.updateAnalysisPage()
 }});
-l.auth=g.loadModule("auth");
-a(c.loginButton).on("click",function(){var o,n;
-o=a(c.userNameTextbox).val();
-n=a(c.passwordTextbox).val();
-l.doLogin(o,n)
+n.auth=g.loadModule("auth");
+a(c.loginButton).on("click",function(){var q,p;
+q=a(c.userNameTextbox).val();
+p=a(c.passwordTextbox).val();
+n.doLogin(q,p)
 });
-l.auth.on("onLoginSuccess",function(n){l.ajaxManager.setToken(n);
-l.init()
+n.auth.on("onLoginSuccess",function(p){n.ajaxManager.setToken(p);
+n.init()
 });
-l.auth.on("onLoginFailed",function(n){a(c.loginErrorText).html(n);
-h.log("onLoginFailed response: ",n)
+n.auth.on("onLoginFailed",function(p){a(c.loginErrorText).html(p);
+h.log("onLoginFailed response: ",p)
 });
-l.pageEventsManager=g.loadModule("pageEventsManager");
-l.pageEventsManager.on("onStartupStart",function(){h.log("onStartupEnd")
+n.pageEventsManager=g.loadModule("pageEventsManager");
+n.pageEventsManager.on("onStartupStart",function(){h.log("onStartupEnd")
 });
-l.pageEventsManager.on("onLoginStart",function(){l.tabbar.hide();
+n.pageEventsManager.on("onLoginStart",function(){n.tabbar.hide();
 h.log("onLoginStart")
 });
-l.pageEventsManager.on("onHomeStart",function(){h.log("onHomeStart")
+n.pageEventsManager.on("onHomeStart",function(){h.log("onHomeStart")
 });
-l.pageEventsManager.on("onHomeEnd",function(){l.tabbar.show();
-l.scroll.rebuild("home");
+n.pageEventsManager.on("onHomeEnd",function(){n.tabbar.show();
+n.scroll.rebuild("home");
 h.log("onHomeEnd")
 });
-l.pageEventsManager.on("onEulaEnd",function(){a.get(i.eula,function(n){l.scroll.rebuild("eula");
-a(c.eulaPage+"_partial").append('<div class="genericContainer">'+e.htmlDecode(n)+"</div>")
+n.pageEventsManager.on("onEulaEnd",function(){a.get(k.eula,function(p){n.scroll.rebuild("eula");
+a(c.eulaPage+"_partial").append('<div class="genericContainer">'+e.htmlDecode(p)+"</div>")
 });
 h.log("onEulaEnd")
 });
-l.pageEventsManager.on("onAnalysisEnd",function(){l.scroll.rebuild("analysis");
-l.tabbar.getButton("settings").setHighlight(false);
+n.pageEventsManager.on("onAnalysisEnd",function(){n.scroll.rebuild("analysis");
+n.tabbar.getButton("settings").setHighlight(false);
 h.log("onAnalysisEnd")
 });
-l.pageEventsManager.on("onSettingsStart",function(){l.scroll.rebuild("settings",true);
+n.pageEventsManager.on("onSettingsStart",function(){n.scroll.rebuild("settings",true);
 h.log("onSettingsStart")
 });
-l.pageEventsManager.on("onSettingsEnd",function(){h.log("onSettingsEnd")
+n.pageEventsManager.on("onSettingsEnd",function(){h.log("onSettingsEnd")
 });
-l.pageEventsManager.on("onAnalysisSettingsEnd",function(){l.scroll.rebuild("analysisSettings",true);
+n.pageEventsManager.on("onAnalysisSettingsEnd",function(){n.scroll.rebuild("analysisSettings",true);
 h.log("onAnalysisSettingsEnd")
 });
-l.pageEventsManager.on("onAnalysisPagesSettingsStart",function(){l.scroll.rebuild("analysisPagesSettings",true);
-l.showAnalysisSettingsPage();
+n.pageEventsManager.on("onAnalysisPagesSettingsStart",function(){n.scroll.rebuild("analysisPagesSettings",true);
+n.showAnalysisSettingsPage();
 h.log("onAnalysisPagesSettingsStart")
 });
-l.pageEventsManager.on("onChartSettingsEnd",function(){setTimeout(function(){a(c.analysisPageNameTextbox).focus()
+n.pageEventsManager.on("onChartSettingsEnd",function(){setTimeout(function(){a(c.analysisPageNameTextbox).focus()
 },200);
 h.log("onChartSettingsStart")
 });
-l.pageEventsManager.on("onAboutEnd",function(){l.scroll.rebuild("about",true);
+n.pageEventsManager.on("onAboutEnd",function(){n.scroll.rebuild("about",true);
 h.log("onAboutEnd")
 });
-l.pageEventsManager.on("onTestEnd",function(){l.scroll.rebuild("test");
+n.pageEventsManager.on("onTestEnd",function(){n.scroll.rebuild("test");
 h.log("onTestEnd")
 });
-l.pageEventsManager.on("onResetEnd",function(){l.scroll.rebuild("reset",true);
+n.pageEventsManager.on("onResetEnd",function(){n.scroll.rebuild("reset",true);
 h.log("onResetEnd")
 });
-a(c.reloadAppButton).on("click",function(){l.nav.reloadApp()
+a(c.reloadAppButton).on("click",function(){n.nav.reloadApp()
 });
-a(c.resetAllSettingsButton).on("click",function(){l.localStorage.clearAll();
-l.nav.reloadApp()
+a(c.resetAllSettingsButton).on("click",function(){n.localStorage.clearAll();
+n.nav.reloadApp()
 });
-a(c.resetCurrentSettingsButton).on("click",function(){l.localStorage.clearUserSettings(l.lastUsernameUsed);
-l.nav.goToPage(a(c.settingsPage))
+a(c.resetCurrentSettingsButton).on("click",function(){n.localStorage.clearUserSettings(n.lastUsernameUsed);
+n.nav.goToPage(a(c.settingsPage))
 });
-a(c.stayLoggedCheckbox).on("click",function(){var n=a(c.stayLoggedCheckbox+":checked").val()?true:false,o=l.settings.loadData("userSettings",l.lastUsernameUsed);
-o.automaticLogin=n;
-l.settings.saveData("userSettings",l.lastUsernameUsed);
-h.log(n)
+a(c.stayLoggedCheckbox).on("click",function(){var p=a(c.stayLoggedCheckbox+":checked").val()?true:false,q=n.settings.loadData("userSettings",n.lastUsernameUsed);
+q.automaticLogin=p;
+n.settings.saveData("userSettings",n.lastUsernameUsed);
+h.log(p)
 });
-l.analysisManager=g.loadModule("analysisManager");
-l.analysisManager.on("onUpdated",function(n){l.updateAnalysisSlot(n)
+n.analysisManager=g.loadModule("analysisManager");
+n.analysisManager.on("onUpdated",function(p){n.updateAnalysisSlot(p)
 });
-l.updateAnalysisSlot=function(n){var o=jLinq.from(n.items).sort("order").select(function(p){return{name:p.name,code:p.id}
+n.updateAnalysisSlot=function(p){var q=jLinq.from(p.items).sort("order").select(function(s){return{name:s.name,code:s.id}
 });
-l.repositories.analysisSlot.setData(o)
+n.repositories.analysisSlot.setData(q)
 };
-l.favouritesManager=g.loadModule("favouritesManager");
-l.favouritesManager.on("onFavouritesUpdated",function(n){l.updateFavouritesSlot(n)
+n.favouritesManager=g.loadModule("favouritesManager");
+n.favouritesManager.on("onFavouritesUpdated",function(p){n.updateFavouritesSlot(p)
 });
-l.updateFavouritesSlot=function(n){var o=jLinq.from(n.items).sort("order").select(function(p){return{name:p.title,code:p.favouriteId}
+n.updateFavouritesSlot=function(p){var q=jLinq.from(p.items).sort("order").select(function(s){return{name:s.title,code:s.favouriteId}
 });
-l.repositories.favouritesSlot.setData(o)
+n.repositories.favouritesSlot.setData(q)
 };
-l.analysisDataObjectToFavourite=function(n){var o=null;
-o=l.favouritesManager.getFavourteFromAnalysisDataObject(n);
-return o||null
+n.analysisDataObjectToFavourite=function(p){var q=null;
+q=n.favouritesManager.getFavourteFromAnalysisDataObject(p);
+return q||null
 };
-l.favouriteExists=function(n){var o=l.getFavouriteById(n);
-return(o&&true)
+n.favouriteExists=function(p){var q=n.getFavouriteById(p);
+return(q&&true)
 };
-l.getFavouriteById=function(o){var n=null,q=null,p=l.favouritesManager.getData("favourites");
-if(!o){n=l.analysisDataObjectToFavourite(l.lastAnalysisObjectUsed);
-o=n.favouriteId
-}q=jLinq.from(p.items).equals("favouriteId",o).select()[0]||null;
-return(q)
+n.getFavouriteById=function(q){var p=null,t=null,s=n.favouritesManager.getData("favourites");
+if(!q){p=n.analysisDataObjectToFavourite(n.lastAnalysisObjectUsed);
+q=p.favouriteId
+}t=jLinq.from(s.items).equals("favouriteId",q).select()[0]||null;
+return(t)
 };
-l.addToFavourites=function(){var o={},n=null;
-o=l.analysisDataObjectToFavourite(l.lastAnalysisObjectUsed);
-if(o){if(!l.favouriteExists(o.favouriteId)){n=l.favouritesManager.getData("favourites");
-n.items.push(o);
-l.favouritesManager.saveData("favourites",l.lastUsernameUsed);
-l.favouritesManager.update(l.lastUsernameUsed);
-l.setLastFavouriteSelected(o.favouriteId)
+n.addToFavourites=function(){var q={},p=null;
+q=n.analysisDataObjectToFavourite(n.lastAnalysisObjectUsed);
+if(q){if(!n.favouriteExists(q.favouriteId)){p=n.favouritesManager.getData("favourites");
+p.items.push(q);
+n.favouritesManager.saveData("favourites",n.lastUsernameUsed);
+n.favouritesManager.update(n.lastUsernameUsed);
+n.setLastFavouriteSelected(q.favouriteId)
 }}};
-l.removeFromFavourites=function(){var o={},n=null;
-o=l.analysisDataObjectToFavourite(l.lastAnalysisObjectUsed);
-if(o){if(l.favouriteExists(o.favouriteId)){n=l.favouritesManager.getData("favourites");
-if(e.removeObjectFromArray(n.items,"favouriteId",o.favouriteId)){l.favouritesManager.saveData("favourites",l.lastUsernameUsed);
-l.favouritesManager.update(l.lastUsernameUsed)
+n.removeFromFavourites=function(){var q={},p=null;
+q=n.analysisDataObjectToFavourite(n.lastAnalysisObjectUsed);
+if(q){if(n.favouriteExists(q.favouriteId)){p=n.favouritesManager.getData("favourites");
+if(e.removeObjectFromArray(p.items,"favouriteId",q.favouriteId)){n.favouritesManager.saveData("favourites",n.lastUsernameUsed);
+n.favouritesManager.update(n.lastUsernameUsed)
 }}}};
-l.synchronizeFavouriteButton=function(p){var n=l.getFavouriteById(p),o=l.toolbar.getButton("favourite");
-if(n&&o){l.setLastFavouriteSelected(n.favouriteId);
-o.select()
-}else{o.deselect()
+n.synchronizeFavouriteButton=function(s){var p=n.getFavouriteById(s),q=n.toolbar.getButton("favourite");
+if(p&&q){n.setLastFavouriteSelected(p.favouriteId);
+q.select()
+}else{q.deselect()
 }};
-l.setLastFavouriteSelected=function(n){l.lastFavouriteSelected=n
+n.setLastFavouriteSelected=function(p){n.lastFavouriteSelected=p
 };
-l.themesManager=g.loadModule("themesManager");
-l.themesManager.on("onThemeChanged",function(o){var n=l.themesManager.getData("theme")||null;
-if(n){n.name=o;
-l.themesManager.saveData("theme",l.lastUsernameUsed)
-}h.log("onThemeChanged",o)
+n.themesManager=g.loadModule("themesManager");
+n.themesManager.on("onThemeChanged",function(q){var p=n.themesManager.getData("theme")||null;
+if(p){p.name=q;
+n.themesManager.saveData("theme",n.lastUsernameUsed)
+}h.log("onThemeChanged",q)
 });
-l.portfoliosList=g.loadModule("portfoliosList");
-l.portfoliosList.on("onDataReceived",function(n){a(c.analysisPage+"_partial").html(n)
+n.portfoliosList=g.loadModule("portfoliosList");
+n.portfoliosList.on("onDataReceived",function(p){a(c.analysisPage+"_partial").html(p)
 });
 g.unloadModule("ajaxManager");
 g.unloadModule("analysisManager");
@@ -4593,42 +4603,42 @@ g.unloadModule("swipeView");
 g.unloadModule("themesManager");
 g.unloadModule("toolbar");
 g.unloadModule("presentationManager");
-l.startHere();
-l.synchronizeOrientation=function(){var n=25,p=500,o=null;
-if(l.presentationManager.isFullScreen()){return
-}n=(l.settings.appSettings.animatedChartResizing)?500:25;
-l.mask.show("turn");
-if(b.orientation()==="landscape"){a(".analysisComponentContainer").animate({height:"500px"},{duration:n,easing:"ease-out",complete:function(){a(".chartContainer").css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"})
+n.startHere();
+n.synchronizeOrientation=function(){var p=25,s=500,q=null;
+if(n.presentationManager.isFullScreen()){return
+}p=(n.settings.appSettings.animatedChartResizing)?500:25;
+n.mask.show("turn");
+if(b.orientation()==="landscape"){a(".analysisComponentContainer").animate({height:"500px"},{duration:p,easing:"ease-out",complete:function(){a(".chartContainer").css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"})
 }})
 }else{a(".chartContainer").css({"-webkit-transform":"scale(.69)","-webkit-transform-origin":"left top"});
-a(".analysisComponentContainer").animate({height:"375px"},{duration:n,easing:"ease-out",complete:function(){}})
-}if(l.settings.appSettings.automaticChartRepositioning){l.synchronizeOrientation.pendingCount+=1;
-setTimeout(function(){if(l.synchronizeOrientation.pendingCount>0){l.synchronizeOrientation.pendingCount-=1
-}if(l.synchronizeOrientation.pendingCount===0){l.scroll.rebuild("analysis");
-if(l.synchronizeOrientation.chartToDisplay!==""){l.scroll.scrollToElement("#"+l.synchronizeOrientation.chartToDisplay,75,25)
-}l.mask.hide("turn")
-}},n+p)
-}else{setTimeout(function(){l.scroll.rebuild("analysis");
-l.mask.hide("turn")
-},n+p)
+a(".analysisComponentContainer").animate({height:"375px"},{duration:p,easing:"ease-out",complete:function(){}})
+}if(n.settings.appSettings.automaticChartRepositioning){n.synchronizeOrientation.pendingCount+=1;
+setTimeout(function(){if(n.synchronizeOrientation.pendingCount>0){n.synchronizeOrientation.pendingCount-=1
+}if(n.synchronizeOrientation.pendingCount===0){n.scroll.rebuild("analysis");
+if(n.synchronizeOrientation.chartToDisplay!==""){n.scroll.scrollToElement("#"+n.synchronizeOrientation.chartToDisplay,75,25)
+}n.mask.hide("turn")
+}},p+s)
+}else{setTimeout(function(){n.scroll.rebuild("analysis");
+n.mask.hide("turn")
+},p+s)
 }};
-l.synchronizeOrientation.pendingCount=0;
-l.synchronizeOrientation.chartToDisplay="";
-l.getCurrentChartDisplayedInViewport=function(){var n=75,q=0,p=[],o={},t=[],s=0;
-q=(b.orientation()==="landscape")?(b.maxHeight())/2+n:(b.maxWidth())/2+n;
-a(".snapper").each(function(){var u,v;
-v=Math.abs(a(this).offset().top-n);
-u=a(this).data("chartid");
-v=(v>=q)?v-q:v;
-t.push(v);
-p.push({y:v,chartId:u})
+n.synchronizeOrientation.pendingCount=0;
+n.synchronizeOrientation.chartToDisplay="";
+n.getCurrentChartDisplayedInViewport=function(){var p=75,t=0,s=[],q={},v=[],u=0;
+t=(b.orientation()==="landscape")?(b.maxHeight())/2+p:(b.maxWidth())/2+p;
+a(".snapper").each(function(){var w,x;
+x=Math.abs(a(this).offset().top-p);
+w=a(this).data("chartid");
+x=(x>=t)?x-t:x;
+v.push(x);
+s.push({y:x,chartId:w})
 });
-s=Math.min.apply(Math,t);
-o=e.getObjectFromArray(p,"y",s);
-return o.chartId
+u=Math.min.apply(Math,v);
+q=e.getObjectFromArray(s,"y",u);
+return q.chartId
 };
-a("body").bind("turn",function(n,o){l.synchronizeOrientation.chartToDisplay=l.getCurrentChartDisplayedInViewport();
-l.synchronizeOrientation()
+a("body").bind("turn",function(p,q){n.synchronizeOrientation.chartToDisplay=n.getCurrentChartDisplayedInViewport();
+n.synchronizeOrientation()
 });
-l.onTestApp=function(){}
+n.onTestApp=function(){}
 });

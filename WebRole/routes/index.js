@@ -8,15 +8,6 @@ var http            = require('http'),
     languages       = require('../languages'),
     defaultLanguage = 'en-US';
 
-/* ----------------------- ON/OFF ----------------------- /
-
-var serverSideObj = {
-    location: 'server side',
-    sayHello: function(){
-        return 'Hello from ' + this.location;
-    }
-}
-
 var os = require('os');
 
 var osInfo = {
@@ -32,6 +23,15 @@ var osInfo = {
     freemem :os.freemem(),
     cpus: os.cpus()
 };
+
+/* ----------------------- ON/OFF ----------------------- /
+
+var serverSideObj = {
+    location: 'server side',
+    sayHello: function(){
+        return 'Hello from ' + this.location;
+    }
+}
 
     // res.expose(serverSideObj, 'express.serverObj');
     // res.expose(osInfo, 'express.os');
@@ -88,7 +88,9 @@ exports.index = function (req, res) {
 
     // Set client side language.
     res.exposeRequire();
-    res.expose(getClientLanguage(requestedLanguage), 'language');
+    res.expose(getClientLanguage(requestedLanguage), 'express.language');
+    res.expose({ env: GLOBAL_ENVIRONMENT }, 'express.environment');
+    res.expose(osInfo, 'express.os');
 
     res.render('index', viewModel);
 };

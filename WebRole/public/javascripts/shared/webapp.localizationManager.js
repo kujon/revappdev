@@ -5,7 +5,7 @@
 WebAppLoader.addModule({ name: 'localizationManager', isShared: true }, function (config) {
     var manager     = {},
         output      = this.getConsole(),
-        language    = require('language');
+        language    = require('express.language');
 
     manager.sayHello = function () {
         output.log(language.hello);

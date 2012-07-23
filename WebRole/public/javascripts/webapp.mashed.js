@@ -7369,6 +7369,7 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
                 eventHandler: 'on' + id + 'Tap',
                 isDisabled: false,
                 isSelected: false,
+                isHidden: false,
                 select: function () {
                     var button     = $('#' + buttons[i].buttonId),
                         classOn    = buttons[i].btnClass + '_on',
@@ -7386,6 +7387,18 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
                     button.removeClass(classOn);
                     button.addClass(classOff);
                     this.isSelected = false;
+                },
+                show: function () {
+                    var button     = $('#' + buttons[i].buttonId);
+                    
+                    button.show();
+                    this.isHidden = false;
+                },
+                hide: function () {
+                    var button     = $('#' + buttons[i].buttonId);
+                    
+                    button.hide();
+                    this.isHidden = true;
                 }
             };
 
@@ -9170,7 +9183,7 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
 WebAppLoader.addModule({ name: 'localizationManager', isShared: true }, function (config) {
     var manager     = {},
         output      = this.getConsole(),
-        language    = require('language');
+        language    = require('express.language');
 
     manager.sayHello = function () {
         output.log(language.hello);
@@ -10729,7 +10742,11 @@ Zepto(function ($) {
     theApp.iOSLog = loader.loadModule('blackbird');
 
     // Test iOS log.
-    theApp.iOSLog.debug('Hello!');
+    var serverEnvironment = require('express.environment').env || 'none';
+    var serverInfo = require('express.os');
+
+    theApp.iOSLog.debug(serverEnvironment);
+    theApp.iOSLog.debug(JSON.stringify(serverInfo));
 
     // ------------------------------------------
     // LAST ANALYSIS DATA OBJECT
@@ -11251,6 +11268,11 @@ Zepto(function ($) {
     theApp.toolbar.on('onTestEvent', function () {
         alert('toolbar');
     });
+
+    // Hide the console button if
+    if (serverEnvironment !== 'development') {
+        theApp.toolbar.getButton('console').hide();
+    }
 
     // ------------------------------------------
     // iOS CONSOLE

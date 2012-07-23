@@ -53,6 +53,7 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
                 eventHandler: 'on' + id + 'Tap',
                 isDisabled: false,
                 isSelected: false,
+                isHidden: false,
                 select: function () {
                     var button     = $('#' + buttons[i].buttonId),
                         classOn    = buttons[i].btnClass + '_on',
@@ -70,6 +71,18 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
                     button.removeClass(classOn);
                     button.addClass(classOff);
                     this.isSelected = false;
+                },
+                show: function () {
+                    var button     = $('#' + buttons[i].buttonId);
+                    
+                    button.show();
+                    this.isHidden = false;
+                },
+                hide: function () {
+                    var button     = $('#' + buttons[i].buttonId);
+                    
+                    button.hide();
+                    this.isHidden = true;
                 }
             };
 

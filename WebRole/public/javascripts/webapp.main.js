@@ -105,7 +105,11 @@ Zepto(function ($) {
     theApp.iOSLog = loader.loadModule('blackbird');
 
     // Test iOS log.
-    theApp.iOSLog.debug('Hello!');
+    var serverEnvironment = require('express.environment').env || 'none';
+    var serverInfo = require('express.os');
+
+    theApp.iOSLog.debug(serverEnvironment);
+    theApp.iOSLog.debug(JSON.stringify(serverInfo));
 
     // ------------------------------------------
     // LAST ANALYSIS DATA OBJECT
@@ -627,6 +631,11 @@ Zepto(function ($) {
     theApp.toolbar.on('onTestEvent', function () {
         alert('toolbar');
     });
+
+    // Hide the console button if
+    if (serverEnvironment !== 'development') {
+        theApp.toolbar.getButton('console').hide();
+    }
 
     // ------------------------------------------
     // iOS CONSOLE
