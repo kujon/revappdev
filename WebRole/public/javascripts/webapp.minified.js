@@ -2913,8 +2913,7 @@ return E
 }function k(){return new e()
 }function j(){return c
 }function f(B,C){WebAppLoader[B]=C()
-}function o(){alert("INIT!")
-}function a(B,H){var E=n(B.name,"string"),C=n(B.hasEvents,"boolean"),F=n(B.plugins,"array"),G=n(B.sharedModules,"array");
+}function o(){}function a(B,H){var E=n(B.name,"string"),C=n(B.hasEvents,"boolean"),F=n(B.plugins,"array"),G=n(B.sharedModules,"array");
 if(!t(E)){var D=Object.create(s);
 D.source=H;
 D.name=E;
@@ -3219,8 +3218,7 @@ e.scrollTo(0,s,q+100)
 }catch(t){}},100)
 }function k(n,o,m){setTimeout(function(){try{e.scrollTo(n,o-e.wrapperOffsetTop,m||1000,true)
 }catch(p){}},100)
-}function f(n,m,o){if(b){alert("Prevent rebuilding");
-return
+}function f(n,m,o){if(b){return
 }else{b=true
 }var s="div#"+n+" #wrapper",p=o||{};
 p.useTransform=false;
@@ -3234,8 +3232,7 @@ if(e){e.destroy();
 e=null;
 function q(t){function u(v){if(v.length>0){v.remove();
 if(t.next().length>0){q(t.next())
-}alert("removed!")
-}}u(t.next())
+}}}u(t.next())
 }q($(s).find("#scroller"))
 }if($(s).get(0)){setTimeout(function(){e=new iScroll($(s).get(0),p);
 b=false

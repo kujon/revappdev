@@ -425,7 +425,7 @@ var WebAppLoader = {};
     }
 
     function init(){
-        alert('INIT!');
+        // alert('INIT!');
     }
 
     // ------------------------------------------

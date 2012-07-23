@@ -68,7 +68,6 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
     
     function rebuildScroll(id, clickSafeMode, optionConfig) {
         if (isRebuilding) {
-            alert('Prevent rebuilding');
             return;
         } else {
             isRebuilding = true;
@@ -110,7 +109,6 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
                         if ($scroller.next().length > 0) {
                             removeUnusedScroll($scroller.next());
                         }
-                        alert('removed!');
                     }
                 }
                 

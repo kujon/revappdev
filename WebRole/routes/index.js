@@ -86,7 +86,7 @@ exports.index = function (req, res) {
     viewModel.environment = GLOBAL_ENVIRONMENT;
     viewModel.version = GLOBAL_VERSION;
 
-    // Set client side language.
+    // Set client side language and system info.
     res.exposeRequire();
     res.expose(getClientLanguage(requestedLanguage), 'express.language');
     res.expose({ env: GLOBAL_ENVIRONMENT }, 'express.environment');
