@@ -45,9 +45,17 @@ WebAppLoader.addModule({ name: 'settings', dataObjects: ['appSettings', 'userSet
 
     // LANGUAGES
     languages = [{
+        id      : 'de-DE',
+        value   : 'de-DE',
+        name    : 'Deutsch'
+    }, {
         id      : 'en-US',
         value   : 'en-US',
         name    : 'English'
+    }, { 
+        id      : 'es-ES',
+        value   : 'es-ES',
+        name    : 'Español'
     }, {
         id      : 'it-IT',
         value   : 'it-IT',

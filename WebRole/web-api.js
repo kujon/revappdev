@@ -7,7 +7,7 @@ var https = require('https'),
     path = require("path"),
     url = require("url"),
     languages = require('./languages'),
-    defaultLanguage = 'en-US'; ;
+    defaultLanguage = 'en-US';
 
 var MAX_ATTEMPTS = 1;
 

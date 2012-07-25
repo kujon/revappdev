@@ -3850,7 +3850,7 @@ j.define({automaticLogin:false,username:"",password:"",language:"en-US",lastUsed
 b.define({lastLoggedOnUser:""});
 a={loadPortfoliosSlotDataOnce:true,automaticLanguageDetection:true,animatedChartResizing:true,automaticChartRepositioning:false};
 i={portfolios:"/portfolios",authenticate:"/authenticate",index:"/index",portfolioAnalysis:"/portfolioAnalysis",analysis:"/analysis",segmentsTreeNode:"/segmentsTreeNode",timeSeries:"/timeSeries",eula:"/eula"};
-f=[{id:"en-US",value:"en-US",name:"English"},{id:"it-IT",value:"it-IT",name:"Italiano"},{id:"pl-PL",value:"pl-PL",name:"Polski"}];
+f=[{id:"de-DE",value:"de-DE",name:"Deutsch"},{id:"en-US",value:"en-US",name:"English"},{id:"es-ES",value:"es-ES",name:"Español"},{id:"it-IT",value:"it-IT",name:"Italiano"},{id:"pl-PL",value:"pl-PL",name:"Polski"}];
 function c(k,l){a[k]=l;
 g.log("change setting")
 }function d(k){return a[k]

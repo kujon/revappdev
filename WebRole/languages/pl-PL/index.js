@@ -10,7 +10,7 @@
 // ------------------------------------------
 
 exports.client = {
-    hello: 'Ciao',
+    hello: 'cześć',
 
     // CultureInfo object from the date.js source for the it-IT culture.
     cultureInfo: {
@@ -195,7 +195,7 @@ exports.client = {
     // -------------------------- | END OF FILE | -------------------------- \\
     //                     A way to avoid missing comma                      \\
 
-    eof                             : 'Arrivederci'
+    eof                             : 'do widzenia'
 };
 
 // ------------------------------------------
@@ -203,7 +203,7 @@ exports.client = {
 // ------------------------------------------
 
 exports.server = {
-    hello: 'Ciao',
+    hello: 'cześć',
 
     // ------------------------------------------------------------------ | A |
     
@@ -579,5 +579,5 @@ exports.server = {
     // -------------------------- | END OF FILE | -------------------------- \\
     //                     A way to avoid missing comma                      \\
 
-    eof                             : 'Arrivederci'
+    eof                             : 'do widzenia'
 };
