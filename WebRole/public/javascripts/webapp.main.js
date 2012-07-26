@@ -51,6 +51,8 @@ Zepto(function ($) {
         timeStamp: ''
     };
 
+    theApp.customChartTimePeriods = {};
+
     theApp.defaultLanguage = "en-US";
     
     /* ----------------------- ON/OFF ----------------------- /
@@ -110,6 +112,9 @@ Zepto(function ($) {
 
     theApp.iOSLog.debug(serverEnvironment);
     theApp.iOSLog.debug(JSON.stringify(serverInfo));
+
+    // Experimental Page
+    theApp.experimentalPage = loader.loadModule('experimentalPage');
 
     // ------------------------------------------
     // LAST ANALYSIS DATA OBJECT
@@ -324,6 +329,10 @@ Zepto(function ($) {
 
                     startDate = Date.parse(period.startDate);
                     endDate = Date.parse(period.endDate);
+                    
+                    theApp.customChartTimePeriods.timePeriods = period.code;
+                    theApp.customChartTimePeriods.startDate = period.startDate;
+                    theApp.customChartTimePeriods.endDate = period.endDate;
 
                     $(el.timePeriodStartDateText).html(startDate.toString('MMM d, yyyy'));
                     $(el.timePeriodEndDateText).html(endDate.toString('MMM d, yyyy'));
@@ -342,6 +351,7 @@ Zepto(function ($) {
 
             theApp.saveLastAnalysisObjectUsed();
             theApp.synchronizeFavouriteButton();
+            theApp.synchronizeConsoleButton();
 
             theApp.chartComponents.render(chartsToRender, '#analysis_partial');
             theApp.synchronizeOrientation();
@@ -622,14 +632,10 @@ Zepto(function ($) {
             theApp.removeFromFavourites();
         }
     });
-
+    
+    // Test
     theApp.toolbar.on('onTestTap', function (isSelected) {
         theApp.onTestApp();
-    });
-
-    // Test
-    theApp.toolbar.on('onTestEvent', function () {
-        alert('toolbar');
     });
 
     // Hide the console button if
@@ -641,6 +647,12 @@ Zepto(function ($) {
     // iOS CONSOLE
     // ------------------------------------------
 
+    theApp.synchronizeConsoleButton = function () {
+        if (serverEnvironment === 'development' && theApp.iOSLog.isVisible()) {
+            theApp.toolbar.getButton('console').select();
+        }
+    };
+
     theApp.toolbar.on('onConsoleTap', function (isSelected) {
         if (isSelected) {
             theApp.iOSLog.show();
@@ -650,14 +662,13 @@ Zepto(function ($) {
     });
 
     theApp.iOSLog.on('show', function (){
-        // TODO: Add code here...
+        // theApp.toolbar.getButton('console').show();
     });
 
     theApp.iOSLog.on('hide', function (){
         // Deselect Console button.
         theApp.toolbar.getButton('console').deselect();
     });
-
 
     // ------------------------------------------
     // TABBAR
@@ -678,10 +689,6 @@ Zepto(function ($) {
 
     theApp.tabbar = loader.loadModule('tabbar');
     theApp.tabbar.create(tabbarConfig);
-
-    theApp.tabbar.on('onTestEvent', function () {
-        alert('tabbar');
-    });
 
     theApp.tabbar.on('onFavouritesTap', function () {
         theApp.spinningWheel.getSlot('favourites').show(theApp.lastFavouriteSelected);
@@ -859,6 +866,11 @@ Zepto(function ($) {
     theApp.pageEventsManager.on('onResetEnd', function () {
         theApp.scroll.rebuild('reset', true); // Pass in true to ensure form elements are clickable.
         output.log('onResetEnd');
+    });
+
+    theApp.pageEventsManager.on('onExperimentalStart', function () {
+        $('#custom_chart_partial').html('');
+        theApp.initExperimentalPage();
     });
 
     // ------------------------------------------
@@ -1049,7 +1061,7 @@ Zepto(function ($) {
     theApp.portfoliosList.on('onDataReceived', function (data) {
         $(el.analysisPage + '_partial').html(data);
     });
-
+    
     // ------------------------------------------
     // TEARDOWN
     // ------------------------------------------
@@ -1090,7 +1102,7 @@ Zepto(function ($) {
 
     theApp.synchronizeOrientation = function () {
         var animationSpeed  = 25,
-            rebuildingDelay = 500,
+            rebuildingDelay = 1000,
             el              = null;
 
         if (theApp.presentationManager.isFullScreen()) {
@@ -1101,18 +1113,37 @@ Zepto(function ($) {
             ? 500
             : 25;
 
-        theApp.mask.show('turn');
+        theApp.mask.show('preventTap');
 
-        // ASA TODO: Change left, top, width and height from chartDefaults instead of scaling all charts about .93...
-        if (device.orientation() === 'landscape') {
-            $('.analysisComponentContainer').animate({ height: '500px' }, { duration: animationSpeed, easing: 'ease-out', complete: function () {
-                $('.chartContainer').css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});
-            }});
+        $('.analysisComponentContainer').each(function(){
+            var $component, $container, containerHeight, containerLandscapeHeight, 
+            containerPortraitHeight, portraitScaleRatio, landscapeScaleRatio, realHeightData;
+            
+            $container = $(this);
+            $component = $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
+            containerHeight = $container.height();
+            landscapeScaleRatio = 0.90;
+            portraitScaleRatio = 0.69;
+            
+            if (!$container.data("realHeight")) {
+                containerLandscapeHeight = parseInt(containerHeight * landscapeScaleRatio, 10);
+                containerPortraitHeight = parseInt(containerHeight * portraitScaleRatio, 10);
+                $container.data("realHeight", containerHeight);
+            } else {
+                realHeightData = $container.data("realHeight");
+                containerLandscapeHeight = parseInt(realHeightData * landscapeScaleRatio, 10);
+                containerPortraitHeight = parseInt(realHeightData * portraitScaleRatio, 10);
+            }
 
-        } else {
-            $('.chartContainer').css({'-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top'});
-            $('.analysisComponentContainer').animate({ height: '375px' }, { duration: animationSpeed, easing: 'ease-out', complete: function () {}});
-        }
+            if (device.orientation() === 'landscape') {
+                $component.css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});
+                $container.height(containerLandscapeHeight);
+
+            } else {
+                $component.css({'-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top'});  
+                $container.height(containerPortraitHeight);
+           }
+        });
 
         if (theApp.settings.appSettings.automaticChartRepositioning) {
             theApp.synchronizeOrientation.pendingCount += 1;
@@ -1130,13 +1161,14 @@ Zepto(function ($) {
                         theApp.scroll.scrollToElement('#' + theApp.synchronizeOrientation.chartToDisplay, 75, 25);
                     }
              
-                    theApp.mask.hide('turn');
+                    theApp.mask.hide('preventTap');
                 }
             }, animationSpeed + rebuildingDelay);
         } else {
             setTimeout(function () {
                 theApp.scroll.rebuild('analysis');
-                theApp.mask.hide('turn'); // ASA
+                theApp.mask.hide('preventTap');
+                theApp.iOSLog.debug('rebuilt');
             }, animationSpeed + rebuildingDelay);
         }
     };
@@ -1186,5 +1218,34 @@ Zepto(function ($) {
     theApp.onTestApp = function () {
         // TODO: Add code here.
     };
+
+    // ------------------------------------------
+    // EXPERIMENTAL
+    // ------------------------------------------
+
+    theApp.initExperimentalPage = function () {
+        theApp.experimentalPage.create();
+    };
+
+    theApp.experimentalPage.on('onPreviewChart' , function (customChart) {
+        var charts = [];
+        var chartComponentsData = theApp.chartComponents.getData('charts');
+        
+        // Clear previous chart.
+        $('#custom_chart_partial').html('');
+
+        // Set time periods.
+        customChart.timePeriods = theApp.customChartTimePeriods.timePeriods;
+        customChart.startDate = theApp.customChartTimePeriods.startDate;
+        customChart.endDate = theApp.customChartTimePeriods.endDate;
+        
+        chartComponentsData[customChart.chartId] = customChart;
+        charts.push({ chartId: customChart.chartId });
+
+        // Render the new custom chart.
+        theApp.chartComponents.render(charts, '#custom_chart_partial');
+        theApp.scroll.rebuild('experimental');
+    });
+
 });
 

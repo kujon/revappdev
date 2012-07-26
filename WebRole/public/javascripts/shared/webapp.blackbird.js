@@ -35,6 +35,8 @@ WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true
         profile: true
     };
 
+    var isHidden = true;
+
     function generateMarkup() { //build markup
         var spans = [];
         for (type in messageTypes) {
@@ -175,6 +177,7 @@ WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true
 
     function hide() {
         bbird.style.display = 'none';
+        isHidden = true;
         eventManager.raiseEvent('hide');
     }
 
@@ -183,6 +186,7 @@ WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true
         body.removeChild(bbird);
         body.appendChild(bbird);
         bbird.style.display = 'block';
+        isHidden = false;
         eventManager.raiseEvent('show');
     }
 
@@ -281,6 +285,8 @@ WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true
     blackbird = {
         toggle:
 			function () { (isVisible()) ? hide() : show(); },
+        isVisible:
+            function () { return !isHidden; },
         show:
 			function () { show(); },
         hide:

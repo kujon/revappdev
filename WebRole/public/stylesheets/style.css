@@ -96,7 +96,8 @@ html, body
     -webkit-box-shadow: inset 0 0 10px #666666;
     overflow: hidden;
     -webkit-transition: height .5s;
-    height: 500px;
+    min-height: 250px;
+    /*height: 500px;*/
 }
 
 .analysisComponentContainer h2 {
@@ -129,9 +130,19 @@ html, body
 .chartContainer 
 {
     width: 960px;
-    height: 500px;
+    /*height: 500px;*/
+    min-height: 380px;
     background-color: transparent;
-    -webkit-transition: -webkit-transform .25s;
+    /*-webkit-transition: -webkit-transform .25s;*/
+}
+
+.gridContainer 
+{
+    background-color: transparent;
+    overflow: auto;
+    width: 960px;
+    min-height: 380px;
+    /*-webkit-transition: -webkit-transform .25s;*/
 }
 
 .halfSizeChart 
@@ -202,9 +213,9 @@ html, body
  * CUSTOMIZED THEME
  ***********************************************/
 
-.modalBackground 
+.modalTransparentBackground 
 {
-    background-color: rgba(0,0,0,.6);
+    background-color: rgba(0,0,0,0);
     padding: 0px;
     width: 100%;
     height: 100%;
@@ -221,7 +232,8 @@ html, body
     background-position: center center;	
 }
 
-#myloading img, #myLoadingCharts img, #turnLoadingMask img
+/*
+#myloading img, #myLoadingCharts img
 {
     width: 32px;
     height: 32px;
@@ -230,7 +242,7 @@ html, body
     top: 50%;
     margin: -16px 0 0 -16px;
 }
-
+*/
 #loadingText {
 	width: 200px;
 	position: absolute;

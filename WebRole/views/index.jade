@@ -108,7 +108,7 @@
 						li#userEmailLabel.centeredText
 					ul.rounded
 						li
-							a#testButton(href="#test") Test Page
+							a#testButton(href="#experimental") Experimental Page
 						
 		#reset
 			.toolbar
@@ -189,6 +189,41 @@
 								a(href='http://cubiq.org/iscroll') iScroll
 								a.last(href='http://itabbar.com/') iTabbar
 		
+		#experimental(data-pageEvents="both")
+			.toolbar
+				// #{lang.settingsPages.analysisPageText}
+				h1 Experimental 
+				a.back(href='#settings') #{lang.shared.backText}
+			#wrapper
+				#scroller
+					// #{lang.settingsPages.userPageText}
+					h2 Custom Chart
+					form.scroll
+						ul.edit.rounded
+							li
+								// #{lang.settingsPages.pageNameText}
+								input#expTitle(type='text', placeholder='Chart Title', value='')						
+							li.arrow
+								select#expChartType
+							li.arrow
+								select#expInclude
+							li Is Heat Map
+								span.toggle
+									input#expHeatMap(type="checkbox")
+							li Is Gradient Reversed
+								span.toggle
+									input#expGradientReversed(type="checkbox")
+							li.arrow
+								select#expMeasures(multiple="multiple")
+							li.arrow
+								select#expIncludeMeasuresFor(multiple="multiple")
+							li
+								input#expHAxis(type='text', placeholder='H Axis', value='')						
+							li
+								input#expVAxis(type='text', placeholder='V Axis', value='')						
+					a#expPreview.whiteButton(href='#') Preview
+					#custom_chart_partial
+
 		#test(data-pageEvents="both")
 			.toolbar
 				h1 Test Page
@@ -228,7 +263,7 @@
 
 #myloading.modalBackground
 
-#turnLoadingMask.modalTransparentBackground
+#preventTapMask.modalTransparentBackground
 
 #myLoadingCharts.modalBackground
 	#loadingText
