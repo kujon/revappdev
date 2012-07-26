@@ -8720,18 +8720,18 @@ WebAppLoader.addModule({ name: 'chartManager',
     sharedModules: ['settings', 'chartDefaults', 'colorManager', 'localizationManager', 'ajaxManager'],
     isShared: true, hasEvents: true
 }, function () {
-    var chartBase     = {},
-        charts        = [],
-        eventManager  = this.getEventManager(),
+    var chartBase = {},
+        charts = [],
+        eventManager = this.getEventManager(),
         chartDefaults = this.getSharedModule('chartDefaults'),
-        siteUrls      = this.getSharedModule('settings').siteUrls,
-        colorManager  = this.getSharedModule('colorManager'),
-        lang          = this.getSharedModule('localizationManager').getLanguage() || {},
-        ajaxManager   = this.getSharedModule('ajaxManager'),
-        output        = this.getConsole(),
-        chartCount    = 0,
-        chartTotal    = 0,
-        isLoading     = false;
+        siteUrls = this.getSharedModule('settings').siteUrls,
+        colorManager = this.getSharedModule('colorManager'),
+        lang = this.getSharedModule('localizationManager').getLanguage() || {},
+        ajaxManager = this.getSharedModule('ajaxManager'),
+        output = this.getConsole(),
+        chartCount = 0,
+        chartTotal = 0,
+        isLoading = false;
 
     function resetCounter() {
         chartCount = 0;
@@ -8903,7 +8903,7 @@ WebAppLoader.addModule({ name: 'chartManager',
 
         // Callback function to be invoked when data is returned from the server.
         function onDataLoaded(data) {
-            var dataTable, i, min, max, baseMin, baseMax, 
+            var dataTable, i, min, max, baseMin, baseMax,
                 values = [], sliceOptions = [],
                 isAllPositiveOrNegative, containerId, gaugeLegendId;
 
@@ -8927,7 +8927,7 @@ WebAppLoader.addModule({ name: 'chartManager',
 
                 // Collate the heatmap measure from the datatable.
                 for (i = 0; i < dataTable.getNumberOfRows(); i++) {
-                    values.push(dataTable.getFormattedValue(i, 2));
+                    values.push(dataTable.getValue(i, 2));
                 }
 
                 // Get the highest and lowest values from the heatmap measure values.
@@ -8968,7 +8968,7 @@ WebAppLoader.addModule({ name: 'chartManager',
 
                 // Attach an event handler to the 'ready' event.
                 google.visualization.events.addListener(chart, 'ready', function () {
-                    var maxColor, minColor, midColor, 
+                    var maxColor, minColor, midColor,
                         linearGradientCss, gradientCss,
                         gaugeLegend, container;
 
@@ -8997,11 +8997,11 @@ WebAppLoader.addModule({ name: 'chartManager',
 
                     // If the values are all positive or all negative, we'll just need to create a CSS gradient 
                     // from the max to min colours. If not, we'll need to go through the mid colour on the way.
-                    linearGradientCss = isAllPositiveOrNegative ? 
-                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + minColor + ' 100%)' : 
+                    linearGradientCss = isAllPositiveOrNegative ?
+                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + minColor + ' 100%)' :
                         'linear-gradient(bottom, ' + maxColor + ' 0%, ' + midColor + ' 50%, ' + minColor + ' 100%)';
 
-                    gradientCss = isAllPositiveOrNegative ? 
+                    gradientCss = isAllPositiveOrNegative ?
                         'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(1, ' + minColor + '))' :
                         'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(0.5, ' + midColor + '), color-stop(1, ' + minColor + '))';
 
@@ -9014,10 +9014,11 @@ WebAppLoader.addModule({ name: 'chartManager',
 
                     // Add an event handler to the chart's 'onmouseover' event.
                     google.visualization.events.addListener(chart.getChart(), 'onmouseover', function (e) {
-                        var value, position, cssConfig;
+                        var value, formattedValue, position, cssConfig;
 
                         // Get the heatmap value for the selected row.
-                        value = dataTable.getFormattedValue(e.row, 2);
+                        value = dataTable.getValue(e.row, 2);
+                        formattedValue = dataTable.getFormattedValue(e.row, 2);
 
                         // Calculate the percentage position of the value to display on the gauge.
                         position = isAllPositiveOrNegative ?
@@ -9030,7 +9031,7 @@ WebAppLoader.addModule({ name: 'chartManager',
 
                         // Find the chart legend, then its gaugeLegendSelectedValue, then add the heatmap
                         // value that's been selected, as well as displaying the value in the correct place.
-                        gaugeLegend.find('span.gaugeLegendSelectedValue').html(value).css(cssConfig);
+                        gaugeLegend.find('span.gaugeLegendSelectedValue').html(formattedValue).css(cssConfig);
                     });
 
                     // Add an event handler to the chart's 'onmouseout' event.

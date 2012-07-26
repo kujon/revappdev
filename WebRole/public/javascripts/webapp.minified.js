@@ -3727,7 +3727,7 @@ G++){if(E.getColumnType(G)==="number"){u.format(E,G)
 }}if(y==="PieChart"&&t.isHeatMap){E.sort([{column:2}]);
 for(G=0;
 G<E.getNumberOfRows();
-G++){L.push(E.getFormattedValue(G,2))
+G++){L.push(E.getValue(G,2))
 }J=Math.min.apply(Math,L);
 I=Math.max.apply(Math,L);
 B=J;
@@ -3754,11 +3754,12 @@ R=g.getColorInRange(0,J,I,t.isGradientReversed);
 P=H?"linear-gradient(bottom, "+Q+" 0%, "+S+" 100%)":"linear-gradient(bottom, "+Q+" 0%, "+R+" 50%, "+S+" 100%)";
 O=H?"gradient(linear, left bottom, left top, color-stop(0, "+Q+"), color-stop(1, "+S+"))":"gradient(linear, left bottom, left top, color-stop(0, "+Q+"), color-stop(0.5, "+R+"), color-stop(1, "+S+"))";
 N.css({"background-image":P,"background-image":"-webkit-"+P,"background-image":"-webkit-"+O});
-google.visualization.events.addListener(t.getChart(),"onmouseover",function(U){var W,V,T;
-W=E.getFormattedValue(U.row,2);
-V=H?100*((W-B)/(A-B)):100*((W-J)/(I-J));
-T={display:"block",top:(V-2.5)+"%"};
-N.find("span.gaugeLegendSelectedValue").html(W).css(T)
+google.visualization.events.addListener(t.getChart(),"onmouseover",function(U){var X,V,W,T;
+X=E.getValue(U.row,2);
+V=E.getFormattedValue(U.row,2);
+W=H?100*((X-B)/(A-B)):100*((X-J)/(I-J));
+T={display:"block",top:(W-2.5)+"%"};
+N.find("span.gaugeLegendSelectedValue").html(V).css(T)
 });
 google.visualization.events.addListener(t.getChart(),"onmouseout",function(T){N.find("span.gaugeLegendSelectedValue").css("display","none")
 })
