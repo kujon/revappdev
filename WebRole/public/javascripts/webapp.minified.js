@@ -3607,7 +3607,7 @@ return
 C=true
 }else{y.push(z)
 }if(C){w(z.chartId,z.title)
-}A=(z.chartType==="Table")?"gridContainer":"chartContainer";
+}A=(z.chartType==="Table")?"gridContainer resizableChart":"chartContainer resizableChart";
 for(var B=0;
 B<y.length;
 B++){chart=c[y[B].chartId]||null;
@@ -3642,7 +3642,7 @@ b={chartArea:{left:80,top:35,width:"70%",height:"80%"},fontName:f.labelFontName,
 a={chartArea:{left:"20%",width:"60%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
 e={chartArea:{left:"10%",width:"70%",height:"75%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
 g={forceIFrame:f.forceIFrame,height:250,greenFrom:0,greenTo:4,yellowFrom:4,yellowTo:6,redFrom:6,redTo:20,max:20,minorTicks:5};
-h={allowHtml:true,alternatingRowStyle:true,forceIFrame:f.forceIFrame,cssClassNames:{headerRow:"headerRow",tableRow:"tableRow",oddTableRow:"oddTableRow",selectedTableRow:"selectedTableRow",hoverTableRow:"hoverTableRow"}};
+h={allowHtml:true,alternatingRowStyle:true,cssClassNames:{headerRow:"headerRow",tableRow:"tableRow",oddTableRow:"oddTableRow",selectedTableRow:"selectedTableRow",hoverTableRow:"hoverTableRow"}};
 i={chartArea:{left:80,top:35,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame};
 k={chartArea:{left:80,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label"};
 l={fontFamily:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,headerHeight:25,minColor:"#cc0000",midColor:"#ffffff",maxColor:"#6699cc",maxDepth:3};
@@ -4658,17 +4658,20 @@ if(n.presentationManager.isFullScreen()){return
 n.mask.show("preventTap");
 a(".analysisComponentContainer").each(function(){var t,u,v,w,x,z,y,A;
 u=a(this);
-t=u.children().filter(".chartContainer")||u.children().filter(".gridContainer");
-v=u.height();
-y=0.9;
-z=0.69;
-if(!u.data("realHeight")){w=parseInt(v*y,10);
+t=u.children().filter(".resizableChart");
+v=t.height();
+if(t.hasClass("gridContainer")){y=0.75;
+z=0.6
+}else{y=1;
+z=0.8
+}if(!u.data("realHeight")){w=parseInt(v*y,10);
 x=parseInt(v*z,10);
 u.data("realHeight",v)
 }else{A=u.data("realHeight");
 w=parseInt(A*y,10);
 x=parseInt(A*z,10)
-}if(b.orientation()==="landscape"){t.css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"});
+}n.iOSLog.debug(w+" - "+x);
+if(b.orientation()==="landscape"){t.css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"});
 u.height(w)
 }else{t.css({"-webkit-transform":"scale(.69)","-webkit-transform-origin":"left top"});
 u.height(x)

@@ -8496,7 +8496,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             // Define a wrapper DIV class for the chart container depending on
             // the chart type. If the chart is a table, it sets its own height,
             // so an explicit class defining height is not required.
-            containerClass = (chartToAdd.chartType === 'Table') ? 'gridContainer' : 'chartContainer';
+            containerClass = (chartToAdd.chartType === 'Table') ? 'gridContainer resizableChart' : 'chartContainer resizableChart';
 
             // Create the chart containers according to the chart types.
             for (var i = 0; i < chartsToRender.length; i++) {
@@ -8651,7 +8651,9 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
     gridChart = {
         allowHtml: true,
         alternatingRowStyle: true,
-        forceIFrame: commonSettings.forceIFrame,
+        // forceIFrame: commonSettings.forceIFrame,
+        // width: '95%', 
+        // height: '150%',
         cssClassNames: {
             headerRow: 'headerRow',
             tableRow: 'tableRow',
@@ -12190,10 +12192,18 @@ Zepto(function ($) {
             containerPortraitHeight, portraitScaleRatio, landscapeScaleRatio, realHeightData;
             
             $container = $(this);
-            $component = $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
-            containerHeight = $container.height();
-            landscapeScaleRatio = 0.90;
-            portraitScaleRatio = 0.69;
+            $component = $container.children().filter('.resizableChart'); // $container.children().filter('.resizableChart'); // $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
+            containerHeight = $component.height();
+                        
+            if ($component.hasClass('gridContainer')) {
+                // containerHeight = $container.height();
+                landscapeScaleRatio = 0.75;
+                portraitScaleRatio = 0.60;
+            } else {
+                // containerHeight = $component.height();
+                landscapeScaleRatio = 1;
+                portraitScaleRatio = 0.80;
+            }
             
             if (!$container.data("realHeight")) {
                 containerLandscapeHeight = parseInt(containerHeight * landscapeScaleRatio, 10);
@@ -12204,6 +12214,8 @@ Zepto(function ($) {
                 containerLandscapeHeight = parseInt(realHeightData * landscapeScaleRatio, 10);
                 containerPortraitHeight = parseInt(realHeightData * portraitScaleRatio, 10);
             }
+            
+            theApp.iOSLog.debug(containerLandscapeHeight + ' - ' + containerPortraitHeight);
 
             if (device.orientation() === 'landscape') {
                 $component.css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});

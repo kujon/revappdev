@@ -1120,10 +1120,18 @@ Zepto(function ($) {
             containerPortraitHeight, portraitScaleRatio, landscapeScaleRatio, realHeightData;
             
             $container = $(this);
-            $component = $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
-            containerHeight = $container.height();
-            landscapeScaleRatio = 0.90;
-            portraitScaleRatio = 0.69;
+            $component = $container.children().filter('.resizableChart'); // $container.children().filter('.resizableChart'); // $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
+            containerHeight = $component.height();
+                        
+            if ($component.hasClass('gridContainer')) {
+                // containerHeight = $container.height();
+                landscapeScaleRatio = 0.75;
+                portraitScaleRatio = 0.60;
+            } else {
+                // containerHeight = $component.height();
+                landscapeScaleRatio = 1;
+                portraitScaleRatio = 0.80;
+            }
             
             if (!$container.data("realHeight")) {
                 containerLandscapeHeight = parseInt(containerHeight * landscapeScaleRatio, 10);
@@ -1134,6 +1142,8 @@ Zepto(function ($) {
                 containerLandscapeHeight = parseInt(realHeightData * landscapeScaleRatio, 10);
                 containerPortraitHeight = parseInt(realHeightData * portraitScaleRatio, 10);
             }
+            
+            theApp.iOSLog.debug(containerLandscapeHeight + ' - ' + containerPortraitHeight);
 
             if (device.orientation() === 'landscape') {
                 $component.css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});

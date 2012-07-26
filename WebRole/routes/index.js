@@ -14,7 +14,6 @@ var osInfo = {
     platform: os.platform(),
     hostname: os.hostname(),
     type: os.type(),
-    platform: os.platform(),
     arch: os.arch(),
     release: os.release(),
     uptime: os.uptime(),

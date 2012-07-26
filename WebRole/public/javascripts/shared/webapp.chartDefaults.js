@@ -96,7 +96,9 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
     gridChart = {
         allowHtml: true,
         alternatingRowStyle: true,
-        forceIFrame: commonSettings.forceIFrame,
+        // forceIFrame: commonSettings.forceIFrame,
+        // width: '95%', 
+        // height: '150%',
         cssClassNames: {
             headerRow: 'headerRow',
             tableRow: 'tableRow',
