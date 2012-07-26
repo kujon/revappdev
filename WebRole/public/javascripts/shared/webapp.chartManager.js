@@ -54,7 +54,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                 eventManager.raiseEvent('onAnalysisLoaded');
             }
         }
-        
+
         if (info && info.chartId) {
             eventManager.raiseEvent('hideMask', info.chartId);
         }
@@ -128,10 +128,10 @@ WebAppLoader.addModule({ name: 'chartManager',
 
         // Register the chart with the ready and error event listeners.
         google.visualization.events.addListener(chart, 'ready', function () {
-            onChartReady({chartId: chart.getContainerId()}); 
+            onChartReady({ chartId: chart.getContainerId() });
         });
-        google.visualization.events.addListener(chart, 'error',  function (errorObj) {
-            onChartReady({errorObj: errorObj}); 
+        google.visualization.events.addListener(chart, 'error', function (errorObj) {
+            onChartReady({ errorObj: errorObj });
         });
         // Return the chart.
         return chart;
@@ -189,7 +189,9 @@ WebAppLoader.addModule({ name: 'chartManager',
 
         // Callback function to be invoked when data is returned from the server.
         function onDataLoaded(data) {
-            var dataTable, i, min, max, values = [], sliceOptions = [];
+            var dataTable, i, min, max, baseMin, baseMax, 
+                values = [], sliceOptions = [],
+                isAllPositiveOrNegative, containerId, gaugeLegendId;
 
             output.log(data);
 
@@ -206,14 +208,25 @@ WebAppLoader.addModule({ name: 'chartManager',
             // If our chart is a pie chart and we're displaying it as a heatmap...
             if (type === 'PieChart' && chart.isHeatMap) {
 
-                // ...collate the heatmap measure from the datatable.
+                // ...sort the data by our heatmap measure.
+                dataTable.sort([{ column: 2}]);
+
+                // Collate the heatmap measure from the datatable.
                 for (i = 0; i < dataTable.getNumberOfRows(); i++) {
-                    values.push(dataTable.getValue(i, 2));
+                    values.push(dataTable.getFormattedValue(i, 2));
                 }
 
                 // Get the highest and lowest values from the heatmap measure values.
                 min = Math.min.apply(Math, values);
                 max = Math.max.apply(Math, values);
+
+                // Preserve those base values, since we may need them
+                // to generate a gauge which doesn't minmax the range.
+                baseMin = min;
+                baseMax = max;
+
+                // Determine if the values are all positive or all negative.
+                isAllPositiveOrNegative = (baseMin >= 0 && baseMax >= 0) || (baseMin <= 0 && baseMax <= 0);
 
                 // Generate absolute minmax values.
                 if (Math.abs(min) > Math.abs(max)) {
@@ -232,7 +245,87 @@ WebAppLoader.addModule({ name: 'chartManager',
                     });
                 }
 
+                // Set the colours as part of the 'slices' chart option.
                 chart.setOption('slices', sliceOptions);
+
+                // Get the chart's container and generate a unique ID for this chart's gauge.
+                containerId = chart.getContainerId();
+                gaugeLegendId = containerId + '-gaugeLegend';
+
+                // Attach an event handler to the 'ready' event.
+                google.visualization.events.addListener(chart, 'ready', function () {
+                    var maxColor, minColor, midColor, 
+                        linearGradientCss, gradientCss,
+                        gaugeLegend, container;
+
+                    // Get the container of the chart.
+                    container = $('#' + containerId);
+
+                    // Remove any trace of an existing gauge.
+                    $('#' + gaugeLegendId).remove();
+
+                    // Add an element we can style to the chart's container.
+                    container.append(
+                        '<div id="' + gaugeLegendId + '" class="gaugeLegend">' +
+                        '    <span class="gaugeLegendMaxValue">' + (isAllPositiveOrNegative ? baseMax : max) + '</span>' +
+                        '    <span class="gaugeLegendSelectedValue"></span>' +
+                        '    <span class="gaugeLegendMinValue">' + (isAllPositiveOrNegative ? baseMin : min) + '</span>' +
+                        '</div>'
+                    );
+
+                    // Now we've recreated the gauge, store a reference to it.
+                    gaugeLegend = $('#' + gaugeLegendId);
+
+                    // Determine the colours we need to use for our gauge.
+                    maxColor = colorManager.getColorInRange(isAllPositiveOrNegative ? baseMax : max, min, max, chart.isGradientReversed);
+                    minColor = colorManager.getColorInRange(isAllPositiveOrNegative ? baseMin : min, min, max, chart.isGradientReversed);
+                    midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
+
+                    // If the values are all positive or all negative, we'll just need to create a CSS gradient 
+                    // from the max to min colours. If not, we'll need to go through the mid colour on the way.
+                    linearGradientCss = isAllPositiveOrNegative ? 
+                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + minColor + ' 100%)' : 
+                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + midColor + ' 50%, ' + minColor + ' 100%)';
+
+                    gradientCss = isAllPositiveOrNegative ? 
+                        'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(1, ' + minColor + '))' :
+                        'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(0.5, ' + midColor + '), color-stop(1, ' + minColor + '))';
+
+                    // Create a CSS3 gradient between the min and max values.
+                    gaugeLegend.css({
+                        'background-image': linearGradientCss,
+                        'background-image': '-webkit-' + linearGradientCss,
+                        'background-image': '-webkit-' + gradientCss
+                    });
+
+                    // Add an event handler to the chart's 'onmouseover' event.
+                    google.visualization.events.addListener(chart.getChart(), 'onmouseover', function (e) {
+                        var value, position, cssConfig;
+
+                        // Get the heatmap value for the selected row.
+                        value = dataTable.getFormattedValue(e.row, 2);
+
+                        // Calculate the percentage position of the value to display on the gauge.
+                        position = isAllPositiveOrNegative ?
+                            100 * ((value - baseMin) / (baseMax - baseMin)) :
+                            100 * ((value - min) / (max - min));
+
+                        // Create a CSS object to pass to the span. We modify the position
+                        // slightly to allow our span styling to better point at the gauge.
+                        cssConfig = { 'display': 'block', 'top': (position - 2.5) + '%' };
+
+                        // Find the chart legend, then its gaugeLegendSelectedValue, then add the heatmap
+                        // value that's been selected, as well as displaying the value in the correct place.
+                        gaugeLegend.find('span.gaugeLegendSelectedValue').html(value).css(cssConfig);
+                    });
+
+                    // Add an event handler to the chart's 'onmouseout' event.
+                    google.visualization.events.addListener(chart.getChart(), 'onmouseout', function (e) {
+                        // Hide any heatmap values that are currently on display.
+                        gaugeLegend.find('span.gaugeLegendSelectedValue').css('display', 'none');
+                    });
+
+                });
             }
 
             // Set the data table for the chart.
@@ -240,11 +333,6 @@ WebAppLoader.addModule({ name: 'chartManager',
 
             // Draw the chart.
             chart.draw();
-
-            // Set up the chart to be redrawn on change of orientation.
-            $(document).on('orientationchange', function (event) {
-                // chart.draw();
-            });
         }
 
         // Attempt to load the data.

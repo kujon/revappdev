@@ -143,6 +143,36 @@ html, body
     width: 960px;
     min-height: 380px;
     /*-webkit-transition: -webkit-transform .25s;*/
+    position: relative;
+}
+
+.gaugeLegend {
+    display: block;
+    position: absolute;
+    z-index: 1000;
+    right: 20%;
+    top: 20%;
+    height: 60%;   
+    width: 4%;
+    border: 2px solid #b9b9b9;
+}
+
+.gaugeLegendMinValue, .gaugeLegendMaxValue, .gaugeLegendSelectedValue {
+    position: absolute;
+    text-align: center;    
+    font-size: 11px;
+    width: 100%;  
+}
+
+.gaugeLegendMinValue { font-family: HelveticaNeue-Bold !important; top: -25px; }
+.gaugeLegendMaxValue { font-family: HelveticaNeue-Bold !important; bottom: -25px; }
+
+.gaugeLegendSelectedValue {
+    display: none;
+    font-family: HelveticaNeue-Light !important; 
+    background: url('../images/highlight-gauge.png') no-repeat 0 center;    
+    padding-left: 10px;
+    left: 110%;
 }
 
 .halfSizeChart 

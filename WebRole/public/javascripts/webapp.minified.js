@@ -3644,7 +3644,7 @@ e={chartArea:{left:"10%",width:"70%",height:"75%"},fontName:f.labelFontName,font
 g={forceIFrame:f.forceIFrame,height:250,greenFrom:0,greenTo:4,yellowFrom:4,yellowTo:6,redFrom:6,redTo:20,max:20,minorTicks:5};
 h={allowHtml:true,alternatingRowStyle:true,forceIFrame:f.forceIFrame,cssClassNames:{headerRow:"headerRow",tableRow:"tableRow",oddTableRow:"oddTableRow",selectedTableRow:"selectedTableRow",hoverTableRow:"hoverTableRow"}};
 i={chartArea:{left:80,top:35,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame};
-k={chartArea:{left:80,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label"};
+k={chartArea:{left:80,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label",pieSliceTextStyle:{color:"#000000"}};
 l={fontFamily:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,headerHeight:25,minColor:"#cc0000",midColor:"#ffffff",maxColor:"#6699cc",maxDepth:3};
 function c(m,n){f[m]=n;
 j.log("change setting")
@@ -3718,28 +3718,53 @@ if(t.endDate){x.endDate=t.endDate
 }if(t.timePeriods){x.timePeriods=t.timePeriods
 }z=(y==="LineChart")?p.timeSeries:p.segmentsTreeNode;
 i.raiseEvent("showMask",t.getContainerId());
-function w(A){var B,C,E,D,G=[],F=[];
-n.log(A);
-B=new google.visualization.DataTable(A);
-for(C=0;
-C<B.getNumberOfColumns();
-C++){if(B.getColumnType(C)==="number"){u.format(B,C)
-}}if(y==="PieChart"&&t.isHeatMap){for(C=0;
-C<B.getNumberOfRows();
-C++){G.push(B.getValue(C,2))
-}E=Math.min.apply(Math,G);
-D=Math.max.apply(Math,G);
-if(Math.abs(E)>Math.abs(D)){D=Math.abs(E);
-E=-(Math.abs(E))
-}else{D=Math.abs(D);
-E=-(Math.abs(D))
-}for(C=0;
-C<G.length;
-C++){F.push({color:g.getColorInRange(G[C],E,D,t.isGradientReversed)})
-}t.setOption("slices",F)
-}t.setDataTable(B);
-t.draw();
-$(document).on("orientationchange",function(H){})
+function w(D){var E,G,J,I,B,A,L=[],K=[],H,C,F;
+n.log(D);
+E=new google.visualization.DataTable(D);
+for(G=0;
+G<E.getNumberOfColumns();
+G++){if(E.getColumnType(G)==="number"){u.format(E,G)
+}}if(y==="PieChart"&&t.isHeatMap){E.sort([{column:2}]);
+for(G=0;
+G<E.getNumberOfRows();
+G++){L.push(E.getFormattedValue(G,2))
+}J=Math.min.apply(Math,L);
+I=Math.max.apply(Math,L);
+B=J;
+A=I;
+H=(B>=0&&A>=0)||(B<=0&&A<=0);
+if(Math.abs(J)>Math.abs(I)){I=Math.abs(J);
+J=-(Math.abs(J))
+}else{I=Math.abs(I);
+J=-(Math.abs(I))
+}for(G=0;
+G<L.length;
+G++){K.push({color:g.getColorInRange(L[G],J,I,t.isGradientReversed)})
+}t.setOption("slices",K);
+C=t.getContainerId();
+F=C+"-gaugeLegend";
+google.visualization.events.addListener(t,"ready",function(){var Q,S,R,P,O,N,M;
+M=$("#"+C);
+$("#"+F).remove();
+M.append('<div id="'+F+'" class="gaugeLegend">    <span class="gaugeLegendMaxValue">'+(H?A:I)+'</span>    <span class="gaugeLegendSelectedValue"></span>    <span class="gaugeLegendMinValue">'+(H?B:J)+"</span></div>");
+N=$("#"+F);
+Q=g.getColorInRange(H?A:I,J,I,t.isGradientReversed);
+S=g.getColorInRange(H?B:J,J,I,t.isGradientReversed);
+R=g.getColorInRange(0,J,I,t.isGradientReversed);
+P=H?"linear-gradient(bottom, "+Q+" 0%, "+S+" 100%)":"linear-gradient(bottom, "+Q+" 0%, "+R+" 50%, "+S+" 100%)";
+O=H?"gradient(linear, left bottom, left top, color-stop(0, "+Q+"), color-stop(1, "+S+"))":"gradient(linear, left bottom, left top, color-stop(0, "+Q+"), color-stop(0.5, "+R+"), color-stop(1, "+S+"))";
+N.css({"background-image":P,"background-image":"-webkit-"+P,"background-image":"-webkit-"+O});
+google.visualization.events.addListener(t.getChart(),"onmouseover",function(U){var W,V,T;
+W=E.getFormattedValue(U.row,2);
+V=H?100*((W-B)/(A-B)):100*((W-J)/(I-J));
+T={display:"block",top:(V-2.5)+"%"};
+N.find("span.gaugeLegendSelectedValue").html(W).css(T)
+});
+google.visualization.events.addListener(t.getChart(),"onmouseout",function(T){N.find("span.gaugeLegendSelectedValue").css("display","none")
+})
+})
+}t.setDataTable(E);
+t.draw()
 }a.post(z,x,w,"text")
 }b.create=h;
 b.load=l;
@@ -3767,8 +3792,8 @@ m.push([s,x])
 m.push([0,B])
 }}else{if(A>0){m.push([s,n]);
 m.push([0,B])
-}else{m.push([0,B]);
-m.push([t,x])
+}else{m.push([t,x]);
+m.push([0,B])
 }}z=[0,B];
 for(o=0;
 o<m.length;
@@ -3777,8 +3802,8 @@ if(q>=A){l=m[o][1];
 w=z[0];
 v=z[1];
 u=((A-w)/(q-w));
-return j(h(g(v),g(l),u),h(f(v),f(l),u),h(e(v),e(l),u))
-}z=m[o]
+if(!isNaN(u)){return j(h(g(v),g(l),u),h(f(v),f(l),u),h(e(v),e(l),u))
+}}z=m[o]
 }return B
 }a.getColorInRange=d;
 return a

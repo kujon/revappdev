@@ -82,10 +82,10 @@ WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
             // If the value is positive, the colour will be between red and yellow.
             if (value > 0) {
                 colors.push([0, yellow]);
-                colors.push([max, red]);                
+                colors.push([max, red]);
             } else {
                 colors.push([min, green]);
-                colors.push([0, yellow]);                
+                colors.push([0, yellow]);
             }
         } else {
             // If the value is positive, the colour will be between yellow and green.
@@ -93,8 +93,8 @@ WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
                 colors.push([max, green]);
                 colors.push([0, yellow]);
             } else {
-                colors.push([0, yellow]);
                 colors.push([min, red]);
+                colors.push([0, yellow]);
             }
         }
 
@@ -102,9 +102,9 @@ WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
         storedColor = [0, yellow];
 
         for (i = 0; i < colors.length; i++) {
-            
+
             key = colors[i][0];
-            
+
             if (key >= value) {
 
                 color = colors[i][1];
@@ -112,13 +112,18 @@ WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
                 previousColor = storedColor[1];
                 p = ((value - previousKey) / (key - previousKey));
 
-                // Generate a new hex colour by interpolating between the 
-                // R, G and B values of the current and previous colours.
-                return rgbToHex(
-                    interpolate(hexToR(previousColor), hexToR(color), p), 
-                    interpolate(hexToG(previousColor), hexToG(color), p), 
-                    interpolate(hexToB(previousColor), hexToB(color), p)
-                );
+                // If 'value', 'key' and 'previousKey' are zero, the value of 'p' will be NaN, as we're 
+                // trying to divide by zero. If that's not the case, we can interpolate, otherwise we'll 
+                // end up with a black segment, which isn't in the desired colour range for our heatmap.
+                if (!isNaN(p)) {
+                    // Generate a new hex colour by interpolating between the
+                    // R, G and B values of the current and previous colours.
+                    return rgbToHex(
+                        interpolate(hexToR(previousColor), hexToR(color), p),
+                        interpolate(hexToG(previousColor), hexToG(color), p),
+                        interpolate(hexToB(previousColor), hexToB(color), p)
+                    );
+                }
             }
 
             storedColor = colors[i];
