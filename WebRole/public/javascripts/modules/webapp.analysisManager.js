@@ -20,23 +20,26 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
             order       : 1,
             userDefined : false,
             charts      : [{
-                    chartId : 'performance_line',
+                    chartId : 'performanceMaster_grid',
                     order   : 1
-                }, {
-                    chartId : 'performance_grid',
+                },{
+                    chartId : 'performance_line',
                     order   : 2
                 },{
-                    chartId : 'performance_bubble',
+                    chartId : 'performance_grid',
                     order   : 3
                 },{
-                    chartId: 'performance_bar',
+                    chartId : 'performance_bubble',
                     order   : 4
                 },{
-                    chartId: 'performance_treemap',
+                    chartId: 'performance_bar',
                     order   : 5
                 },{
-                    chartId: 'performanceTopTen_grid',
+                    chartId: 'performance_treemap',
                     order   : 6
+                },{
+                    chartId: 'performanceTopTen_grid',
+                    order   : 7
                 }] 
         },{
             name        : 'Risk',
@@ -44,20 +47,23 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
             order       : 2,
             userDefined : false,
             charts      : [{
-                    chartId: 'risk_treemap',
+                    chartId : 'riskMaster_grid',
                     order   : 1
                 },{
-                    chartId: 'risk_bar',
+                    chartId: 'risk_treemap',
                     order   : 2
                 },{
-                    chartId: 'risk_bubble',
+                    chartId: 'risk_bar',
                     order   : 3
                 },{
-                    chartId: 'risk_pie',
+                    chartId: 'risk_bubble',
                     order   : 4
                 },{
-                    chartId: 'riskTopTen_grid',
+                    chartId: 'risk_pie',
                     order   : 5
+                },{
+                    chartId: 'riskTopTen_grid',
+                    order   : 6
                 }]             
         },{
             name        : 'Asset Allocation',
@@ -65,11 +71,14 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
             order       : 3,
             userDefined : false,
             charts      : [{
-                    chartId: 'allocation_pie',
+                    chartId : 'allocationMaster_grid',
                     order   : 1
                 },{
-                    chartId: 'allocation_bar',
+                    chartId: 'allocation_pie',
                     order   : 2
+                },{
+                    chartId: 'allocation_bar',
+                    order   : 3
                 }]             
         },{
             name        : 'Contribution',
@@ -77,17 +86,20 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
             order       : 4,
             userDefined : false,
             charts      : [{
-                    chartId: 'contribution_pie',
+                    chartId : 'contributionMaster_grid',
                     order   : 1
                 },{
-                    chartId: 'contribution_column',
+                    chartId: 'contribution_pie',
                     order   : 2
                 },{
-                    chartId: 'contribution_bar',
+                    chartId: 'contribution_column',
                     order   : 3
                 },{
-                    chartId: 'contributionTopTen_grid',
+                    chartId: 'contribution_bar',
                     order   : 4
+                },{
+                    chartId: 'contributionTopTen_grid',
+                    order   : 5
                 }]            
         },{
             name        : 'Attribution',
@@ -95,14 +107,17 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
             order       : 5,
             userDefined : false,
             charts      : [{
-                    chartId: 'attribution_column',
+                    chartId : 'attributionMaster_grid',
                     order   : 1
                 },{
-                    chartId: 'attribution_bar',
+                    chartId: 'attribution_column',
                     order   : 2
                 },{
-                    chartId: 'attribution_grid',
+                    chartId: 'attribution_bar',
                     order   : 3
+                },{
+                    chartId: 'attribution_grid',
+                    order   : 4
                 }]              
         },{
             name        : 'Fixed Income',
@@ -110,53 +125,56 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
             order       : 6,
             userDefined : false,
             charts      : [{
-                    title: 'Bar Charts of Fixed Income Contributions:',
-                    chartId: '',
+                    chartId : 'fixedIncomeMaster_grid',
                     order   : 1
                 },{
-                    chartId: 'fixedIncomeContribution_bar',
+                    title: 'Bar Charts of Fixed Income Contributions:',
+                    chartId: '',
                     order   : 2
                 },{
-                    chartId: 'carryContribution_bar',
+                    chartId: 'fixedIncomeContribution_bar',
                     order   : 3
                 },{
-                    chartId: 'yieldCurveContribution_bar',
+                    chartId: 'carryContribution_bar',
                     order   : 4
                 },{
-                    chartId: 'riskNumbers_bar',
+                    chartId: 'yieldCurveContribution_bar',
                     order   : 5
+                },{
+                    chartId: 'riskNumbers_bar',
+                    order   : 6
                 },{
                     title: 'Column Charts of Fixed Income Exposures:',
                     chartId: '',
-                    order   : 6
-                },{
-                    chartId: 'interestRatesExposure_column',
                     order   : 7
                 },{
-                    chartId: 'creditSpreadsExposure_column',
+                    chartId: 'interestRatesExposure_column',
                     order   : 8
                 },{
-                    chartId: 'dv01Exposure_column',
+                    chartId: 'creditSpreadsExposure_column',
                     order   : 9
+                },{
+                    chartId: 'dv01Exposure_column',
+                    order   : 10
                 },{
                     title: 'Grid of Risk Numbers:',
                     chartId: '',
-                    order   : 10
-                },{
-                    chartId: 'fixedIncome_grid',
                     order   : 11
                 },{
-                    chartId: 'fixedIncomeContribution_grid',
+                    chartId: 'fixedIncome_grid',
                     order   : 12
+                },{
+                    chartId: 'fixedIncomeContribution_grid',
+                    order   : 13
                 },{
                     title: 'Grid of FI Exposure',
                     chartId: '',
-                    order   : 13
+                    order   : 14
                 },{
                     chartId: 'fixedIncomeExposure_grid',
-                    order   : 14
+                    order   : 15
                 }]   
-        } ,{
+        },{
             name        : 'User Defined Test Page',
             id          : 'test1',
             order       : 100,
