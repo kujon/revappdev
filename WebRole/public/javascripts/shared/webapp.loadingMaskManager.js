@@ -27,10 +27,10 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
         el          : el.chartLoadingMask
     };
 
-    masks.turn = {
-        name        : 'turn',
+    masks.preventTap = {
+        name        : 'preventTap',
         enabled     : true,
-        el          : el.turnLoadingMask
+        el          : el.preventTapMask
     };
     
     masks['default'] = masks.ajax;

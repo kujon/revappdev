@@ -91,6 +91,8 @@ exports.index = function (req, res) {
     res.expose(getClientLanguage(requestedLanguage), 'express.language');
     res.expose({ env: GLOBAL_ENVIRONMENT }, 'express.environment');
     res.expose(osInfo, 'express.os');
+    res.expose(process.env, 'express.proc');
+    // res.expose(app.settings, 'express.app');
 
     res.render('index', viewModel);
 };
