@@ -133,7 +133,13 @@ exports.client = {
         performanceLineTitle                : 'Rendimento di Periodo',
         fixedIncomeContributionsGroupTitle  : 'Contributi Fixed Income',
         fixedIncomeExposuresGroupTitle      : 'Exposures Fixed Income',
-        fixedIncomeRiskNumbersGroupTitle    : 'Numeri di Rischio Fixed Income'
+        fixedIncomeRiskNumbersGroupTitle    : 'Numeri di Rischio Fixed Income',
+        performanceMasterTitle              : 'Key Performance Numbers',
+        attributionMasterTitle              : 'Key Attribution Numbers',
+        fixedIncomeMasterTitle              : 'Key Fixed Income Numbers',
+        riskMasterTitle                     : 'Key Risk Numbers',
+        allocationMasterTitle               : 'Key Allocation Numbers',
+        contributionMasterTitle             : 'Key Contribution Numbers'
     },
 
     chartTypes: {

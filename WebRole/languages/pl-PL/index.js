@@ -133,7 +133,13 @@ exports.client = {
         performanceLineTitle                : 'Stopa zwrotu w wybranym przedziale czasu',
         fixedIncomeContributionsGroupTitle  : 'Kontrybucje papierów dłużnych',
         fixedIncomeExposuresGroupTitle      : 'Narażenie papierów dłużnych',
-        fixedIncomeRiskNumbersGroupTitle    : 'Wrażliwość papierów dłużnych'
+        fixedIncomeRiskNumbersGroupTitle    : 'Wrażliwość papierów dłużnych',
+        performanceMasterTitle              : 'Key Performance Numbers',
+        attributionMasterTitle              : 'Key Attribution Numbers',
+        fixedIncomeMasterTitle              : 'Key Fixed Income Numbers',
+        riskMasterTitle                     : 'Key Risk Numbers',
+        allocationMasterTitle               : 'Key Allocation Numbers',
+        contributionMasterTitle             : 'Key Contribution Numbers'
     },
 
     chartTypes: {
