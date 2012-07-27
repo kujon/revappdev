@@ -56,7 +56,7 @@ WebAppLoader.addModule({ name: 'chartManager',
         }
         
         if (info && info.chartId) {
-            eventManager.raiseEvent('hideMask', info.chartId);
+            eventManager.raiseEvent('hideMask', info.chartId, info.numRows);
         }
 
         // If we've got an error...
@@ -126,10 +126,7 @@ WebAppLoader.addModule({ name: 'chartManager',
         chart.startDate = config.startDate;
         chart.timePeriods = config.timePeriods;
 
-        // Register the chart with the ready and error event listeners.
-        google.visualization.events.addListener(chart, 'ready', function () {
-            onChartReady({chartId: chart.getContainerId()}); 
-        });
+        
         google.visualization.events.addListener(chart, 'error',  function (errorObj) {
             onChartReady({errorObj: errorObj}); 
         });
@@ -201,6 +198,19 @@ WebAppLoader.addModule({ name: 'chartManager',
                 if (dataTable.getColumnType(i) === 'number') {
                     formatter.format(dataTable, i);
                 }
+            }
+
+            // Register the chart with the ready and error event listeners.
+            google.visualization.events.addListener(chart, 'ready', function () {
+                onChartReady({
+                    chartId: chart.getContainerId(),
+                    numRows: dataTable.getNumberOfRows() // Used to calculate the height of the chart later.
+                }); 
+            });
+
+            if (type === 'Table') {
+                chart.setOption('height', chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
+                chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
             }
 
             // If our chart is a pie chart and we're displaying it as a heatmap...

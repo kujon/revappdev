@@ -8543,8 +8543,9 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         $('#' + chartId).parent().addClass('genericLoadingMask');
     });
 
-    chartManager.on('hideMask', function (chartId) {
+    chartManager.on('hideMask', function (chartId, numRows) {
         $('#' + chartId).parent().removeClass('genericLoadingMask');
+        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
     });
 
     chartComponents.load = load;
@@ -8558,17 +8559,18 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
 // ------------------------------------------
 
 WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
-    var chartDefaults  = {},
-        commonSettings = {},
-        barChart       = {},
-        bubbleChart    = {},
-        columnChart    = {},
-        gaugeChart     = {},
-        gridChart      = {},
-        lineChart      = {},
-        pieChart       = {},
-        treeMapChart   = {},
-        output         = this.getConsole();
+    var chartDefaults    = {},
+        commonSettings   = {},
+        barChart         = {},
+        bubbleChart      = {},
+        columnChart      = {},
+        gaugeChart       = {},
+        gridChart        = {},
+        lineChart        = {},
+        pieChart         = {},
+        treeMapChart     = {},
+        resizingSettings = {},
+        output           = this.getConsole();
 
     // COMMON CHART SETTINGS
     commonSettings = {
@@ -8694,6 +8696,53 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
         maxDepth: 3
     };
 
+    // RESIZING SETTINGS
+    resizingSettings = {
+        // Maximum values used in presentation mode.
+        chartWidth: 960, 
+        tableWidth: 980,
+
+        // Charts rescaling ratio.
+        chartLandscapeScaleRatio: 1,
+        chartPortraitScaleRatio: 0.80, 
+
+        // Tables rescaling ratio.
+        tableLandscapeScaleRatio: 1,
+        tablePortraitScaleRatio: 0.80,
+
+        rowHeight: 60, // Same value of .tableRow and .oddTableRow
+        headerHeight: 60, // Same value of .headerRow
+        fixedHeight: 60,
+        
+        calculateTableHeight: function (numRows) {
+            return parseInt(numRows * this.rowHeight + this.headerHeight + this.fixedHeight, 10);
+        },
+
+        rescaleChart: function (height, deviceOrientation) {
+            var chartHeight;
+
+            if (deviceOrientation === 'landscape') {
+                chartHeight = parseInt(height * this.chartLandscapeScaleRatio, 10); 
+            } else {
+                chartHeight = parseInt(height * this.chartPortraitScaleRatio, 10); 
+            }
+
+            return chartHeight;
+        },
+
+        rescaleTable: function (height, deviceOrientation) {
+            var tableHeight;
+
+            if (deviceOrientation === 'landscape') {
+                tableHeight = parseInt(height * this.tableLandscapeScaleRatio, 10); 
+            } else {
+                tableHeight = parseInt(height * this.tablePortraitScaleRatio, 10); 
+            }
+
+            return tableHeight;
+        }
+    };
+
     function changeSetting(key, value) {
         commonSettings[key] = value;
         output.log('change setting');
@@ -8708,6 +8757,7 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
     chartDefaults.PieChart = pieChart;
     chartDefaults.Table = gridChart;
     chartDefaults.TreeMap = treeMapChart;
+    chartDefaults.resizingSettings = resizingSettings;
 
     chartDefaults.set = changeSetting; // Alias
 
@@ -8771,7 +8821,7 @@ WebAppLoader.addModule({ name: 'chartManager',
         }
         
         if (info && info.chartId) {
-            eventManager.raiseEvent('hideMask', info.chartId);
+            eventManager.raiseEvent('hideMask', info.chartId, info.numRows);
         }
 
         // If we've got an error...
@@ -8841,10 +8891,7 @@ WebAppLoader.addModule({ name: 'chartManager',
         chart.startDate = config.startDate;
         chart.timePeriods = config.timePeriods;
 
-        // Register the chart with the ready and error event listeners.
-        google.visualization.events.addListener(chart, 'ready', function () {
-            onChartReady({chartId: chart.getContainerId()}); 
-        });
+        
         google.visualization.events.addListener(chart, 'error',  function (errorObj) {
             onChartReady({errorObj: errorObj}); 
         });
@@ -8916,6 +8963,19 @@ WebAppLoader.addModule({ name: 'chartManager',
                 if (dataTable.getColumnType(i) === 'number') {
                     formatter.format(dataTable, i);
                 }
+            }
+
+            // Register the chart with the ready and error event listeners.
+            google.visualization.events.addListener(chart, 'ready', function () {
+                onChartReady({
+                    chartId: chart.getContainerId(),
+                    numRows: dataTable.getNumberOfRows() // Used to calculate the height of the chart later.
+                }); 
+            });
+
+            if (type === 'Table') {
+                chart.setOption('height', chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
+                chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
             }
 
             // If our chart is a pie chart and we're displaying it as a heatmap...
@@ -11174,6 +11234,9 @@ Zepto(function ($) {
 
     // Full Screen Manager
     theApp.presentationManager = loader.loadModule('presentationManager');
+
+    // Resizing Settings
+    theApp.resizingSettings = loader.loadModule('chartDefaults').resizingSettings;
     
     // iOS Log
     theApp.iOSLog = loader.loadModule('blackbird');
@@ -11456,6 +11519,25 @@ Zepto(function ($) {
 
     theApp.chartComponents.on('onChartsLoading', function (chartCount, chartTotal) {
         output.log('onChartsLoading', chartCount, chartTotal);
+    });
+
+    theApp.chartComponents.on('onChartLoaded', function (chartId, numRows) {
+        var $chart      = $('#' + chartId),
+            realHeight  = 0;
+            chartHeight = 0;
+         
+        // My last desperate attempt to resize table charts...       
+        if ($chart.hasClass('gridContainer') && $chart.parent().data('realHeight') < 1) {
+            realHeight = theApp.resizingSettings.calculateTableHeight(numRows);
+            chartHeight = theApp.resizingSettings.rescaleTable(realHeight, device.orientation());
+
+            $chart.height(chartHeight);
+            $chart.parent().data('realHeight',  realHeight);
+
+            // theApp.iOSLog.debug('Table resized: ' + chartId + ': ' + chartHeight + ' -> ' + realHeight);
+            theApp.scroll.rebuild('analysis');
+        }
+        // $chart.parent().parent().css({ 'opacity': 1 });
     });
 
     // ------------------------------------------
@@ -12194,15 +12276,13 @@ Zepto(function ($) {
             $container = $(this);
             $component = $container.children().filter('.resizableChart'); // $container.children().filter('.resizableChart'); // $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
             containerHeight = $component.height();
-                        
+
             if ($component.hasClass('gridContainer')) {
-                // containerHeight = $container.height();
-                landscapeScaleRatio = 0.75;
-                portraitScaleRatio = 0.60;
+                landscapeScaleRatio = theApp.resizingSettings.tableLandscapeScaleRatio;
+                portraitScaleRatio = theApp.resizingSettings.tablePortraitScaleRatio;
             } else {
-                // containerHeight = $component.height();
-                landscapeScaleRatio = 1;
-                portraitScaleRatio = 0.80;
+                landscapeScaleRatio = theApp.resizingSettings.chartLandscapeScaleRatio;
+                portraitScaleRatio = theApp.resizingSettings.chartPortraitScaleRatio;
             }
             
             if (!$container.data("realHeight")) {
@@ -12220,10 +12300,11 @@ Zepto(function ($) {
             if (device.orientation() === 'landscape') {
                 $component.css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});
                 $container.height(containerLandscapeHeight);
-
+                theApp.iOSLog.debug('* ' + containerLandscapeHeight);
             } else {
                 $component.css({'-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top'});  
                 $container.height(containerPortraitHeight);
+                theApp.iOSLog.debug('* ' + containerPortraitHeight);
            }
         });
 

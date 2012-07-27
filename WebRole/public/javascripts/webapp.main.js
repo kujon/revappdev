@@ -102,6 +102,9 @@ Zepto(function ($) {
 
     // Full Screen Manager
     theApp.presentationManager = loader.loadModule('presentationManager');
+
+    // Resizing Settings
+    theApp.resizingSettings = loader.loadModule('chartDefaults').resizingSettings;
     
     // iOS Log
     theApp.iOSLog = loader.loadModule('blackbird');
@@ -384,6 +387,25 @@ Zepto(function ($) {
 
     theApp.chartComponents.on('onChartsLoading', function (chartCount, chartTotal) {
         output.log('onChartsLoading', chartCount, chartTotal);
+    });
+
+    theApp.chartComponents.on('onChartLoaded', function (chartId, numRows) {
+        var $chart      = $('#' + chartId),
+            realHeight  = 0;
+            chartHeight = 0;
+         
+        // My last desperate attempt to resize table charts...       
+        if ($chart.hasClass('gridContainer') && $chart.parent().data('realHeight') < 1) {
+            realHeight = theApp.resizingSettings.calculateTableHeight(numRows);
+            chartHeight = theApp.resizingSettings.rescaleTable(realHeight, device.orientation());
+
+            $chart.height(chartHeight);
+            $chart.parent().data('realHeight',  realHeight);
+
+            // theApp.iOSLog.debug('Table resized: ' + chartId + ': ' + chartHeight + ' -> ' + realHeight);
+            theApp.scroll.rebuild('analysis');
+        }
+        // $chart.parent().parent().css({ 'opacity': 1 });
     });
 
     // ------------------------------------------
@@ -1122,15 +1144,13 @@ Zepto(function ($) {
             $container = $(this);
             $component = $container.children().filter('.resizableChart'); // $container.children().filter('.resizableChart'); // $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
             containerHeight = $component.height();
-                        
+
             if ($component.hasClass('gridContainer')) {
-                // containerHeight = $container.height();
-                landscapeScaleRatio = 0.75;
-                portraitScaleRatio = 0.60;
+                landscapeScaleRatio = theApp.resizingSettings.tableLandscapeScaleRatio;
+                portraitScaleRatio = theApp.resizingSettings.tablePortraitScaleRatio;
             } else {
-                // containerHeight = $component.height();
-                landscapeScaleRatio = 1;
-                portraitScaleRatio = 0.80;
+                landscapeScaleRatio = theApp.resizingSettings.chartLandscapeScaleRatio;
+                portraitScaleRatio = theApp.resizingSettings.chartPortraitScaleRatio;
             }
             
             if (!$container.data("realHeight")) {
@@ -1148,10 +1168,11 @@ Zepto(function ($) {
             if (device.orientation() === 'landscape') {
                 $component.css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});
                 $container.height(containerLandscapeHeight);
-
+                theApp.iOSLog.debug('* ' + containerLandscapeHeight);
             } else {
                 $component.css({'-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top'});  
                 $container.height(containerPortraitHeight);
+                theApp.iOSLog.debug('* ' + containerPortraitHeight);
            }
         });
 

@@ -3,17 +3,18 @@
 // ------------------------------------------
 
 WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
-    var chartDefaults  = {},
-        commonSettings = {},
-        barChart       = {},
-        bubbleChart    = {},
-        columnChart    = {},
-        gaugeChart     = {},
-        gridChart      = {},
-        lineChart      = {},
-        pieChart       = {},
-        treeMapChart   = {},
-        output         = this.getConsole();
+    var chartDefaults    = {},
+        commonSettings   = {},
+        barChart         = {},
+        bubbleChart      = {},
+        columnChart      = {},
+        gaugeChart       = {},
+        gridChart        = {},
+        lineChart        = {},
+        pieChart         = {},
+        treeMapChart     = {},
+        resizingSettings = {},
+        output           = this.getConsole();
 
     // COMMON CHART SETTINGS
     commonSettings = {
@@ -139,6 +140,53 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
         maxDepth: 3
     };
 
+    // RESIZING SETTINGS
+    resizingSettings = {
+        // Maximum values used in presentation mode.
+        chartWidth: 960, 
+        tableWidth: 980,
+
+        // Charts rescaling ratio.
+        chartLandscapeScaleRatio: 1,
+        chartPortraitScaleRatio: 0.80, 
+
+        // Tables rescaling ratio.
+        tableLandscapeScaleRatio: 1,
+        tablePortraitScaleRatio: 0.80,
+
+        rowHeight: 60, // Same value of .tableRow and .oddTableRow
+        headerHeight: 60, // Same value of .headerRow
+        fixedHeight: 60,
+        
+        calculateTableHeight: function (numRows) {
+            return parseInt(numRows * this.rowHeight + this.headerHeight + this.fixedHeight, 10);
+        },
+
+        rescaleChart: function (height, deviceOrientation) {
+            var chartHeight;
+
+            if (deviceOrientation === 'landscape') {
+                chartHeight = parseInt(height * this.chartLandscapeScaleRatio, 10); 
+            } else {
+                chartHeight = parseInt(height * this.chartPortraitScaleRatio, 10); 
+            }
+
+            return chartHeight;
+        },
+
+        rescaleTable: function (height, deviceOrientation) {
+            var tableHeight;
+
+            if (deviceOrientation === 'landscape') {
+                tableHeight = parseInt(height * this.tableLandscapeScaleRatio, 10); 
+            } else {
+                tableHeight = parseInt(height * this.tablePortraitScaleRatio, 10); 
+            }
+
+            return tableHeight;
+        }
+    };
+
     function changeSetting(key, value) {
         commonSettings[key] = value;
         output.log('change setting');
@@ -153,6 +201,7 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
     chartDefaults.PieChart = pieChart;
     chartDefaults.Table = gridChart;
     chartDefaults.TreeMap = treeMapChart;
+    chartDefaults.resizingSettings = resizingSettings;
 
     chartDefaults.set = changeSetting; // Alias
 

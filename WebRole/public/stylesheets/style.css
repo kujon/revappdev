@@ -133,7 +133,7 @@ html, body
     /*height: 500px;*/
     min-height: 380px;
     background-color: transparent;
-    /*-webkit-transition: -webkit-transform .25s;*/
+    /*-webkit-transition: -webkit-transform 1s;*/
 }
 
 .gridContainer 
@@ -146,7 +146,7 @@ html, body
     margin: 20px 0 20px 5px;
     /* padding-bottom: 30px;*/
 
-    /*-webkit-transition: -webkit-transform .25s;*/
+    /*-webkit-transition: -webkit-transform 1;*/
 }
 
 .halfSizeChart 
@@ -163,9 +163,14 @@ html, body
 #yieldCurveContribution_bar,
 #riskNumbers_bar { display: inline-block; width: 50%; }
 
-.headerRow { font-family: HelveticaNeue-Bold !important; text-align: left !important; height: 30px !important;}
-.tableRow, .oddTableRow, .selectedTableRow, .hoverTableRow { font-family: HelveticaNeue-Light !important; height: 30px !important;}
+.headerRow { font-family: HelveticaNeue-Bold !important; text-align: left !important; height: 60px !important;}
+.tableRow, .oddTableRow, .selectedTableRow, .hoverTableRow { font-family: HelveticaNeue-Light !important; height: 60px !important;}
 .oddTableRow { background-color: #dddddd; }
+.tableRow td:first-child, .oddTableRow td:first-child
+{
+    /*width: 20%;
+    background-color: #ff0000;*/
+}
 
 /************************************************
  * WRAPPER

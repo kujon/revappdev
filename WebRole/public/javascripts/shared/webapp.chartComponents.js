@@ -634,8 +634,9 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         $('#' + chartId).parent().addClass('genericLoadingMask');
     });
 
-    chartManager.on('hideMask', function (chartId) {
+    chartManager.on('hideMask', function (chartId, numRows) {
         $('#' + chartId).parent().removeClass('genericLoadingMask');
+        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
     });
 
     chartComponents.load = load;

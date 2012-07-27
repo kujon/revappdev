@@ -3629,14 +3629,15 @@ b.on("onAnalysisLoading",function(m,n){f.raiseEvent("onChartsLoading",m,n)
 });
 b.on("showMask",function(m){$("#"+m).parent().addClass("genericLoadingMask")
 });
-b.on("hideMask",function(m){$("#"+m).parent().removeClass("genericLoadingMask")
+b.on("hideMask",function(m,n){$("#"+m).parent().removeClass("genericLoadingMask");
+f.raiseEvent("onChartLoaded",m,n)
 });
 a.load=i;
 a.render=k;
 a.setTimePeriod=l;
 return a
 });
-WebAppLoader.addModule({name:"chartDefaults",isShared:true},function(){var d={},f={},a={},b={},e={},g={},h={},i={},k={},l={},j=this.getConsole();
+WebAppLoader.addModule({name:"chartDefaults",isShared:true},function(){var d={},f={},a={},b={},e={},g={},h={},i={},k={},m={},l={},j=this.getConsole();
 f={forceIFrame:false,labelFontName:"HelveticaNeue-Light",labelFontSize:12,titleFontName:"HelveticaNeue-Bold",titleFontSize:25};
 b={chartArea:{left:80,top:35,width:"70%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,hAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}},sizeAxis:{maxSize:100,maxValue:100,minSize:1,minValue:1},vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
 a={chartArea:{left:"20%",width:"60%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
@@ -3645,8 +3646,18 @@ g={forceIFrame:f.forceIFrame,height:250,greenFrom:0,greenTo:4,yellowFrom:4,yello
 h={allowHtml:true,alternatingRowStyle:true,cssClassNames:{headerRow:"headerRow",tableRow:"tableRow",oddTableRow:"oddTableRow",selectedTableRow:"selectedTableRow",hoverTableRow:"hoverTableRow"}};
 i={chartArea:{left:80,top:35,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame};
 k={chartArea:{left:80,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label"};
-l={fontFamily:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,headerHeight:25,minColor:"#cc0000",midColor:"#ffffff",maxColor:"#6699cc",maxDepth:3};
-function c(m,n){f[m]=n;
+m={fontFamily:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,headerHeight:25,minColor:"#cc0000",midColor:"#ffffff",maxColor:"#6699cc",maxDepth:3};
+l={chartWidth:960,tableWidth:980,chartLandscapeScaleRatio:1,chartPortraitScaleRatio:0.8,tableLandscapeScaleRatio:1,tablePortraitScaleRatio:0.8,rowHeight:60,headerHeight:60,fixedHeight:60,calculateTableHeight:function(n){return parseInt(n*this.rowHeight+this.headerHeight+this.fixedHeight,10)
+},rescaleChart:function(p,o){var n;
+if(o==="landscape"){n=parseInt(p*this.chartLandscapeScaleRatio,10)
+}else{n=parseInt(p*this.chartPortraitScaleRatio,10)
+}return n
+},rescaleTable:function(o,n){var p;
+if(n==="landscape"){p=parseInt(o*this.tableLandscapeScaleRatio,10)
+}else{p=parseInt(o*this.tablePortraitScaleRatio,10)
+}return p
+}};
+function c(n,o){f[n]=o;
 j.log("change setting")
 }d.BarChart=a;
 d.BubbleChart=b;
@@ -3655,7 +3666,8 @@ d.Gauge=g;
 d.LineChart=i;
 d.PieChart=k;
 d.Table=h;
-d.TreeMap=l;
+d.TreeMap=m;
+d.resizingSettings=l;
 d.set=c;
 return d
 });
@@ -3671,7 +3683,7 @@ if(j){c+=1;
 i.raiseEvent("onAnalysisLoading",c,f);
 if(c===f){s();
 i.raiseEvent("onAnalysisLoaded")
-}}if(u&&u.chartId){i.raiseEvent("hideMask",u.chartId)
+}}if(u&&u.chartId){i.raiseEvent("hideMask",u.chartId,u.numRows)
 }if(u&&u.errorObj&&u.errorObj.id){t=google.visualization.errors.getContainer(u.errorObj.id);
 $("#"+t.id).html(k.errors.chartFailedText)
 }}function h(u){if(!u){n.log("Config is not specified.");
@@ -3696,8 +3708,6 @@ t.oData=u.oData;
 t.seriesType=u.seriesType;
 t.startDate=u.startDate;
 t.timePeriods=u.timePeriods;
-google.visualization.events.addListener(t,"ready",function(){m({chartId:t.getContainerId()})
-});
 google.visualization.events.addListener(t,"error",function(A){m({errorObj:A})
 });
 return t
@@ -3724,7 +3734,11 @@ B=new google.visualization.DataTable(A);
 for(C=0;
 C<B.getNumberOfColumns();
 C++){if(B.getColumnType(C)==="number"){u.format(B,C)
-}}if(y==="PieChart"&&t.isHeatMap){for(C=0;
+}}google.visualization.events.addListener(t,"ready",function(){m({chartId:t.getContainerId(),numRows:B.getNumberOfRows()})
+});
+if(y==="Table"){t.setOption("height",d.resizingSettings.calculateTableHeight(B.getNumberOfRows()));
+t.setOption("width",d.resizingSettings.tableWidth)
+}if(y==="PieChart"&&t.isHeatMap){for(C=0;
 C<B.getNumberOfRows();
 C++){G.push(B.getValue(C,2))
 }E=Math.min.apply(Math,G);
@@ -4261,6 +4275,7 @@ n.ajaxManager=g.loadModule("ajaxManager");
 n.swipeButton=g.loadModule("swipeButton");
 n.localStorage=g.loadModule("localStorageManager");
 n.presentationManager=g.loadModule("presentationManager");
+n.resizingSettings=g.loadModule("chartDefaults").resizingSettings;
 n.iOSLog=g.loadModule("blackbird");
 var i=require("express.environment").env||"none";
 var j=require("express.os");
@@ -4369,6 +4384,14 @@ n.chartComponents.on("onAllChartsLoaded",function(){h.log("onAllChartsLoaded")
 });
 n.chartComponents.on("onChartsLoading",function(p,q){h.log("onChartsLoading",p,q)
 });
+n.chartComponents.on("onChartLoaded",function(q,s){var p=a("#"+q),t=0;
+chartHeight=0;
+if(p.hasClass("gridContainer")&&p.parent().data("realHeight")<1){t=n.resizingSettings.calculateTableHeight(s);
+chartHeight=n.resizingSettings.rescaleTable(t,b.orientation());
+p.height(chartHeight);
+p.parent().data("realHeight",t);
+n.scroll.rebuild("analysis")
+}});
 n.showAnalysisSettingsPage=function(){var q={},p;
 q=n.analysisManager.getData("analysisPages");
 p=jLinq.from(q.items).sort("order","userDefined").select(function(s){return{name:s.name,id:s.id,userDefined:s.userDefined}
@@ -4660,10 +4683,10 @@ a(".analysisComponentContainer").each(function(){var t,u,v,w,x,z,y,A;
 u=a(this);
 t=u.children().filter(".resizableChart");
 v=t.height();
-if(t.hasClass("gridContainer")){y=0.75;
-z=0.6
-}else{y=1;
-z=0.8
+if(t.hasClass("gridContainer")){y=n.resizingSettings.tableLandscapeScaleRatio;
+z=n.resizingSettings.tablePortraitScaleRatio
+}else{y=n.resizingSettings.chartLandscapeScaleRatio;
+z=n.resizingSettings.chartPortraitScaleRatio
 }if(!u.data("realHeight")){w=parseInt(v*y,10);
 x=parseInt(v*z,10);
 u.data("realHeight",v)
@@ -4672,9 +4695,11 @@ w=parseInt(A*y,10);
 x=parseInt(A*z,10)
 }n.iOSLog.debug(w+" - "+x);
 if(b.orientation()==="landscape"){t.css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"});
-u.height(w)
+u.height(w);
+n.iOSLog.debug("* "+w)
 }else{t.css({"-webkit-transform":"scale(.69)","-webkit-transform-origin":"left top"});
-u.height(x)
+u.height(x);
+n.iOSLog.debug("* "+x)
 }});
 if(n.settings.appSettings.automaticChartRepositioning){n.synchronizeOrientation.pendingCount+=1;
 setTimeout(function(){if(n.synchronizeOrientation.pendingCount>0){n.synchronizeOrientation.pendingCount-=1
