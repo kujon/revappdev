@@ -3718,53 +3718,51 @@ if(t.endDate){x.endDate=t.endDate
 }if(t.timePeriods){x.timePeriods=t.timePeriods
 }z=(y==="LineChart")?p.timeSeries:p.segmentsTreeNode;
 i.raiseEvent("showMask",t.getContainerId());
-function w(D){var E,G,J,I,B,A,L=[],K=[],H,C,F;
-n.log(D);
-E=new google.visualization.DataTable(D);
-for(G=0;
-G<E.getNumberOfColumns();
-G++){if(E.getColumnType(G)==="number"){u.format(E,G)
-}}if(y==="PieChart"&&t.isHeatMap){E.sort([{column:2}]);
-for(G=0;
-G<E.getNumberOfRows();
-G++){L.push(E.getValue(G,2))
-}J=Math.min.apply(Math,L);
-I=Math.max.apply(Math,L);
-B=J;
-A=I;
-H=(B>=0&&A>=0)||(B<=0&&A<=0);
-if(Math.abs(J)>Math.abs(I)){I=Math.abs(J);
-J=-(Math.abs(J))
-}else{I=Math.abs(I);
-J=-(Math.abs(I))
-}for(G=0;
-G<L.length;
-G++){K.push({color:g.getColorInRange(L[G],J,I,t.isGradientReversed)})
-}t.setOption("slices",K);
-C=t.getContainerId();
-F=C+"-gaugeLegend";
-google.visualization.events.addListener(t,"ready",function(){var Q,S,R,P,O,N,M;
-M=$("#"+C);
-$("#"+F).remove();
-M.append('<div id="'+F+'" class="gaugeLegend">    <span class="gaugeLegendMaxValue">'+(H?A:I)+'</span>    <span class="gaugeLegendSelectedValue"></span>    <span class="gaugeLegendMinValue">'+(H?B:J)+"</span></div>");
-N=$("#"+F);
-Q=g.getColorInRange(H?A:I,J,I,t.isGradientReversed);
-S=g.getColorInRange(H?B:J,J,I,t.isGradientReversed);
-R=g.getColorInRange(0,J,I,t.isGradientReversed);
-P=H?"linear-gradient(bottom, "+Q+" 0%, "+S+" 100%)":"linear-gradient(bottom, "+Q+" 0%, "+R+" 50%, "+S+" 100%)";
-O=H?"gradient(linear, left bottom, left top, color-stop(0, "+Q+"), color-stop(1, "+S+"))":"gradient(linear, left bottom, left top, color-stop(0, "+Q+"), color-stop(0.5, "+R+"), color-stop(1, "+S+"))";
-N.css({"background-image":P,"background-image":"-webkit-"+P,"background-image":"-webkit-"+O});
+function w(B){var C,E,L,G,N,I,H,M,J,K,P=[],O=[],F,A,D;
+n.log(B);
+C=new google.visualization.DataTable(B);
+for(E=0;
+E<C.getNumberOfColumns();
+E++){if(C.getColumnType(E)==="number"){u.format(C,E)
+}}if(y==="PieChart"&&t.isHeatMap){C.sort([{column:2}]);
+for(E=0;
+E<C.getNumberOfRows();
+E++){P.push(C.getValue(E,2))
+}L=Math.min.apply(Math,P);
+G=Math.max.apply(Math,P);
+if($.inArray(L,P)!==-1){N=C.getFormattedValue($.inArray(L,P),2)
+}else{N="0"
+}if($.inArray(G,P)!==-1){I=C.getFormattedValue($.inArray(G,P),2)
+}else{I="0"
+}M=g.getColorInRange(L,L,G,t.isGradientReversed);
+J=g.getColorInRange(0,L,G,t.isGradientReversed);
+H=g.getColorInRange(G,L,G,t.isGradientReversed);
+F=(L>=0&&G>=0)||(L<=0&&G<=0);
+if(!F){K=100-(100*((0-L)/(G-L)))
+}for(E=0;
+E<P.length;
+E++){O.push({color:g.getColorInRange(P[E],L,G,t.isGradientReversed)})
+}t.setOption("slices",O);
+A=t.getContainerId();
+D=A+"-gaugeLegend";
+google.visualization.events.addListener(t,"ready",function(){var S,R,Q;
+$("#"+D).remove();
+$("#"+A).append('<div id="'+D+'" class="gaugeLegend">    <span class="gaugeLegendMaxValue">'+I+'</span>    <span class="gaugeLegendSelectedValue"></span>    <span class="gaugeLegendMinValue">'+N+"</span></div>");
+Q=$("#"+D);
+S=F?"linear-gradient(bottom, "+H+" 0%, "+M+" 100%)":"linear-gradient(bottom, "+H+" 0%, "+J+" "+K+"%, "+M+" 100%)";
+R=F?"gradient(linear, left bottom, left top, color-stop(0, "+H+"), color-stop(1, "+M+"))":"gradient(linear, left bottom, left top, color-stop(0, "+H+"), color-stop("+(K/100)+", "+J+"), color-stop(1, "+M+"))";
+Q.css({"background-image":S,"background-image":"-webkit-"+S,"background-image":"-webkit-"+R});
 google.visualization.events.addListener(t.getChart(),"onmouseover",function(U){var X,V,W,T;
-X=E.getValue(U.row,2);
-V=E.getFormattedValue(U.row,2);
-W=H?100*((X-B)/(A-B)):100*((X-J)/(I-J));
+X=C.getValue(U.row,2);
+V=C.getFormattedValue(U.row,2);
+W=100*((X-L)/(G-L));
 T={display:"block",top:(W-2.5)+"%"};
-N.find("span.gaugeLegendSelectedValue").html(V).css(T)
+Q.find("span.gaugeLegendSelectedValue").html(V).css(T)
 });
-google.visualization.events.addListener(t.getChart(),"onmouseout",function(T){N.find("span.gaugeLegendSelectedValue").css("display","none")
+google.visualization.events.addListener(t.getChart(),"onmouseout",function(T){Q.find("span.gaugeLegendSelectedValue").css("display","none")
 })
 })
-}t.setDataTable(E);
+}t.setDataTable(C);
 t.draw()
 }a.post(z,x,w,"text")
 }b.create=h;

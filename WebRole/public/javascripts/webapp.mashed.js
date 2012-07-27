@@ -8903,7 +8903,8 @@ WebAppLoader.addModule({ name: 'chartManager',
 
         // Callback function to be invoked when data is returned from the server.
         function onDataLoaded(data) {
-            var dataTable, i, min, max, baseMin, baseMax,
+            var dataTable, i, min, max, minDisplay, maxDisplay,
+                maxColor, minColor, midColor, midGradientPosition,
                 values = [], sliceOptions = [],
                 isAllPositiveOrNegative, containerId, gaugeLegendId;
 
@@ -8934,21 +8935,33 @@ WebAppLoader.addModule({ name: 'chartManager',
                 min = Math.min.apply(Math, values);
                 max = Math.max.apply(Math, values);
 
-                // Preserve those base values, since we may need them
-                // to generate a gauge which doesn't minmax the range.
-                baseMin = min;
-                baseMax = max;
+                // Get the formatted values for our min and max values from the dataTable,
+                // since they already have the correct decimal accuracy and localization.
+                // If the min value somehow doesn't exist in the values collection, the
+                // dataTable has given us a null value, which we take to mean zero.
+                if ($.inArray(min, values) !== -1) {
+                    minDisplay = dataTable.getFormattedValue($.inArray(min, values), 2);
+                } else {
+                    minDisplay = '0';
+                }
+
+                if ($.inArray(max, values) !== -1) {
+                    maxDisplay = dataTable.getFormattedValue($.inArray(max, values), 2);
+                } else {
+                    maxDisplay = '0';
+                }
+
+                // Determine the colours we need to use for our gauge.
+                minColor = colorManager.getColorInRange(min, min, max, chart.isGradientReversed);
+                midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
+                maxColor = colorManager.getColorInRange(max, min, max, chart.isGradientReversed);
 
                 // Determine if the values are all positive or all negative.
-                isAllPositiveOrNegative = (baseMin >= 0 && baseMax >= 0) || (baseMin <= 0 && baseMax <= 0);
+                isAllPositiveOrNegative = (min >= 0 && max >= 0) || (min <= 0 && max <= 0);
 
-                // Generate absolute minmax values.
-                if (Math.abs(min) > Math.abs(max)) {
-                    max = Math.abs(min);
-                    min = -(Math.abs(min));
-                } else {
-                    max = Math.abs(max);
-                    min = -(Math.abs(max));
+                // Calculate the percentage position of the mid gradient point if we'll need it.
+                if (!isAllPositiveOrNegative) {
+                    midGradientPosition = 100 - (100 * ((0 - min) / (max - min)));
                 }
 
                 // Loop round the values, and use the colorManager to generate 
@@ -8968,42 +8981,32 @@ WebAppLoader.addModule({ name: 'chartManager',
 
                 // Attach an event handler to the 'ready' event.
                 google.visualization.events.addListener(chart, 'ready', function () {
-                    var maxColor, minColor, midColor,
-                        linearGradientCss, gradientCss,
-                        gaugeLegend, container;
-
-                    // Get the container of the chart.
-                    container = $('#' + containerId);
+                    var linearGradientCss, gradientCss, gaugeLegend;
 
                     // Remove any trace of an existing gauge.
                     $('#' + gaugeLegendId).remove();
 
                     // Add an element we can style to the chart's container.
-                    container.append(
+                    $('#' + containerId).append(
                         '<div id="' + gaugeLegendId + '" class="gaugeLegend">' +
-                        '    <span class="gaugeLegendMaxValue">' + (isAllPositiveOrNegative ? baseMax : max) + '</span>' +
+                        '    <span class="gaugeLegendMaxValue">' + maxDisplay + '</span>' +
                         '    <span class="gaugeLegendSelectedValue"></span>' +
-                        '    <span class="gaugeLegendMinValue">' + (isAllPositiveOrNegative ? baseMin : min) + '</span>' +
+                        '    <span class="gaugeLegendMinValue">' + minDisplay + '</span>' +
                         '</div>'
                     );
 
                     // Now we've recreated the gauge, store a reference to it.
                     gaugeLegend = $('#' + gaugeLegendId);
 
-                    // Determine the colours we need to use for our gauge.
-                    maxColor = colorManager.getColorInRange(isAllPositiveOrNegative ? baseMax : max, min, max, chart.isGradientReversed);
-                    minColor = colorManager.getColorInRange(isAllPositiveOrNegative ? baseMin : min, min, max, chart.isGradientReversed);
-                    midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
-
                     // If the values are all positive or all negative, we'll just need to create a CSS gradient 
                     // from the max to min colours. If not, we'll need to go through the mid colour on the way.
                     linearGradientCss = isAllPositiveOrNegative ?
                         'linear-gradient(bottom, ' + maxColor + ' 0%, ' + minColor + ' 100%)' :
-                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + midColor + ' 50%, ' + minColor + ' 100%)';
+                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + midColor + ' ' + midGradientPosition + '%, ' + minColor + ' 100%)';
 
                     gradientCss = isAllPositiveOrNegative ?
                         'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(1, ' + minColor + '))' :
-                        'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(0.5, ' + midColor + '), color-stop(1, ' + minColor + '))';
+                        'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(' + (midGradientPosition / 100) + ', ' + midColor + '), color-stop(1, ' + minColor + '))';
 
                     // Create a CSS3 gradient between the min and max values.
                     gaugeLegend.css({
@@ -9021,9 +9024,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                         formattedValue = dataTable.getFormattedValue(e.row, 2);
 
                         // Calculate the percentage position of the value to display on the gauge.
-                        position = isAllPositiveOrNegative ?
-                            100 * ((value - baseMin) / (baseMax - baseMin)) :
-                            100 * ((value - min) / (max - min));
+                        position = 100 * ((value - min) / (max - min));
 
                         // Create a CSS object to pass to the span. We modify the position
                         // slightly to allow our span styling to better point at the gauge.
