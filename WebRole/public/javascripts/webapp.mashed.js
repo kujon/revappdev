@@ -8681,7 +8681,8 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
         forceIFrame: commonSettings.forceIFrame,
         is3D: true,
         legend: { position: 'none' },
-        pieSliceText: 'label'
+        pieSliceText: 'label',
+        pieSliceTextStyle: { color: '#000000' }
     };
 
     // TREE MAP (HEATMAP) CHART
@@ -8771,18 +8772,18 @@ WebAppLoader.addModule({ name: 'chartManager',
     sharedModules: ['settings', 'chartDefaults', 'colorManager', 'localizationManager', 'ajaxManager'],
     isShared: true, hasEvents: true
 }, function () {
-    var chartBase     = {},
-        charts        = [],
-        eventManager  = this.getEventManager(),
+    var chartBase = {},
+        charts = [],
+        eventManager = this.getEventManager(),
         chartDefaults = this.getSharedModule('chartDefaults'),
-        siteUrls      = this.getSharedModule('settings').siteUrls,
-        colorManager  = this.getSharedModule('colorManager'),
-        lang          = this.getSharedModule('localizationManager').getLanguage() || {},
-        ajaxManager   = this.getSharedModule('ajaxManager'),
-        output        = this.getConsole(),
-        chartCount    = 0,
-        chartTotal    = 0,
-        isLoading     = false;
+        siteUrls = this.getSharedModule('settings').siteUrls,
+        colorManager = this.getSharedModule('colorManager'),
+        lang = this.getSharedModule('localizationManager').getLanguage() || {},
+        ajaxManager = this.getSharedModule('ajaxManager'),
+        output = this.getConsole(),
+        chartCount = 0,
+        chartTotal = 0,
+        isLoading = false;
 
     function resetCounter() {
         chartCount = 0;
@@ -8819,7 +8820,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                 eventManager.raiseEvent('onAnalysisLoaded');
             }
         }
-        
+
         if (info && info.chartId) {
             eventManager.raiseEvent('hideMask', info.chartId, info.numRows);
         }
@@ -8892,8 +8893,8 @@ WebAppLoader.addModule({ name: 'chartManager',
         chart.timePeriods = config.timePeriods;
 
         
-        google.visualization.events.addListener(chart, 'error',  function (errorObj) {
-            onChartReady({errorObj: errorObj}); 
+        google.visualization.events.addListener(chart, 'error', function (errorObj) {
+            onChartReady({ errorObj: errorObj });
         });
         // Return the chart.
         return chart;
@@ -8951,7 +8952,10 @@ WebAppLoader.addModule({ name: 'chartManager',
 
         // Callback function to be invoked when data is returned from the server.
         function onDataLoaded(data) {
-            var dataTable, i, min, max, values = [], sliceOptions = [];
+            var dataTable, i, min, max, minDisplay, maxDisplay,
+                maxColor, minColor, midColor, midGradientPosition,
+                values = [], sliceOptions = [],
+                isAllPositiveOrNegative, containerId, gaugeLegendId;
 
             output.log(data);
 
@@ -8981,7 +8985,10 @@ WebAppLoader.addModule({ name: 'chartManager',
             // If our chart is a pie chart and we're displaying it as a heatmap...
             if (type === 'PieChart' && chart.isHeatMap) {
 
-                // ...collate the heatmap measure from the datatable.
+                // ...sort the data by our heatmap measure.
+                dataTable.sort([{ column: 2}]);
+
+                // Collate the heatmap measure from the datatable.
                 for (i = 0; i < dataTable.getNumberOfRows(); i++) {
                     values.push(dataTable.getValue(i, 2));
                 }
@@ -8990,13 +8997,33 @@ WebAppLoader.addModule({ name: 'chartManager',
                 min = Math.min.apply(Math, values);
                 max = Math.max.apply(Math, values);
 
-                // Generate absolute minmax values.
-                if (Math.abs(min) > Math.abs(max)) {
-                    max = Math.abs(min);
-                    min = -(Math.abs(min));
+                // Get the formatted values for our min and max values from the dataTable,
+                // since they already have the correct decimal accuracy and localization.
+                // If the min value somehow doesn't exist in the values collection, the
+                // dataTable has given us a null value, which we take to mean zero.
+                if ($.inArray(min, values) !== -1) {
+                    minDisplay = dataTable.getFormattedValue($.inArray(min, values), 2);
                 } else {
-                    max = Math.abs(max);
-                    min = -(Math.abs(max));
+                    minDisplay = '0';
+                }
+
+                if ($.inArray(max, values) !== -1) {
+                    maxDisplay = dataTable.getFormattedValue($.inArray(max, values), 2);
+                } else {
+                    maxDisplay = '0';
+                }
+
+                // Determine the colours we need to use for our gauge.
+                minColor = colorManager.getColorInRange(min, min, max, chart.isGradientReversed);
+                midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
+                maxColor = colorManager.getColorInRange(max, min, max, chart.isGradientReversed);
+
+                // Determine if the values are all positive or all negative.
+                isAllPositiveOrNegative = (min >= 0 && max >= 0) || (min <= 0 && max <= 0);
+
+                // Calculate the percentage position of the mid gradient point if we'll need it.
+                if (!isAllPositiveOrNegative) {
+                    midGradientPosition = 100 - (100 * ((0 - min) / (max - min)));
                 }
 
                 // Loop round the values, and use the colorManager to generate 
@@ -9007,7 +9034,76 @@ WebAppLoader.addModule({ name: 'chartManager',
                     });
                 }
 
+                // Set the colours as part of the 'slices' chart option.
                 chart.setOption('slices', sliceOptions);
+
+                // Get the chart's container and generate a unique ID for this chart's gauge.
+                containerId = chart.getContainerId();
+                gaugeLegendId = containerId + '-gaugeLegend';
+
+                // Attach an event handler to the 'ready' event.
+                google.visualization.events.addListener(chart, 'ready', function () {
+                    var linearGradientCss, gradientCss, gaugeLegend;
+
+                    // Remove any trace of an existing gauge.
+                    $('#' + gaugeLegendId).remove();
+
+                    // Add an element we can style to the chart's container.
+                    $('#' + containerId).append(
+                        '<div id="' + gaugeLegendId + '" class="gaugeLegend">' +
+                        '    <span class="gaugeLegendMaxValue">' + maxDisplay + '</span>' +
+                        '    <span class="gaugeLegendSelectedValue"></span>' +
+                        '    <span class="gaugeLegendMinValue">' + minDisplay + '</span>' +
+                        '</div>'
+                    );
+
+                    // Now we've recreated the gauge, store a reference to it.
+                    gaugeLegend = $('#' + gaugeLegendId);
+
+                    // If the values are all positive or all negative, we'll just need to create a CSS gradient 
+                    // from the max to min colours. If not, we'll need to go through the mid colour on the way.
+                    linearGradientCss = isAllPositiveOrNegative ?
+                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + minColor + ' 100%)' :
+                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + midColor + ' ' + midGradientPosition + '%, ' + minColor + ' 100%)';
+
+                    gradientCss = isAllPositiveOrNegative ?
+                        'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(1, ' + minColor + '))' :
+                        'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(' + (midGradientPosition / 100) + ', ' + midColor + '), color-stop(1, ' + minColor + '))';
+
+                    // Create a CSS3 gradient between the min and max values.
+                    gaugeLegend.css({
+                        'background-image': linearGradientCss,
+                        'background-image': '-webkit-' + linearGradientCss,
+                        'background-image': '-webkit-' + gradientCss
+                    });
+
+                    // Add an event handler to the chart's 'onmouseover' event.
+                    google.visualization.events.addListener(chart.getChart(), 'onmouseover', function (e) {
+                        var value, formattedValue, position, cssConfig;
+
+                        // Get the heatmap value for the selected row.
+                        value = dataTable.getValue(e.row, 2);
+                        formattedValue = dataTable.getFormattedValue(e.row, 2);
+
+                        // Calculate the percentage position of the value to display on the gauge.
+                        position = 100 * ((value - min) / (max - min));
+
+                        // Create a CSS object to pass to the span. We modify the position
+                        // slightly to allow our span styling to better point at the gauge.
+                        cssConfig = { 'display': 'block', 'top': (position - 2.5) + '%' };
+
+                        // Find the chart legend, then its gaugeLegendSelectedValue, then add the heatmap
+                        // value that's been selected, as well as displaying the value in the correct place.
+                        gaugeLegend.find('span.gaugeLegendSelectedValue').html(formattedValue).css(cssConfig);
+                    });
+
+                    // Add an event handler to the chart's 'onmouseout' event.
+                    google.visualization.events.addListener(chart.getChart(), 'onmouseout', function (e) {
+                        // Hide any heatmap values that are currently on display.
+                        gaugeLegend.find('span.gaugeLegendSelectedValue').css('display', 'none');
+                    });
+
+                });
             }
 
             // Set the data table for the chart.
@@ -9015,11 +9111,6 @@ WebAppLoader.addModule({ name: 'chartManager',
 
             // Draw the chart.
             chart.draw();
-
-            // Set up the chart to be redrawn on change of orientation.
-            $(document).on('orientationchange', function (event) {
-                // chart.draw();
-            });
         }
 
         // Attempt to load the data.
@@ -9118,10 +9209,10 @@ WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
             // If the value is positive, the colour will be between red and yellow.
             if (value > 0) {
                 colors.push([0, yellow]);
-                colors.push([max, red]);                
+                colors.push([max, red]);
             } else {
                 colors.push([min, green]);
-                colors.push([0, yellow]);                
+                colors.push([0, yellow]);
             }
         } else {
             // If the value is positive, the colour will be between yellow and green.
@@ -9129,8 +9220,8 @@ WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
                 colors.push([max, green]);
                 colors.push([0, yellow]);
             } else {
-                colors.push([0, yellow]);
                 colors.push([min, red]);
+                colors.push([0, yellow]);
             }
         }
 
@@ -9138,9 +9229,9 @@ WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
         storedColor = [0, yellow];
 
         for (i = 0; i < colors.length; i++) {
-            
+
             key = colors[i][0];
-            
+
             if (key >= value) {
 
                 color = colors[i][1];
@@ -9148,13 +9239,18 @@ WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
                 previousColor = storedColor[1];
                 p = ((value - previousKey) / (key - previousKey));
 
-                // Generate a new hex colour by interpolating between the 
-                // R, G and B values of the current and previous colours.
-                return rgbToHex(
-                    interpolate(hexToR(previousColor), hexToR(color), p), 
-                    interpolate(hexToG(previousColor), hexToG(color), p), 
-                    interpolate(hexToB(previousColor), hexToB(color), p)
-                );
+                // If 'value', 'key' and 'previousKey' are zero, the value of 'p' will be NaN, as we're 
+                // trying to divide by zero. If that's not the case, we can interpolate, otherwise we'll 
+                // end up with a black segment, which isn't in the desired colour range for our heatmap.
+                if (!isNaN(p)) {
+                    // Generate a new hex colour by interpolating between the
+                    // R, G and B values of the current and previous colours.
+                    return rgbToHex(
+                        interpolate(hexToR(previousColor), hexToR(color), p),
+                        interpolate(hexToG(previousColor), hexToG(color), p),
+                        interpolate(hexToB(previousColor), hexToB(color), p)
+                    );
+                }
             }
 
             storedColor = colors[i];

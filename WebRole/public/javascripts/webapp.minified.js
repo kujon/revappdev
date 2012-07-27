@@ -3645,7 +3645,7 @@ e={chartArea:{left:"10%",width:"70%",height:"75%"},fontName:f.labelFontName,font
 g={forceIFrame:f.forceIFrame,height:250,greenFrom:0,greenTo:4,yellowFrom:4,yellowTo:6,redFrom:6,redTo:20,max:20,minorTicks:5};
 h={allowHtml:true,alternatingRowStyle:true,cssClassNames:{headerRow:"headerRow",tableRow:"tableRow",oddTableRow:"oddTableRow",selectedTableRow:"selectedTableRow",hoverTableRow:"hoverTableRow"}};
 i={chartArea:{left:80,top:35,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame};
-k={chartArea:{left:80,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label"};
+k={chartArea:{left:80,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label",pieSliceTextStyle:{color:"#000000"}};
 m={fontFamily:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,headerHeight:25,minColor:"#cc0000",midColor:"#ffffff",maxColor:"#6699cc",maxDepth:3};
 l={chartWidth:960,tableWidth:980,chartLandscapeScaleRatio:1,chartPortraitScaleRatio:0.8,tableLandscapeScaleRatio:1,tablePortraitScaleRatio:0.8,rowHeight:60,headerHeight:60,fixedHeight:60,calculateTableHeight:function(n){return parseInt(n*this.rowHeight+this.headerHeight+this.fixedHeight,10)
 },rescaleChart:function(p,o){var n;
@@ -3728,32 +3728,56 @@ if(t.endDate){x.endDate=t.endDate
 }if(t.timePeriods){x.timePeriods=t.timePeriods
 }z=(y==="LineChart")?p.timeSeries:p.segmentsTreeNode;
 i.raiseEvent("showMask",t.getContainerId());
-function w(A){var B,C,E,D,G=[],F=[];
-n.log(A);
-B=new google.visualization.DataTable(A);
-for(C=0;
-C<B.getNumberOfColumns();
-C++){if(B.getColumnType(C)==="number"){u.format(B,C)
-}}google.visualization.events.addListener(t,"ready",function(){m({chartId:t.getContainerId(),numRows:B.getNumberOfRows()})
+function w(B){var C,E,L,G,N,I,H,M,J,K,P=[],O=[],F,A,D;
+n.log(B);
+C=new google.visualization.DataTable(B);
+for(E=0;
+E<C.getNumberOfColumns();
+E++){if(C.getColumnType(E)==="number"){u.format(C,E)
+}}google.visualization.events.addListener(t,"ready",function(){m({chartId:t.getContainerId(),numRows:C.getNumberOfRows()})
 });
-if(y==="Table"){t.setOption("height",d.resizingSettings.calculateTableHeight(B.getNumberOfRows()));
+if(y==="Table"){t.setOption("height",d.resizingSettings.calculateTableHeight(C.getNumberOfRows()));
 t.setOption("width",d.resizingSettings.tableWidth)
-}if(y==="PieChart"&&t.isHeatMap){for(C=0;
-C<B.getNumberOfRows();
-C++){G.push(B.getValue(C,2))
-}E=Math.min.apply(Math,G);
-D=Math.max.apply(Math,G);
-if(Math.abs(E)>Math.abs(D)){D=Math.abs(E);
-E=-(Math.abs(E))
-}else{D=Math.abs(D);
-E=-(Math.abs(D))
-}for(C=0;
-C<G.length;
-C++){F.push({color:g.getColorInRange(G[C],E,D,t.isGradientReversed)})
-}t.setOption("slices",F)
-}t.setDataTable(B);
-t.draw();
-$(document).on("orientationchange",function(H){})
+}if(y==="PieChart"&&t.isHeatMap){C.sort([{column:2}]);
+for(E=0;
+E<C.getNumberOfRows();
+E++){P.push(C.getValue(E,2))
+}L=Math.min.apply(Math,P);
+G=Math.max.apply(Math,P);
+if($.inArray(L,P)!==-1){N=C.getFormattedValue($.inArray(L,P),2)
+}else{N="0"
+}if($.inArray(G,P)!==-1){I=C.getFormattedValue($.inArray(G,P),2)
+}else{I="0"
+}M=g.getColorInRange(L,L,G,t.isGradientReversed);
+J=g.getColorInRange(0,L,G,t.isGradientReversed);
+H=g.getColorInRange(G,L,G,t.isGradientReversed);
+F=(L>=0&&G>=0)||(L<=0&&G<=0);
+if(!F){K=100-(100*((0-L)/(G-L)))
+}for(E=0;
+E<P.length;
+E++){O.push({color:g.getColorInRange(P[E],L,G,t.isGradientReversed)})
+}t.setOption("slices",O);
+A=t.getContainerId();
+D=A+"-gaugeLegend";
+google.visualization.events.addListener(t,"ready",function(){var S,R,Q;
+$("#"+D).remove();
+$("#"+A).append('<div id="'+D+'" class="gaugeLegend">    <span class="gaugeLegendMaxValue">'+I+'</span>    <span class="gaugeLegendSelectedValue"></span>    <span class="gaugeLegendMinValue">'+N+"</span></div>");
+Q=$("#"+D);
+S=F?"linear-gradient(bottom, "+H+" 0%, "+M+" 100%)":"linear-gradient(bottom, "+H+" 0%, "+J+" "+K+"%, "+M+" 100%)";
+R=F?"gradient(linear, left bottom, left top, color-stop(0, "+H+"), color-stop(1, "+M+"))":"gradient(linear, left bottom, left top, color-stop(0, "+H+"), color-stop("+(K/100)+", "+J+"), color-stop(1, "+M+"))";
+Q.css({"background-image":S,"background-image":"-webkit-"+S,"background-image":"-webkit-"+R});
+google.visualization.events.addListener(t.getChart(),"onmouseover",function(U){var X,V,W,T;
+X=C.getValue(U.row,2);
+V=C.getFormattedValue(U.row,2);
+W=100*((X-L)/(G-L));
+T={display:"block",top:(W-2.5)+"%"};
+Q.find("span.gaugeLegendSelectedValue").html(V).css(T)
+});
+google.visualization.events.addListener(t.getChart(),"onmouseout",function(T){Q.find("span.gaugeLegendSelectedValue").css("display","none")
+})
+})
+}t.setDataTable(C);
+t.draw()
 }a.post(z,x,w,"text")
 }b.create=h;
 b.load=l;
@@ -3781,8 +3805,8 @@ m.push([s,x])
 m.push([0,B])
 }}else{if(A>0){m.push([s,n]);
 m.push([0,B])
-}else{m.push([0,B]);
-m.push([t,x])
+}else{m.push([t,x]);
+m.push([0,B])
 }}z=[0,B];
 for(o=0;
 o<m.length;
@@ -3791,8 +3815,8 @@ if(q>=A){l=m[o][1];
 w=z[0];
 v=z[1];
 u=((A-w)/(q-w));
-return j(h(g(v),g(l),u),h(f(v),f(l),u),h(e(v),e(l),u))
-}z=m[o]
+if(!isNaN(u)){return j(h(g(v),g(l),u),h(f(v),f(l),u),h(e(v),e(l),u))
+}}z=m[o]
 }return B
 }a.getColorInRange=d;
 return a
