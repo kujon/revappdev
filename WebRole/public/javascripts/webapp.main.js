@@ -361,6 +361,7 @@ Zepto(function ($) {
             $(el.analysisComponentFullScreenButton).on('click', function (e, info) {
                 var chartId = $(this).attr('data-chartId');
                 theApp.presentationManager.enterPresentationMode(chartId);
+                theApp.scroll.rebuild('fullScreenContainer', false, { hScroll: true, vScroll: true, snap: true  }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });
             });
         }
 
@@ -893,6 +894,12 @@ Zepto(function ($) {
     theApp.pageEventsManager.on('onExperimentalStart', function () {
         $('#custom_chart_partial').html('');
         theApp.initExperimentalPage();
+    });
+
+    theApp.pageEventsManager.on('onFullScreenPageEnd', function () {
+        alert();
+        theApp.scroll.rebuild('fullScreenContainer', false, { snap: true, hScroll: true, vScroll: true }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });
+        output.log('onFullScreenPageEnd');
     });
 
     // ------------------------------------------

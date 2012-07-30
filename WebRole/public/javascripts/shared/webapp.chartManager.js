@@ -108,9 +108,10 @@ WebAppLoader.addModule({ name: 'chartManager',
         });
 
         // ASA: Test
-        var presentationChart = chart.clone();
-        presentationChart.setContainerId('testChart');
-
+//        var presentationChart = chart.clone();
+//        presentationChart.setContainerId('testChart');
+        
+        eventManager.raiseEvent('chartReady', chart);
         eventManager.raiseEvent('showMask', config.chartId);
 
         // Although it's not part of the Google API, store 

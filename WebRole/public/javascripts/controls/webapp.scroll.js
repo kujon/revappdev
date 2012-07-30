@@ -95,8 +95,8 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
         // options.hScrollbar = false;
         // options.vScrollbar = false;
 
-        options.hScroll = false;
-        options.vScroll = true;
+        // options.hScroll = false;
+        // options.vScroll = true;
 
         if (myScroll) {
             myScroll.destroy();

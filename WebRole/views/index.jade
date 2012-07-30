@@ -237,7 +237,7 @@
 	nav#tabbar(style="opacity: 0; -webkit-transition: opacity 0.25s linear 0.25s;")
 		ul
 
-#fullScreenPage
+#fullScreenPage(data-pageEvents="both")
 	#fullScreenContainer
 		#fullScreenHeader
 			#smallLogo
@@ -256,8 +256,13 @@
 				// timePeriodEndDateText
 				h3 #{lang.analysisPage.endDate}
 		#wrapper
-			#scroller
+			#horizontal_scroller
 				#testChart
+					#a.presentationContainer a
+					#b.presentationContainer b
+					#c.presentationContainer c
+					#lastDiv(style="clear: both")
+					// ul#presentationCharts
 	#fullScreenMask
 	#turnIcon
 

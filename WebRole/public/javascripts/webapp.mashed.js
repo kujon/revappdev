@@ -6495,6 +6495,71 @@ WebAppLoader.addModule({ name: 'helper', isPlugin: true }, function () {
         return str.match(suffix + "$") == suffix;
     }
 
+    function format () {
+      var s = arguments[0];
+      
+      for (var i = 0; i < arguments.length - 1; i++) {       
+        var reg = new RegExp("\\{" + i + "\\}", "gm");             
+        s = s.replace(reg, arguments[i + 1]);
+      }
+
+      return s;
+    }
+
+    function StringBuilder()
+    {
+	    var strings = [];
+
+	    this.append = function ()
+	    {
+            string = format.apply(null, arguments);
+
+		    string = verify(string);
+		    if (string.length > 0) strings[strings.length] = string;
+	    };
+
+        // Alias.
+        this.add = this.append;
+
+	    this.appendLine = function (string)
+	    {
+		    string = verify(string);
+		    if (this.isEmpty())
+		    {
+			    if (string.length > 0) strings[strings.length] = string;
+			    else return;
+		    }
+		    else strings[strings.length] = string.length > 0 ? "\r\n" + string : "\r\n";
+	    };
+
+	    this.clear = function () { strings = []; };
+
+	    this.isEmpty = function () { return strings.length == 0; };
+
+	    this.toString = function () { return strings.join(""); };
+
+	    var verify = function (string)
+	    {
+		    if (!defined(string)) return "";
+		    if (getType(string) != getType(new String())) return String(string);
+		    return string;
+	    };
+
+	    var defined = function (el)
+	    {
+		    // Changed per Ryan O'Hara's comment:
+		    return el != null && typeof(el) != "undefined";
+	    };
+
+	    var getType = function (instance)
+	    {
+		    if (!defined(instance.constructor)) throw Error("Unexpected object type");
+		    var type = String(instance.constructor).match(/function\s+(\w+)/);
+
+		    return defined(type) ? type[1] : "undefined";
+	    };
+    };
+
     // ------------------------------------------
     // DATA TYPE FUNCTIONS
     // ------------------------------------------
@@ -6636,6 +6701,8 @@ WebAppLoader.addModule({ name: 'helper', isPlugin: true }, function () {
     helper.getValueAs = getValueAs;
     helper.startsWith = startsWith;
     helper.endsWith = endsWith;
+    helper.format = format;
+    helper.StringBuilder = StringBuilder;
     helper.getType = getType;
     helper.hasValue = hasValue;
     helper.createUUID = createUUID;
@@ -7009,8 +7076,8 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
         // options.hScrollbar = false;
         // options.vScrollbar = false;
 
-        options.hScroll = false;
-        options.vScroll = true;
+        // options.hScroll = false;
+        // options.vScroll = true;
 
         if (myScroll) {
             myScroll.destroy();
@@ -8530,6 +8597,18 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         load(chartsToLoad);
     }
 
+    function addChartToPresentationk(chartToAdd) {
+        var sb          = new helper.StringBuilder(),
+            chartId     = chartToAdd.getContainerId() || null,
+            containerId = '';
+
+        if (!chartId) return;
+
+        containerId = "presentation_" + chartId;
+        sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
+        // $('#testChart').append(sb.toString());
+    }
+
     // TODO: Investigate...
     chartManager.on('onAnalysisLoaded', function () {
         eventManager.raiseEvent('onAllChartsLoaded');
@@ -8546,6 +8625,13 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
     chartManager.on('hideMask', function (chartId, numRows) {
         $('#' + chartId).parent().removeClass('genericLoadingMask');
         eventManager.raiseEvent('onChartLoaded', chartId, numRows);
+    });
+
+    chartManager.on('chartReady', function (chart) {
+        addChartToPresentationk(chart)
+//        var clonedChart = chart.clone();
+//        $('#' + chartId).parent().removeClass('genericLoadingMask');
+//        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
     });
 
     chartComponents.load = load;
@@ -8874,9 +8960,10 @@ WebAppLoader.addModule({ name: 'chartManager',
         });
 
         // ASA: Test
-        var presentationChart = chart.clone();
-        presentationChart.setContainerId('testChart');
-
+//        var presentationChart = chart.clone();
+//        presentationChart.setContainerId('testChart');
+        
+        eventManager.raiseEvent('chartReady', chart);
         eventManager.raiseEvent('showMask', config.chartId);
 
         // Although it's not part of the Google API, store 
@@ -10272,7 +10359,7 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
     return portfolioManager;
 });
 // ------------------------------------------
-// FULL SCREEN MANAGER
+// PRESENTATION MODE MANAGER
 // ------------------------------------------
 
 WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'device'], sharedModules: ['pageElements'], hasEvents: true }, function () {
@@ -10297,8 +10384,8 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
         }});
 
-        $('#testChart').append( $('#' + chartId) );
-        $('#' + chartId).css('-webkit-transform', 'scale(1)');
+//        $('#testChart').append( $('#' + chartId) );
+//        $('#' + chartId).css('-webkit-transform', 'scale(1)');
     }
 
     function exitPresentationMode() {
@@ -11589,6 +11676,7 @@ Zepto(function ($) {
             $(el.analysisComponentFullScreenButton).on('click', function (e, info) {
                 var chartId = $(this).attr('data-chartId');
                 theApp.presentationManager.enterPresentationMode(chartId);
+                theApp.scroll.rebuild('fullScreenContainer', false, { hScroll: true, vScroll: true, snap: true  }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });
             });
         }
 
@@ -12121,6 +12209,12 @@ Zepto(function ($) {
     theApp.pageEventsManager.on('onExperimentalStart', function () {
         $('#custom_chart_partial').html('');
         theApp.initExperimentalPage();
+    });
+
+    theApp.pageEventsManager.on('onFullScreenPageEnd', function () {
+        alert();
+        theApp.scroll.rebuild('fullScreenContainer', false, { snap: true, hScroll: true, vScroll: true }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });
+        output.log('onFullScreenPageEnd');
     });
 
     // ------------------------------------------
