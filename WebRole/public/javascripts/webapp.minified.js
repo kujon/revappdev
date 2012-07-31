@@ -3235,49 +3235,52 @@ a.post(g.siteUrls.analysis,{uri:i},function(j){c.raiseEvent("onDataReceived",j)
 return false
 }return f
 });
-WebAppLoader.addModule({name:"scroll"},function(){var j={},e,h=[],c=0,d=0,b=false;
-document.addEventListener("touchmove",function(m){m.preventDefault()
+WebAppLoader.addModule({name:"scroll",hasEvents:true},function(){var k={},a=this.getEventManager(),f,i=[],d=0,e=0,c=false;
+document.addEventListener("touchmove",function(o){o.preventDefault()
 },false);
-function i(){if(e){c=e.x;
-d=e.y
-}}function g(m,n){m=m||0;
-n=n||0;
-setTimeout(function(){try{e.scrollTo(c,d)
-}catch(o){}},100)
-}function l(o,p,q){var s=0,n=null;
-try{n=$(o)
-}catch(m){}if(!n){return
-}setTimeout(function(){try{s=(n.offset().top*-1)+p||0;
-s+=e.wrapperOffsetTop;
-e.scrollTo(0,s,q+100)
-}catch(t){}},100)
-}function k(n,o,m){setTimeout(function(){try{e.scrollTo(n,o-e.wrapperOffsetTop,m||1000,true)
-}catch(p){}},100)
-}function f(n,m,o){if(b){return
-}else{b=true
-}var s="div#"+n+" #wrapper",p=o||{};
-p.useTransform=false;
-p.onBeforeScrollStart=function(t){var u=t.target;
-while(u.nodeType!=1){u=u.parentNode
-}if(m&&u.tagName!="SELECT"&&u.tagName!="INPUT"&&u.tagName!="TEXTAREA"){t.preventDefault()
+function j(){if(f){d=f.x;
+e=f.y
+}}function h(o,p){o=o||0;
+p=p||0;
+setTimeout(function(){try{f.scrollTo(d,e)
+}catch(q){}},100)
+}function m(q,s,t){var u=0,p=null;
+try{p=$(q)
+}catch(o){}if(!p){return
+}setTimeout(function(){try{u=(p.offset().top*-1)+s||0;
+u+=f.wrapperOffsetTop;
+f.scrollTo(0,u,t+100)
+}catch(v){}},100)
+}function l(p,q,o){setTimeout(function(){try{f.scrollTo(p,q-f.wrapperOffsetTop,o||1000,true)
+}catch(s){}},100)
+}function n(o,p,q){setTimeout(function(){try{f.scrollToPage(o||0,p||0,q||1000,true)
+}catch(s){}},100)
+}function g(q,o,s,p){if(c&&!p){return
+}else{c=true
+}var v="div#"+q+" #wrapper",t=s||{};
+t.useTransform=(s&&s.useTransform)?s.useTransform:false;
+t.onBeforeScrollStart=function(w){var x=w.target;
+while(x.nodeType!=1){x=x.parentNode
+}if(o&&x.tagName!="SELECT"&&x.tagName!="INPUT"&&x.tagName!="TEXTAREA"){w.preventDefault()
 }};
-if(e){e.destroy();
-e=null;
-function q(t){function u(v){if(v.length>0){v.remove();
-if(t.next().length>0){q(t.next())
-}}}u(t.next())
-}q($(s).find("#scroller"))
-}if($(s).get(0)){setTimeout(function(){e=new iScroll($(s).get(0),p);
-b=false
+if(f){f.destroy();
+f=null;
+function u(w){function x(y){if(y.length>0){y.remove();
+if(w.next().length>0){u(w.next())
+}}}x(w.next())
+}u($(v).find("#scroller","#horizontal_scroller"))
+}if($(v).get(0)){setTimeout(function(){f=new iScroll($(v).get(0),t);
+c=false
 },25)
-}}function a(){try{e.scrollTo(0,0,200)
-}catch(m){}}j.rebuild=f;
-j.goUp=a;
-j.saveScrollPosition=i;
-j.restoreScrollPosition=g;
-j.scrollToElement=l;
-j.scrollTo=k;
-return j
+}}function b(){try{f.scrollTo(0,0,200)
+}catch(o){}}k.rebuild=g;
+k.goUp=b;
+k.saveScrollPosition=j;
+k.restoreScrollPosition=h;
+k.scrollToElement=m;
+k.scrollTo=l;
+k.scrollToPage=n;
+return k
 });
 WebAppLoader.addModule({name:"spinningWheel",plugins:["helper"],sharedModules:["localizationManager"],hasEvents:true},function(){var h={},g=[],f={},b=this.getEventManager(),d=this.getPlugin("helper"),e=this.getSharedModule("localizationManager").getLanguage()||{};
 function c(i){if(typeof i=="string"){i=f[i]
@@ -3626,43 +3629,44 @@ p.timePeriods=n.code;
 p.startDate=n.startDate;
 p.endDate=n.endDate
 })
-}function k(s,z){var t=[],w="",u="";
-function y(A,B){w="";
-w+='<hr class = "snapper" style="visibility: hidden;" data-chartId="'+A+'" /><div class="analysisSummarySection">    <div class="analysisComponentContainer">       <div class="analysisComponentHeader">           <div class="analysisComponentFullScreenButton" data-chartId="'+A+'"></div>           <h2>'+B+'</h2>           <div class="analysisComponentFullScreenButton" data-chartId="'+A+'"></div>       </div>'
-}function m(A,B){w+='        <div id="'+A.chartId+'" class="'+B+'"></div>'
-}function o(A){w+='        <div id="'+A.chartId+'" class="halfSizeChart" style="width: '+A.width+";height: "+A.height+';"></div>'
-}function v(){w+='        <div style="clear: both;"></div>    </div></div>'
-}function q(){$(z).append($(w))
-}function n(B){var A=[],E=false,C;
-if(!B){j.log("addChartToChartsToRender: Skipped empty chart");
+}function k(t,A){var u=[],x="",v="",s=0;
+function z(B,C){x="";
+x+='<hr class = "snapper" style="visibility: hidden;" data-chartId="'+B+'" /><div class="analysisSummarySection">    <div class="analysisComponentContainer">       <div class="analysisComponentHeader">           <h2>'+C+'</h2>           <div class="analysisComponentFullScreenButton" data-order="'+s+'" data-chartId="'+B+'"></div>       </div>';
+s+=1;
+p(B,C)
+}function p(B,C){var E=new g.StringBuilder(),D="presentation-"+B;
+E.append('<div class="presentationContainer"><h2>{0}</h2>',C);
+E.append('<div id="{0}" data-title="{2}">{1}</div>',D,B,C);
+E.append("</div>");
+$("#testChart").append(E.toString())
+}function m(B,C){x+='        <div id="'+B.chartId+'" class="'+C+'"></div>'
+}function o(B){x+='        <div id="'+B.chartId+'" class="halfSizeChart" style="width: '+B.width+";height: "+B.height+';"></div>'
+}function w(){x+='        <div style="clear: both;"></div>    </div></div>'
+}function q(){$(A).append($(x))
+}function n(C){var B=[],F=false,D;
+if(!C){j.log("addChartToChartsToRender: Skipped empty chart");
 return
-}if(B.chartType==="Group"){A=B.charts;
-E=true
-}else{A.push(B)
-}if(E){y(B.chartId,B.title)
-}C=(B.chartType==="Table")?"gridContainer resizableChart":"chartContainer resizableChart";
-for(var D=0;
-D<A.length;
-D++){chart=c[A[D].chartId]||null;
-t.push(chart);
-if(chart){if(E){o(A[D])
-}else{y(chart.chartId,chart.title);
-m(A[D],C);
-v();
+}if(C.chartType==="Group"){B=C.charts;
+F=true
+}else{B.push(C)
+}if(F){z(C.chartId,C.title)
+}D=(C.chartType==="Table")?"gridContainer resizableChart":"chartContainer resizableChart";
+for(var E=0;
+E<B.length;
+E++){chart=c[B[E].chartId]||null;
+u.push(chart);
+if(chart){if(F){o(B[E])
+}else{z(chart.chartId,chart.title);
+m(B[E],D);
+w();
 q()
-}}}if(E){v();
+}}}if(F){w();
 q()
-}}function p(B){var D=new g.StringBuilder(),A=B.chartId||null,C="";
-if(!A){return
-}C="presentation-"+A;
-D.append('<div id="{0}" class="presentationContainer">{1}</div>',C,A);
-$("#testChart").append(D.toString())
-}for(var x=0;
-x<s.length;
-x++){u=c[s[x].chartId]||null;
-n(u);
-p(u)
-}i(t)
+}}for(var y=0;
+y<t.length;
+y++){v=c[t[y].chartId]||null;
+n(v)
+}i(u)
 }b.on("onAnalysisLoaded",function(){f.raiseEvent("onAllChartsLoaded")
 });
 b.on("onAnalysisLoading",function(m,n){f.raiseEvent("onChartsLoading",m,n)
@@ -3821,7 +3825,10 @@ t.draw();
 var O=t.clone();
 P="presentation-"+t.getContainerId();
 O.setContainerId(P);
-O.draw()
+if(y!=="Table"){O.setOption("height",680);
+O.setOption("width",1024)
+}else{O.setOption("width",1024)
+}O.draw()
 }a.post(z,x,w,"text")
 }b.create=h;
 b.load=l;
@@ -4098,9 +4105,10 @@ l.preventDefault()
 });
 function c(l){f=true;
 k();
+d.raiseEvent("onBeforeEnter",l);
 $(b.fullScreenPage).show();
-$(b.fullScreenPage).animate({opacity:1},{duration:750,easing:"ease-out",complete:function(){}});
-d.raiseEvent("onEnter")
+$(b.fullScreenPage).animate({opacity:1},{duration:1500,easing:"ease-out",complete:function(){d.raiseEvent("onEnter",l)
+}})
 }function e(){f=false;
 $(b.fullScreenPage).animate({opacity:0},{duration:750,easing:"ease-out",complete:function(){$(b.fullScreenPage).css({display:"none"})
 }});
@@ -4329,6 +4337,7 @@ n.lastFavouriteSelected="";
 n.lastAnalysisObjectUsed={portfolioId:"",portfolioName:"",analysisId:"performance",analysisName:"Performance",timePeriodId:"Earliest",timePeriodName:"Earliest",chartId:"performance_bar",timeStamp:""};
 n.customChartTimePeriods={};
 n.defaultLanguage="en-US";
+n.isFullScreen=false;
 n.repositories=g.loadModule("repositories");
 n.scroll=g.loadModule("scroll");
 n.nav=g.loadModule("nav");
@@ -4438,7 +4447,7 @@ n.synchronizeFavouriteButton();
 n.synchronizeConsoleButton();
 n.chartComponents.render(y,"#analysis_partial");
 n.synchronizeOrientation();
-a(c.analysisComponentFullScreenButton).on("click",function(E,F){var D=a(this).attr("data-chartId");
+a(c.analysisComponentFullScreenButton).on("tap",function(E,F){var D={chartId:a(this).attr("data-chartId"),chartOrder:a(this).attr("data-order")};
 n.presentationManager.enterPresentationMode(D)
 })
 }function s(u){t(u)
@@ -4460,9 +4469,18 @@ p.height(chartHeight);
 p.parent().data("realHeight",t);
 n.scroll.rebuild("analysis")
 }});
-n.presentationManager.on("onEnter",function(){n.scroll.rebuild("fullScreenContainer",false,{hScroll:true,vScroll:false,hScrollbar:true,snap:true})
+n.presentationManager.on("onBeforeEnter",function(p){a("#fullScreenHeader h2").html(a("#analysis h1").html());
+a("#fullScreenSummary .summaryTitle h2").html(a("#analysisSummary .summaryTitle h2").html());
+a("#fullScreenSummary .summaryTitle h3").html(a("#analysisSummary .summaryTitle h3").html());
+n.scroll.saveScrollPosition();
+n.scroll.rebuild("fullScreenContainer",false,{hScroll:true,vScroll:false,hScrollbar:true,snap:true,bounce:false,momentum:false,snapThreshold:50},true);
+n.scroll.scrollToPage(p.chartOrder,0,500)
 });
-n.presentationManager.on("onExit",function(){n.scroll.rebuild("analysis")
+n.presentationManager.on("onEnter",function(p){n.isFullScreen=true
+});
+n.presentationManager.on("onExit",function(){n.isFullScreen=false;
+n.scroll.rebuild("analysis");
+n.scroll.restoreScrollPosition()
 });
 n.showAnalysisSettingsPage=function(){var q={},p;
 q=n.analysisManager.getData("analysisPages");
@@ -4538,7 +4556,8 @@ for(t=0;
 t<q.length;
 t++){if(t>0){p.append(", ")
 }p.append(q[t].name)
-}a(c.analysisPage+"_partial").html("")
+}a(c.analysisPage+"_partial").html("");
+a("#testChart").html("")
 }};
 var o={toolbarId:"#analysis .toolbar",buttonPrefix:"toolbar_btn",visible:true,items:[{id:"favourite",title:f.tabbar.favourites,btnClass:"favourite"},{id:"console",title:"console",btnClass:"console"}]};
 n.toolbar=g.loadModule("toolbar");
@@ -4650,10 +4669,6 @@ h.log("onResetEnd")
 n.pageEventsManager.on("onExperimentalStart",function(){a("#custom_chart_partial").html("");
 n.initExperimentalPage()
 });
-n.pageEventsManager.on("onFullScreenPageEnd",function(){alert();
-n.scroll.rebuild("fullScreenContainer",false,{snap:true,hScroll:true,vScroll:true});
-h.log("onFullScreenPageEnd")
-});
 a(c.reloadAppButton).on("click",function(){n.nav.reloadApp()
 });
 a(c.resetAllSettingsButton).on("click",function(){n.localStorage.clearAll();
@@ -4752,7 +4767,7 @@ g.unloadModule("toolbar");
 g.unloadModule("presentationManager");
 n.startHere();
 n.synchronizeOrientation=function(){var p=25,s=1000,q=null;
-if(n.presentationManager.isFullScreen()){return
+if(n.isFullScreen){return
 }p=(n.settings.appSettings.animatedChartResizing)?500:25;
 n.mask.show("preventTap");
 a(".analysisComponentContainer").each(function(){var t,u,v,w,x,z,y,A;

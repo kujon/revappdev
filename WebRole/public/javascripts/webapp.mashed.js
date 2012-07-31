@@ -6983,8 +6983,9 @@ WebAppLoader.addModule({ name: 'portfoliosList', plugins: [],
 // ISCROLL
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'scroll' }, function () {
+WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
     var scroll              = {},
+        eventManager        = this.getEventManager(),
         myScroll, // Please don't initialize myScroll.
         savedScrollPosition = [],
         lastXPosition       = 0,
@@ -7047,8 +7048,18 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
         }, 100);
     }
     
-    function rebuildScroll(id, clickSafeMode, optionConfig) {
-        if (isRebuilding) {
+    function scrollToPage(pageX, pageY, time) {
+        setTimeout(function () {
+            try {
+                myScroll.scrollToPage(pageX || 0, pageY || 0, time || 1000, true);
+            } catch (e) {
+
+            }
+        }, 100);
+    }
+
+    function rebuildScroll(id, clickSafeMode, optionConfig, forceRebuilding) {
+        if (isRebuilding && !forceRebuilding) {
             return;
         } else {
             isRebuilding = true;
@@ -7057,7 +7068,10 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
         var wrapper = 'div#' + id + ' #wrapper',
             options = optionConfig || {}; // { hScrollbar: false, vScrollbar: true }
 
-        options.useTransform = false;
+        options.useTransform = (optionConfig && optionConfig.useTransform)
+            ? optionConfig.useTransform
+            : false;
+
         options.onBeforeScrollStart = function (e) {
             var target = e.target;
             while (target.nodeType != 1) target = target.parentNode;
@@ -7078,6 +7092,25 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
 
         // options.hScroll = false;
         // options.vScroll = true;
+        
+//        options.onScrollMove = function() {
+//            //alert('onScrollMove');
+//        };
+//        
+//        options.onScrollEnd = function() {
+//            var page = 0;
+//            
+//            try {
+//                page = Math.round(Math.abs(this.x / this.wrapperW)); // Page calculated correctly.
+//                // console.log(this.x / this.wrapperW);
+//            } catch (e) {
+//                // Sometime currPageX returns a wrong value when it tries to get the last page. 
+//                page = this.currPageX;
+//            }
+//            // console.log('onScrolledToPage: ' + page);
+//            eventManager.raiseEvent('onScrolledToPage', page);
+//            // alert('onScrollEnd: ' + this.currPageX + ' vs ' + Math.round(Math.abs(this.x / this.wrapperW)));
+//        };
 
         if (myScroll) {
             myScroll.destroy();
@@ -7096,7 +7129,7 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
                 removeNext($scroller.next());
             }
 
-            removeUnusedScroll($(wrapper).find('#scroller'));
+            removeUnusedScroll($(wrapper).find('#scroller', '#horizontal_scroller'));
         }
 
         if ($(wrapper).get(0)) {
@@ -7121,6 +7154,7 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
     scroll.restoreScrollPosition = restoreScrollPosition;
     scroll.scrollToElement = scrollToElement;
     scroll.scrollTo = scrollTo;
+    scroll.scrollToPage = scrollToPage;
 
     return scroll;
 });
@@ -8501,7 +8535,8 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
     function render(charts, renderTo) {
         var chartsToLoad = [],
             htmlToAppend = '',
-            chartToAdd   = '';
+            chartToAdd   = '',
+            chartOrder   = 0;
 
         function openAnalysisSection(chartId, chartTitle) {
             htmlToAppend = '';
@@ -8510,12 +8545,25 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
                 '<div class="analysisSummarySection">' +
                 '    <div class="analysisComponentContainer">' +
                 '       <div class="analysisComponentHeader">' +
-                '           <div class="analysisComponentFullScreenButton" data-chartId="' + chartId + '"></div>' +
                 '           <h2>' + chartTitle + '</h2>' +
-                '           <div class="analysisComponentFullScreenButton" data-chartId="' + chartId + '"></div>' +
+                '           <div class="analysisComponentFullScreenButton" data-order="' + chartOrder + '" data-chartId="' + chartId + '"></div>' +
                 '       </div>';
+
+            chartOrder += 1;
+
+            // In order to increase the performances we add the chart to the presentation container here.
+            addChartToPresentation(chartId, chartTitle);
         }
         
+        function addChartToPresentation(chartId, chartTitle) {
+            var sb          = new helper.StringBuilder(),
+                containerId = "presentation-" + chartId;
+            sb.append('<div class="presentationContainer"><h2>{0}</h2>', chartTitle);
+            sb.append('<div id="{0}" data-title="{2}">{1}</div>', containerId, chartId, chartTitle);
+            sb.append('</div>');
+            $('#testChart').append(sb.toString());
+        }
+
         function addChartToAnalysisSection(chartToAdd, containerClass) {
             htmlToAppend +=
                 '        <div id="' + chartToAdd.chartId + '" class="' + containerClass + '"></div>';
@@ -8592,28 +8640,17 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             }
         }
 
-        function addChartToPresentationk(chartToAdd) {
-            var sb          = new helper.StringBuilder(),
-                chartId     = chartToAdd.chartId || null,
-                containerId = '';
-
-            if (!chartId) return;
-
-            containerId = "presentation-" + chartId;
-            sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
-            $('#testChart').append(sb.toString());
-        }
-
         for (var i = 0; i < charts.length; i++) {
             chartToAdd = chartsData[charts[i].chartId] || null;
+
             addChartToChartsToRender(chartToAdd);
-            addChartToPresentationk(chartToAdd);
+            // addChartToPresentation(chartToAdd);
         }
 
         load(chartsToLoad);
     }
 
-//    function addChartToPresentationk(chartToAdd) {
+//    function addChartToPresentation(chartToAdd) {
 //        var sb          = new helper.StringBuilder(),
 //            chartId     = chartToAdd.getContainerId() || null,
 //            containerId = '';
@@ -8647,7 +8684,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
     });
 
     chartManager.on('chartReady', function (chart) {
-        // addChartToPresentationk(chart)
+        // addChartToPresentation(chart)
         //        var clonedChart = chart.clone();
         //        $('#' + chartId).parent().removeClass('genericLoadingMask');
         //        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
@@ -9219,6 +9256,12 @@ WebAppLoader.addModule({ name: 'chartManager',
             var presentationChart = chart.clone();
             presentationContainerId = 'presentation-' + chart.getContainerId();
             presentationChart.setContainerId(presentationContainerId);
+            if (type !== 'Table') {
+                presentationChart.setOption('height', 680);
+                presentationChart.setOption('width', 1024);
+            } else {
+                presentationChart.setOption('width', 1024);
+            }
             presentationChart.draw();
         }
 
@@ -10398,15 +10441,17 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         e.preventDefault();
     });
     
-    function enterPresentationMode(chartId) {
+    function enterPresentationMode(data) {
         fullScreen = true;
         turnView();
 
+        eventManager.raiseEvent('onBeforeEnter', data);
+
         $(el.fullScreenPage).show();
-        $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
+        $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 1500, easing: 'ease-out', complete: function () {
+            eventManager.raiseEvent('onEnter', data);
         }});
-        
-        eventManager.raiseEvent('onEnter');
+                
     }
 
     function exitPresentationMode() {
@@ -11392,6 +11437,8 @@ Zepto(function ($) {
     theApp.customChartTimePeriods = {};
 
     theApp.defaultLanguage = "en-US";
+
+    theApp.isFullScreen = false;
     
     /* ----------------------- ON/OFF ----------------------- /
        'Switch comments off changing /* in //* and viceversa'
@@ -11696,9 +11743,13 @@ Zepto(function ($) {
 
             theApp.chartComponents.render(chartsToRender, '#analysis_partial');
             theApp.synchronizeOrientation();
-            $(el.analysisComponentFullScreenButton).on('click', function (e, info) {
-                var chartId = $(this).attr('data-chartId');
-                theApp.presentationManager.enterPresentationMode(chartId);
+            $(el.analysisComponentFullScreenButton).on('tap', function (e, info) {
+                var data = {
+                    chartId:  $(this).attr('data-chartId'),
+                    chartOrder: $(this).attr('data-order')
+                };
+
+                theApp.presentationManager.enterPresentationMode(data);
             });
         }
 
@@ -11750,14 +11801,45 @@ Zepto(function ($) {
     // PRESENTATION MODE
     // ------------------------------------------
 
-    theApp.presentationManager.on('onEnter', function () {
-        theApp.scroll.rebuild('fullScreenContainer', false, { hScroll: true, vScroll: false, hScrollbar: true, snap: true  }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });    
+    theApp.presentationManager.on('onBeforeEnter', function (data) {
+        // Get summary info.
+        $('#fullScreenHeader h2').html($('#analysis h1').html()); // ASA TODO: Add method to toolbar to get the current title.
+        $('#fullScreenSummary .summaryTitle h2').html($('#analysisSummary .summaryTitle h2').html());
+        $('#fullScreenSummary .summaryTitle h3').html($('#analysisSummary .summaryTitle h3').html());
+        // $('#fullScreenSummary .summaryTitle h2').html($('#analysisSummary h1').html());
+        // $('#fullScreenSummary .summaryTitle h3').html($('#analysisSummary h1').html());
+
+        // Save scroll position and rebuild a new one.
+        theApp.scroll.saveScrollPosition();        
+        theApp.scroll.rebuild(
+            'fullScreenContainer', 
+            false, 
+            {   hScroll: true, vScroll: false, hScrollbar: true, snap: true, bounce: false, momentum: false, snapThreshold: 50 }, // Note: x uses negative values.
+            // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false },
+            true
+        );
+        theApp.scroll.scrollToPage(data.chartOrder, 0, 500);
+    });
+
+    theApp.presentationManager.on('onEnter', function (data) {
+        theApp.isFullScreen = true;
     });
 
     theApp.presentationManager.on('onExit', function () {
+        theApp.isFullScreen = false;
         theApp.scroll.rebuild('analysis');
+        theApp.scroll.restoreScrollPosition();
     });
 
+//    theApp.scroll.on('onScrolledToPage', function (page) {
+//        var chartTitle = '';
+
+//        if ( theApp.isFullScreen) { 
+//            chartTitle = $('#testChart div:nth-child(' + (page + 1) + ')').data('title');
+//            $('#fullScreenHeader h2').html(chartTitle);
+//            //return; 
+//        }
+//    });
 
     // ------------------------------------------
     // SETTINGS PAGES
@@ -11973,6 +12055,9 @@ Zepto(function ($) {
 
             // Clear the analysis partial of existing elements.
             $(el.analysisPage + '_partial').html('');
+
+            // Clear the presentation view.
+            $('#testChart').html('');
         }
     };
 
@@ -12246,12 +12331,6 @@ Zepto(function ($) {
         theApp.initExperimentalPage();
     });
 
-    theApp.pageEventsManager.on('onFullScreenPageEnd', function () {
-        alert();
-        theApp.scroll.rebuild('fullScreenContainer', false, { snap: true, hScroll: true, vScroll: true }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });
-        output.log('onFullScreenPageEnd');
-    });
-
     // ------------------------------------------
     // SETTINGS PAGE EVENTS
     // ------------------------------------------
@@ -12484,7 +12563,8 @@ Zepto(function ($) {
             rebuildingDelay = 1000,
             el              = null;
 
-        if (theApp.presentationManager.isFullScreen()) {
+        // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
+        if (theApp.isFullScreen) {
             return;
         }
 

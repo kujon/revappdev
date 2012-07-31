@@ -54,6 +54,8 @@ Zepto(function ($) {
     theApp.customChartTimePeriods = {};
 
     theApp.defaultLanguage = "en-US";
+
+    theApp.isFullScreen = false;
     
     /* ----------------------- ON/OFF ----------------------- /
        'Switch comments off changing /* in //* and viceversa'
@@ -358,9 +360,13 @@ Zepto(function ($) {
 
             theApp.chartComponents.render(chartsToRender, '#analysis_partial');
             theApp.synchronizeOrientation();
-            $(el.analysisComponentFullScreenButton).on('click', function (e, info) {
-                var chartId = $(this).attr('data-chartId');
-                theApp.presentationManager.enterPresentationMode(chartId);
+            $(el.analysisComponentFullScreenButton).on('tap', function (e, info) {
+                var data = {
+                    chartId:  $(this).attr('data-chartId'),
+                    chartOrder: $(this).attr('data-order')
+                };
+
+                theApp.presentationManager.enterPresentationMode(data);
             });
         }
 
@@ -412,14 +418,45 @@ Zepto(function ($) {
     // PRESENTATION MODE
     // ------------------------------------------
 
-    theApp.presentationManager.on('onEnter', function () {
-        theApp.scroll.rebuild('fullScreenContainer', false, { hScroll: true, vScroll: false, hScrollbar: true, snap: true  }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });    
+    theApp.presentationManager.on('onBeforeEnter', function (data) {
+        // Get summary info.
+        $('#fullScreenHeader h2').html($('#analysis h1').html()); // ASA TODO: Add method to toolbar to get the current title.
+        $('#fullScreenSummary .summaryTitle h2').html($('#analysisSummary .summaryTitle h2').html());
+        $('#fullScreenSummary .summaryTitle h3').html($('#analysisSummary .summaryTitle h3').html());
+        // $('#fullScreenSummary .summaryTitle h2').html($('#analysisSummary h1').html());
+        // $('#fullScreenSummary .summaryTitle h3').html($('#analysisSummary h1').html());
+
+        // Save scroll position and rebuild a new one.
+        theApp.scroll.saveScrollPosition();        
+        theApp.scroll.rebuild(
+            'fullScreenContainer', 
+            false, 
+            {   hScroll: true, vScroll: false, hScrollbar: true, snap: true, bounce: false, momentum: false, snapThreshold: 50 }, // Note: x uses negative values.
+            // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false },
+            true
+        );
+        theApp.scroll.scrollToPage(data.chartOrder, 0, 500);
+    });
+
+    theApp.presentationManager.on('onEnter', function (data) {
+        theApp.isFullScreen = true;
     });
 
     theApp.presentationManager.on('onExit', function () {
+        theApp.isFullScreen = false;
         theApp.scroll.rebuild('analysis');
+        theApp.scroll.restoreScrollPosition();
     });
 
+//    theApp.scroll.on('onScrolledToPage', function (page) {
+//        var chartTitle = '';
+
+//        if ( theApp.isFullScreen) { 
+//            chartTitle = $('#testChart div:nth-child(' + (page + 1) + ')').data('title');
+//            $('#fullScreenHeader h2').html(chartTitle);
+//            //return; 
+//        }
+//    });
 
     // ------------------------------------------
     // SETTINGS PAGES
@@ -635,6 +672,9 @@ Zepto(function ($) {
 
             // Clear the analysis partial of existing elements.
             $(el.analysisPage + '_partial').html('');
+
+            // Clear the presentation view.
+            $('#testChart').html('');
         }
     };
 
@@ -908,12 +948,6 @@ Zepto(function ($) {
         theApp.initExperimentalPage();
     });
 
-    theApp.pageEventsManager.on('onFullScreenPageEnd', function () {
-        alert();
-        theApp.scroll.rebuild('fullScreenContainer', false, { snap: true, hScroll: true, vScroll: true }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });
-        output.log('onFullScreenPageEnd');
-    });
-
     // ------------------------------------------
     // SETTINGS PAGE EVENTS
     // ------------------------------------------
@@ -1146,7 +1180,8 @@ Zepto(function ($) {
             rebuildingDelay = 1000,
             el              = null;
 
-        if (theApp.presentationManager.isFullScreen()) {
+        // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
+        if (theApp.isFullScreen) {
             return;
         }
 

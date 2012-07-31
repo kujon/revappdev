@@ -16,15 +16,17 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         e.preventDefault();
     });
     
-    function enterPresentationMode(chartId) {
+    function enterPresentationMode(data) {
         fullScreen = true;
         turnView();
 
+        eventManager.raiseEvent('onBeforeEnter', data);
+
         $(el.fullScreenPage).show();
-        $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
+        $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 1500, easing: 'ease-out', complete: function () {
+            eventManager.raiseEvent('onEnter', data);
         }});
-        
-        eventManager.raiseEvent('onEnter');
+                
     }
 
     function exitPresentationMode() {

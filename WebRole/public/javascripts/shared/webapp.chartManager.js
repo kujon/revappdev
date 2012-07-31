@@ -348,6 +348,12 @@ WebAppLoader.addModule({ name: 'chartManager',
             var presentationChart = chart.clone();
             presentationContainerId = 'presentation-' + chart.getContainerId();
             presentationChart.setContainerId(presentationContainerId);
+            if (type !== 'Table') {
+                presentationChart.setOption('height', 680);
+                presentationChart.setOption('width', 1024);
+            } else {
+                presentationChart.setOption('width', 1024);
+            }
             presentationChart.draw();
         }
 

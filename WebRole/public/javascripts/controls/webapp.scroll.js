@@ -2,8 +2,9 @@
 // ISCROLL
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'scroll' }, function () {
+WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
     var scroll              = {},
+        eventManager        = this.getEventManager(),
         myScroll, // Please don't initialize myScroll.
         savedScrollPosition = [],
         lastXPosition       = 0,
@@ -66,8 +67,18 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
         }, 100);
     }
     
-    function rebuildScroll(id, clickSafeMode, optionConfig) {
-        if (isRebuilding) {
+    function scrollToPage(pageX, pageY, time) {
+        setTimeout(function () {
+            try {
+                myScroll.scrollToPage(pageX || 0, pageY || 0, time || 1000, true);
+            } catch (e) {
+
+            }
+        }, 100);
+    }
+
+    function rebuildScroll(id, clickSafeMode, optionConfig, forceRebuilding) {
+        if (isRebuilding && !forceRebuilding) {
             return;
         } else {
             isRebuilding = true;
@@ -76,7 +87,10 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
         var wrapper = 'div#' + id + ' #wrapper',
             options = optionConfig || {}; // { hScrollbar: false, vScrollbar: true }
 
-        options.useTransform = false;
+        options.useTransform = (optionConfig && optionConfig.useTransform)
+            ? optionConfig.useTransform
+            : false;
+
         options.onBeforeScrollStart = function (e) {
             var target = e.target;
             while (target.nodeType != 1) target = target.parentNode;
@@ -97,6 +111,25 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
 
         // options.hScroll = false;
         // options.vScroll = true;
+        
+//        options.onScrollMove = function() {
+//            //alert('onScrollMove');
+//        };
+//        
+//        options.onScrollEnd = function() {
+//            var page = 0;
+//            
+//            try {
+//                page = Math.round(Math.abs(this.x / this.wrapperW)); // Page calculated correctly.
+//                // console.log(this.x / this.wrapperW);
+//            } catch (e) {
+//                // Sometime currPageX returns a wrong value when it tries to get the last page. 
+//                page = this.currPageX;
+//            }
+//            // console.log('onScrolledToPage: ' + page);
+//            eventManager.raiseEvent('onScrolledToPage', page);
+//            // alert('onScrollEnd: ' + this.currPageX + ' vs ' + Math.round(Math.abs(this.x / this.wrapperW)));
+//        };
 
         if (myScroll) {
             myScroll.destroy();
@@ -115,7 +148,7 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
                 removeNext($scroller.next());
             }
 
-            removeUnusedScroll($(wrapper).find('#scroller'));
+            removeUnusedScroll($(wrapper).find('#scroller', '#horizontal_scroller'));
         }
 
         if ($(wrapper).get(0)) {
@@ -140,6 +173,7 @@ WebAppLoader.addModule({ name: 'scroll' }, function () {
     scroll.restoreScrollPosition = restoreScrollPosition;
     scroll.scrollToElement = scrollToElement;
     scroll.scrollTo = scrollTo;
+    scroll.scrollToPage = scrollToPage;
 
     return scroll;
 });
