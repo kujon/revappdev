@@ -361,7 +361,6 @@ Zepto(function ($) {
             $(el.analysisComponentFullScreenButton).on('click', function (e, info) {
                 var chartId = $(this).attr('data-chartId');
                 theApp.presentationManager.enterPresentationMode(chartId);
-                theApp.scroll.rebuild('fullScreenContainer', false, { hScroll: true, vScroll: true, snap: true  }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });
             });
         }
 
@@ -408,6 +407,19 @@ Zepto(function ($) {
         }
         // $chart.parent().parent().css({ 'opacity': 1 });
     });
+
+    // ------------------------------------------
+    // PRESENTATION MODE
+    // ------------------------------------------
+
+    theApp.presentationManager.on('onEnter', function () {
+        theApp.scroll.rebuild('fullScreenContainer', false, { hScroll: true, vScroll: false, hScrollbar: true, snap: true  }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });    
+    });
+
+    theApp.presentationManager.on('onExit', function () {
+        theApp.scroll.rebuild('analysis');
+    });
+
 
     // ------------------------------------------
     // SETTINGS PAGES

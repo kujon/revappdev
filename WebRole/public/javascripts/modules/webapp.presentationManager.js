@@ -23,9 +23,8 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         $(el.fullScreenPage).show();
         $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
         }});
-
-//        $('#testChart').append( $('#' + chartId) );
-//        $('#' + chartId).css('-webkit-transform', 'scale(1)');
+        
+        eventManager.raiseEvent('onEnter');
     }
 
     function exitPresentationMode() {
@@ -33,6 +32,8 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         $(el.fullScreenPage).animate({ opacity: 0 }, { duration: 750, easing: 'ease-out', complete: function () {
             $(el.fullScreenPage).css({ 'display': 'none' });
         }});
+        
+        eventManager.raiseEvent('onExit');
     }
 
     function isFullScreen() {

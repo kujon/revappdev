@@ -524,7 +524,8 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
 
     function render(charts, renderTo) {
         var chartsToLoad = [],
-            htmlToAppend = '';
+            htmlToAppend = '',
+            chartToAdd   = '';
 
         function openAnalysisSection(chartId, chartTitle) {
             htmlToAppend = '';
@@ -533,6 +534,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
                 '<div class="analysisSummarySection">' +
                 '    <div class="analysisComponentContainer">' +
                 '       <div class="analysisComponentHeader">' +
+                '           <div class="analysisComponentFullScreenButton" data-chartId="' + chartId + '"></div>' +
                 '           <h2>' + chartTitle + '</h2>' +
                 '           <div class="analysisComponentFullScreenButton" data-chartId="' + chartId + '"></div>' +
                 '       </div>';
@@ -614,24 +616,41 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             }
         }
 
+        function addChartToPresentationk(chartToAdd) {
+            var sb          = new helper.StringBuilder(),
+                chartId     = chartToAdd.chartId || null,
+                containerId = '';
+
+            if (!chartId) return;
+
+            containerId = "presentation-" + chartId;
+            sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
+            $('#testChart').append(sb.toString());
+        }
+
         for (var i = 0; i < charts.length; i++) {
-            addChartToChartsToRender(chartsData[charts[i].chartId] || null);
+            chartToAdd = chartsData[charts[i].chartId] || null;
+            addChartToChartsToRender(chartToAdd);
+            addChartToPresentationk(chartToAdd);
         }
 
         load(chartsToLoad);
     }
 
-    function addChartToPresentationk(chartToAdd) {
-        var sb          = new helper.StringBuilder(),
-            chartId     = chartToAdd.getContainerId() || null,
-            containerId = '';
+//    function addChartToPresentationk(chartToAdd) {
+//        var sb          = new helper.StringBuilder(),
+//            chartId     = chartToAdd.getContainerId() || null,
+//            containerId = '';
 
-        if (!chartId) return;
+//        if (!chartId) return;
 
-        containerId = "presentation_" + chartId;
-        sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
-        // $('#testChart').append(sb.toString());
-    }
+//        containerId = "presentation-" + chartId;
+//        sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
+//        $('#testChart').append(sb.toString());
+
+////        var presentationChart = chartToAdd.clone();
+////        presentationChart.setContainerId(containerId);
+//    }
 
     // TODO: Investigate...
     chartManager.on('onAnalysisLoaded', function () {
@@ -652,10 +671,10 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
     });
 
     chartManager.on('chartReady', function (chart) {
-        addChartToPresentationk(chart)
-//        var clonedChart = chart.clone();
-//        $('#' + chartId).parent().removeClass('genericLoadingMask');
-//        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
+        // addChartToPresentationk(chart)
+        //        var clonedChart = chart.clone();
+        //        $('#' + chartId).parent().removeClass('genericLoadingMask');
+        //        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
     });
 
     chartComponents.load = load;

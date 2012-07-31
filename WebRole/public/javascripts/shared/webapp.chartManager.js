@@ -107,10 +107,6 @@ WebAppLoader.addModule({ name: 'chartManager',
             containerId: id
         });
 
-        // ASA: Test
-//        var presentationChart = chart.clone();
-//        presentationChart.setContainerId('testChart');
-        
         eventManager.raiseEvent('chartReady', chart);
         eventManager.raiseEvent('showMask', config.chartId);
 
@@ -190,7 +186,8 @@ WebAppLoader.addModule({ name: 'chartManager',
             var dataTable, i, min, max, minDisplay, maxDisplay,
                 maxColor, minColor, midColor, midGradientPosition,
                 values = [], sliceOptions = [],
-                isAllPositiveOrNegative, containerId, gaugeLegendId;
+                isAllPositiveOrNegative, containerId, gaugeLegendId,
+                presentationContainerId;
 
             output.log(data);
 
@@ -346,6 +343,12 @@ WebAppLoader.addModule({ name: 'chartManager',
 
             // Draw the chart.
             chart.draw();
+
+            // ASA: Test
+            var presentationChart = chart.clone();
+            presentationContainerId = 'presentation-' + chart.getContainerId();
+            presentationChart.setContainerId(presentationContainerId);
+            presentationChart.draw();
         }
 
         // Attempt to load the data.

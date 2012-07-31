@@ -138,7 +138,7 @@ html, body
 
 .gridContainer 
 {
-    background-color: #ffffff;
+    background-color: transparent;
     /*overflow: auto;*/
 
     width: 980px;
@@ -163,25 +163,26 @@ html, body
 #testChart 
 {
     /*display: table-cell;*/
-    width: 5120px;
-    /* height: 600px; */
-    background-color: Yellow;
+    width: 10240px;
+    height: 700px;
+    /*background-color: Yellow;*/
 }
 
-#testChart div:last-child 
+/*#testChart div:last-child 
 {
     background-color: Green !important;
     clear: both;
-}
+}*/
 
 .presentationContainer
 {
     width: 1024px !important;
     /*margin: 10px;*/
-    height: 600px;
-    background-color: Red;
+    height: 700px;
+    /*background-color: Red;*/
     /*display: inline-block;*/
     float: left;
+    padding: 10px;
 }
 
 .gaugeLegend {
@@ -271,7 +272,7 @@ html, body
     position: absolute;
     z-index: 1;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
-    height:100%;
+    height:700px;
     padding:0;
 }
 
@@ -512,8 +513,8 @@ html, body
 
 #fullScreenPage 
 {
-	width: 100%;
-	height: 100%;
+	width: 100% !important;
+	height: 100% !important;
 	z-index: 10000 !important;
 	position: absolute;
 	background: #fff;
@@ -532,8 +533,8 @@ html, body
     position: absolute;
     margin: 0;
     padding: 0;
-	width: 100%;
-	height: 100%;    
+	width: 100% !important;
+	height: 100% !important;    
 }
 
 #fullScreenPage h2 {

@@ -8500,7 +8500,8 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
 
     function render(charts, renderTo) {
         var chartsToLoad = [],
-            htmlToAppend = '';
+            htmlToAppend = '',
+            chartToAdd   = '';
 
         function openAnalysisSection(chartId, chartTitle) {
             htmlToAppend = '';
@@ -8509,6 +8510,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
                 '<div class="analysisSummarySection">' +
                 '    <div class="analysisComponentContainer">' +
                 '       <div class="analysisComponentHeader">' +
+                '           <div class="analysisComponentFullScreenButton" data-chartId="' + chartId + '"></div>' +
                 '           <h2>' + chartTitle + '</h2>' +
                 '           <div class="analysisComponentFullScreenButton" data-chartId="' + chartId + '"></div>' +
                 '       </div>';
@@ -8590,24 +8592,41 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             }
         }
 
+        function addChartToPresentationk(chartToAdd) {
+            var sb          = new helper.StringBuilder(),
+                chartId     = chartToAdd.chartId || null,
+                containerId = '';
+
+            if (!chartId) return;
+
+            containerId = "presentation-" + chartId;
+            sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
+            $('#testChart').append(sb.toString());
+        }
+
         for (var i = 0; i < charts.length; i++) {
-            addChartToChartsToRender(chartsData[charts[i].chartId] || null);
+            chartToAdd = chartsData[charts[i].chartId] || null;
+            addChartToChartsToRender(chartToAdd);
+            addChartToPresentationk(chartToAdd);
         }
 
         load(chartsToLoad);
     }
 
-    function addChartToPresentationk(chartToAdd) {
-        var sb          = new helper.StringBuilder(),
-            chartId     = chartToAdd.getContainerId() || null,
-            containerId = '';
+//    function addChartToPresentationk(chartToAdd) {
+//        var sb          = new helper.StringBuilder(),
+//            chartId     = chartToAdd.getContainerId() || null,
+//            containerId = '';
 
-        if (!chartId) return;
+//        if (!chartId) return;
 
-        containerId = "presentation_" + chartId;
-        sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
-        // $('#testChart').append(sb.toString());
-    }
+//        containerId = "presentation-" + chartId;
+//        sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
+//        $('#testChart').append(sb.toString());
+
+////        var presentationChart = chartToAdd.clone();
+////        presentationChart.setContainerId(containerId);
+//    }
 
     // TODO: Investigate...
     chartManager.on('onAnalysisLoaded', function () {
@@ -8628,10 +8647,10 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
     });
 
     chartManager.on('chartReady', function (chart) {
-        addChartToPresentationk(chart)
-//        var clonedChart = chart.clone();
-//        $('#' + chartId).parent().removeClass('genericLoadingMask');
-//        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
+        // addChartToPresentationk(chart)
+        //        var clonedChart = chart.clone();
+        //        $('#' + chartId).parent().removeClass('genericLoadingMask');
+        //        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
     });
 
     chartComponents.load = load;
@@ -8959,10 +8978,6 @@ WebAppLoader.addModule({ name: 'chartManager',
             containerId: id
         });
 
-        // ASA: Test
-//        var presentationChart = chart.clone();
-//        presentationChart.setContainerId('testChart');
-        
         eventManager.raiseEvent('chartReady', chart);
         eventManager.raiseEvent('showMask', config.chartId);
 
@@ -9042,7 +9057,8 @@ WebAppLoader.addModule({ name: 'chartManager',
             var dataTable, i, min, max, minDisplay, maxDisplay,
                 maxColor, minColor, midColor, midGradientPosition,
                 values = [], sliceOptions = [],
-                isAllPositiveOrNegative, containerId, gaugeLegendId;
+                isAllPositiveOrNegative, containerId, gaugeLegendId,
+                presentationContainerId;
 
             output.log(data);
 
@@ -9198,6 +9214,12 @@ WebAppLoader.addModule({ name: 'chartManager',
 
             // Draw the chart.
             chart.draw();
+
+            // ASA: Test
+            var presentationChart = chart.clone();
+            presentationContainerId = 'presentation-' + chart.getContainerId();
+            presentationChart.setContainerId(presentationContainerId);
+            presentationChart.draw();
         }
 
         // Attempt to load the data.
@@ -10383,9 +10405,8 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         $(el.fullScreenPage).show();
         $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
         }});
-
-//        $('#testChart').append( $('#' + chartId) );
-//        $('#' + chartId).css('-webkit-transform', 'scale(1)');
+        
+        eventManager.raiseEvent('onEnter');
     }
 
     function exitPresentationMode() {
@@ -10393,6 +10414,8 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         $(el.fullScreenPage).animate({ opacity: 0 }, { duration: 750, easing: 'ease-out', complete: function () {
             $(el.fullScreenPage).css({ 'display': 'none' });
         }});
+        
+        eventManager.raiseEvent('onExit');
     }
 
     function isFullScreen() {
@@ -11676,7 +11699,6 @@ Zepto(function ($) {
             $(el.analysisComponentFullScreenButton).on('click', function (e, info) {
                 var chartId = $(this).attr('data-chartId');
                 theApp.presentationManager.enterPresentationMode(chartId);
-                theApp.scroll.rebuild('fullScreenContainer', false, { hScroll: true, vScroll: true, snap: true  }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });
             });
         }
 
@@ -11723,6 +11745,19 @@ Zepto(function ($) {
         }
         // $chart.parent().parent().css({ 'opacity': 1 });
     });
+
+    // ------------------------------------------
+    // PRESENTATION MODE
+    // ------------------------------------------
+
+    theApp.presentationManager.on('onEnter', function () {
+        theApp.scroll.rebuild('fullScreenContainer', false, { hScroll: true, vScroll: false, hScrollbar: true, snap: true  }); //, false, { hScrollbar: true, vScrollbar: false, hScroll: true, vScroll: false });    
+    });
+
+    theApp.presentationManager.on('onExit', function () {
+        theApp.scroll.rebuild('analysis');
+    });
+
 
     // ------------------------------------------
     // SETTINGS PAGES
