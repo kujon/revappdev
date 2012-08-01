@@ -299,13 +299,13 @@ Zepto(function ($) {
                 analysisPageTitle     = '',
                 presentationViewWidth = 0,
                 i;
-
+            
             analysisPagesData = theApp.analysisManager.getData('analysisPages');
 
             analysisPage = jLinq.from(analysisPagesData.items)
                 .equals('id', analysisDataObject.analysisId)
                 .select();
-
+ 
             // If no analysis page has been found load the first one.            
             if (analysisPage[0] && analysisPage[0].charts) {
                 analysisPageCharts = analysisPage[0].charts;
@@ -362,7 +362,7 @@ Zepto(function ($) {
             theApp.synchronizeConsoleButton();
 
             theApp.chartComponents.render(chartsToRender, el.analysisPage + '_partial');
-            theApp.synchronizeOrientation();
+            theApp.synchronizeOrientation(false);
 
             // Generic UI stuffs.
             $(el.analysisComponentFullScreenButton).on('tap', function (e, info) {
@@ -382,11 +382,21 @@ Zepto(function ($) {
         function onLoadPortfolioAnalysisCompleted(portfolio) {
             renderAnalysisPage(portfolio);
         }
+        
+        // $(el.analysisPage + '_partial').animate({ opacity: 0 }, { duration: 250, easing: 'ease-out', complete: function () {}});
+        // $(el.analysisPage + '_partial').html('');
+        // $(el.analysisPage + '_partial').css({ opacity: 0 });
+        // $(el.analysisPage + '_partial').css({ opacity: 1 });
+        
+        // Remove all analysis content and scroll the page to top before rendering.
+        $(el.analysisPage + '_partial').html('');
+        theApp.scroll.scrollToPage(1);
 
         theApp.portfolioManager.loadPortfolioAnalysis(
             analysisDataObject.portfolioId,
             onLoadPortfolioAnalysisCompleted
         );
+
     };
 
     theApp.saveLastAnalysisObjectUsed = function () {
@@ -420,7 +430,6 @@ Zepto(function ($) {
             theApp.scroll.saveScrollPosition();
             theApp.scroll.rebuild('analysis', { restorePosition: true });
         }
-        // $chart.parent().parent().css({ 'opacity': 1 });
     });
 
     // ------------------------------------------
@@ -1186,10 +1195,11 @@ Zepto(function ($) {
     // EXTRA FUNCTIONALITIES
     // ------------------------------------------
 
-    theApp.synchronizeOrientation = function () {
+    theApp.synchronizeOrientation = function (restorePosition) {
         var animationSpeed  = 25,
             rebuildingDelay = 1000,
-            el              = null;
+            el              = null,
+            restorePosition = helper.getValueAs(restorePosition, 'boolean');
 
         // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
         if (theApp.isFullScreen) {
@@ -1201,8 +1211,11 @@ Zepto(function ($) {
             : 25;
 
         theApp.mask.show('preventTap');
-        theApp.scroll.saveScrollPosition();
 
+        if (restorePosition) {
+            theApp.scroll.saveScrollPosition();
+        }
+        
         $('.analysisComponentContainer').each(function(){
             var $component, $container, containerHeight, containerLandscapeHeight, 
             containerPortraitHeight, portraitScaleRatio, landscapeScaleRatio, realHeightData;
@@ -1259,7 +1272,7 @@ Zepto(function ($) {
             }, animationSpeed + rebuildingDelay);
         } else {
             setTimeout(function () {
-                theApp.scroll.rebuild('analysis', { restorePosition: true });
+                theApp.scroll.rebuild('analysis', { restorePosition: restorePosition });
                 theApp.mask.hide('preventTap');
                 theApp.iOSLog.debug('rebuilt on synchronizeOrientation');
             }, animationSpeed + rebuildingDelay);
@@ -1304,7 +1317,7 @@ Zepto(function ($) {
 
     $('body').bind('turn', function(event, info){
         theApp.synchronizeOrientation.chartToDisplay = theApp.getCurrentChartDisplayedInViewport();
-        theApp.synchronizeOrientation();
+        theApp.synchronizeOrientation(true);
     });
 
     // Generic test method.

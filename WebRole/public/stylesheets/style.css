@@ -67,6 +67,11 @@ html, body
 .summaryReturn { display: inline-block; width: 20% !important; vertical-align: top; }
 .summaryReturn { text-align: right; }
  
+/*#analysis_partial 
+{
+	-webkit-transition: opacity 1s;
+}*/
+
 #analysis_partial h2, #analysisSummary h2, #analysisSummary h3 {    
     font-family: HelveticaNeue-Bold !important;
     margin: 0 !important;
@@ -306,7 +311,7 @@ html, body
     height: 100%;
     position: absolute;
     left: 0;
-    top: 44px;
+    top: 100px; /* 44px; */
     bottom: 68px;
     display: none;
     background-image: -webkit-radial-gradient(
@@ -318,17 +323,12 @@ html, body
 
 .showLoading
 {
+    top: 0 !important; /* 44px; */
+    bottom: 0 !important;
     background-image: -webkit-radial-gradient(
         rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .5) 95%
         ), url('../images/loading.gif') !important;
 }
-/*#ajaxLoadingMask
-{
-    background-image: url('../images/loading.gif');
-    background-repeat: no-repeat;
-    background-position: center center;	
-    display: none;
-}*/
 
 #loadingText {
 	width: 200px;

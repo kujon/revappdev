@@ -64,6 +64,7 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
 
         setTimeout(function () {
             try {
+                if ((x == myScroll.x) && (y == myScroll.y)) { return; }
                 myScroll.scrollTo(x, y  - myScroll.wrapperOffsetTop, animationTime, true);
             } catch (e) {
 

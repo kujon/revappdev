@@ -3252,7 +3252,8 @@ w+=g.wrapperOffsetTop;
 g.scrollTo(0,w,p+100)
 }catch(x){}},100)
 }function m(s,t,q){var p=c.getValueAs(q,"number");
-setTimeout(function(){try{g.scrollTo(s,t-g.wrapperOffsetTop,p,true)
+setTimeout(function(){try{if((s==g.x)&&(t==g.y)){return
+}g.scrollTo(s,t-g.wrapperOffsetTop,p,true)
 }catch(u){}},100)
 }function o(q,s,t){var p=c.getValueAs(t,"number");
 setTimeout(function(){try{g.scrollToPage(q||0,s||0,p,true)
@@ -4455,14 +4456,16 @@ n.tabbar.getButton("settings").setHighlight(false);
 n.synchronizeFavouriteButton();
 n.synchronizeConsoleButton();
 n.chartComponents.render(y,c.analysisPage+"_partial");
-n.synchronizeOrientation();
+n.synchronizeOrientation(false);
 a(c.analysisComponentFullScreenButton).on("tap",function(F,G){var E={chartId:a(this).attr("data-chartId"),chartOrder:a(this).attr("data-order")};
 n.presentationManager.enterPresentationMode(E)
 });
 D=parseInt((y.length||1)*b.maxWidth(),10);
 a(c.presentationChartsContainer).width(D)
 }function s(u){t(u)
-}n.portfolioManager.loadPortfolioAnalysis(p.portfolioId,s)
+}a(c.analysisPage+"_partial").html("");
+n.scroll.scrollToPage(1);
+n.portfolioManager.loadPortfolioAnalysis(p.portfolioId,s)
 };
 n.saveLastAnalysisObjectUsed=function(){var p=n.settings.loadData("userSettings",n.lastUsernameUsed);
 p.lastAnalysisObjectUsed=n.getLastAnalysisObjectUsed();
@@ -4781,29 +4784,29 @@ g.unloadModule("themesManager");
 g.unloadModule("toolbar");
 g.unloadModule("presentationManager");
 n.startHere();
-n.synchronizeOrientation=function(){var p=25,s=1000,q=null;
+n.synchronizeOrientation=function(t){var p=25,s=1000,q=null,t=e.getValueAs(t,"boolean");
 if(n.isFullScreen){return
 }p=(n.settings.appSettings.animatedChartResizing)?500:25;
 n.mask.show("preventTap");
-n.scroll.saveScrollPosition();
-a(".analysisComponentContainer").each(function(){var t,u,v,w,x,z,y,A;
-u=a(this);
-t=u.children().filter(".resizableChart");
-v=t.height();
-if(t.hasClass("gridContainer")){y=n.resizingSettings.tableLandscapeScaleRatio;
-z=n.resizingSettings.tablePortraitScaleRatio
-}else{y=n.resizingSettings.chartLandscapeScaleRatio;
-z=n.resizingSettings.chartPortraitScaleRatio
-}if(!u.data("realHeight")){w=parseInt(v*y,10);
-x=parseInt(v*z,10);
-u.data("realHeight",v)
-}else{A=u.data("realHeight");
-w=parseInt(A*y,10);
-x=parseInt(A*z,10)
-}if(b.orientation()==="landscape"){t.css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"});
-u.height(w)
-}else{t.css({"-webkit-transform":"scale(.69)","-webkit-transform-origin":"left top"});
-u.height(x)
+if(t){n.scroll.saveScrollPosition()
+}a(".analysisComponentContainer").each(function(){var u,v,w,x,y,A,z,B;
+v=a(this);
+u=v.children().filter(".resizableChart");
+w=u.height();
+if(u.hasClass("gridContainer")){z=n.resizingSettings.tableLandscapeScaleRatio;
+A=n.resizingSettings.tablePortraitScaleRatio
+}else{z=n.resizingSettings.chartLandscapeScaleRatio;
+A=n.resizingSettings.chartPortraitScaleRatio
+}if(!v.data("realHeight")){x=parseInt(w*z,10);
+y=parseInt(w*A,10);
+v.data("realHeight",w)
+}else{B=v.data("realHeight");
+x=parseInt(B*z,10);
+y=parseInt(B*A,10)
+}if(b.orientation()==="landscape"){u.css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"});
+v.height(x)
+}else{u.css({"-webkit-transform":"scale(.69)","-webkit-transform-origin":"left top"});
+v.height(y)
 }});
 if(n.settings.appSettings.automaticChartRepositioning){n.synchronizeOrientation.pendingCount+=1;
 setTimeout(function(){if(n.synchronizeOrientation.pendingCount>0){n.synchronizeOrientation.pendingCount-=1
@@ -4811,7 +4814,7 @@ setTimeout(function(){if(n.synchronizeOrientation.pendingCount>0){n.synchronizeO
 if(n.synchronizeOrientation.chartToDisplay!==""){n.scroll.scrollToElement("#"+n.synchronizeOrientation.chartToDisplay,75,25)
 }n.mask.hide("preventTap")
 }},p+s)
-}else{setTimeout(function(){n.scroll.rebuild("analysis",{restorePosition:true});
+}else{setTimeout(function(){n.scroll.rebuild("analysis",{restorePosition:t});
 n.mask.hide("preventTap");
 n.iOSLog.debug("rebuilt on synchronizeOrientation")
 },p+s)
@@ -4832,7 +4835,7 @@ q=e.getObjectFromArray(s,"y",u);
 return q.chartId
 };
 a("body").bind("turn",function(p,q){n.synchronizeOrientation.chartToDisplay=n.getCurrentChartDisplayedInViewport();
-n.synchronizeOrientation()
+n.synchronizeOrientation(true)
 });
 n.onTestApp=function(){};
 n.initExperimentalPage=function(){n.experimentalPage.create()
