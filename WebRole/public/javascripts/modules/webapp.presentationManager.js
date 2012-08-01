@@ -33,9 +33,8 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         fullScreen = false;
         $(el.fullScreenPage).animate({ opacity: 0 }, { duration: 750, easing: 'ease-out', complete: function () {
             $(el.fullScreenPage).css({ 'display': 'none' });
+            eventManager.raiseEvent('onExit');
         }});
-        
-        eventManager.raiseEvent('onExit');
     }
 
     function isFullScreen() {
@@ -55,24 +54,24 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         
         if (device.isIPad()) {
             if (o == 90) {
-                width     = '1004px';
+                width     = '1004px !important';
                 height    = '768px';
                 left      = '768px';
                 forceTurn = true;
             } else {
-                width     = '1024px';
+                width     = '1024px !important';
                 height    = '748px';
                 left      = '0';
                 forceTurn = false;
             }
         } else {
             if (o == 90) {
-                width     = '460px';
+                width     = '460px !important';
                 height    = '320px';
                 left      = '320px';
                 forceTurn = true;
             } else {
-                width     = '480px';
+                width     = '480px !important';
                 height    = '310px';
                 left      = '0';
                 forceTurn = false;
@@ -89,7 +88,7 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
                 $(el.fullScreenMask).css({ 'display': 'none' });
             }});
         }
-
+        
         $(el.fullScreenContainer).css({ 
             width: width,
             height: height,

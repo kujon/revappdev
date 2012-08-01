@@ -3945,7 +3945,7 @@ i.clearUserSettings=b;
 return i
 });
 WebAppLoader.addModule({name:"pageElements",isShared:true},function(){var a={};
-a={blankPage:"#blank_page",dashboardPage:"#dashboard",homePage:"#home",portfoliosPage:"#portfolios",portfolioAnalysisPage:"#portfolioAnalysis",analysisPage:"#analysis",eulaPage:"#eula",settingsPage:"#settings",loginPage:"#login",startupPage:"#startup",chartSettingsPage:"#chartSettings",themesPage:"#themes",languageSettingsPages:"#languageSettings",errorPage:"#error",fullScreenPage:"#fullScreenPage",portfolioAnalysisLink:".defaultAnalysisLink",toolbar:".toolbar",loginButton:"#loginButton",loginErrorText:"#loginErrorText",ajaxLoadingMask:"#ajaxLoadingMask",chartLoadingMask:"#chartLoadingMask",preventTapMask:"#preventTapMask",userNameTextbox:"#userNameTextbox",passwordTextbox:"#passwordTextbox",tabbar:"nav#tabbar",listAnalysisSettingsDefaultPages:"#listAnalysisSettingsDefaultPages",listAnalysisSettingsUserPages:"#listAnalysisSettingsUserPages",chartsSelectbox:"#chartsSelectbox",analysisPageNameTextbox:"#analysisPageNameTextbox",saveChartSettings:"#saveChartSettings",addNewAnalysisPage:"#addNewAnalysisPage",analysisTitle:"#analysisTitle",loadingText:"#loadingText",listLanguagesPages:"#listLanguagesPages",timePeriodStartDateText:"#timePeriodStartDateText",timePeriodEndDateText:"#timePeriodEndDateText",errorMessageText:"#errorMessageText",stayLoggedCheckbox:"#stayLoggedCheckbox",userEmailLabel:"#userEmailLabel",summaryTitleName:"#summaryTitleName",summaryTitleBenchmarkName:"#summaryTitleBenchmarkName",resetCurrentSettingsButton:"#resetCurrentSettingsButton",resetAllSettingsButton:"#resetAllSettingsButton",reloadAppButton:"#reloadAppButton",analysisComponentFullScreenButton:".analysisComponentFullScreenButton",fullScreenContainer:"#fullScreenContainer",minimizeButton:"#minimizeButton",fullScreenMask:"#fullScreenMask",turnIcon:"#turnIcon",presentationChartsContainer:"#presentationChartsContainer"};
+a={blankPage:"#blank_page",dashboardPage:"#dashboard",homePage:"#home",portfoliosPage:"#portfolios",portfolioAnalysisPage:"#portfolioAnalysis",analysisPage:"#analysis",eulaPage:"#eula",settingsPage:"#settings",loginPage:"#login",startupPage:"#startup",chartSettingsPage:"#chartSettings",themesPage:"#themes",languageSettingsPages:"#languageSettings",errorPage:"#error",fullScreenPage:"#fullScreenPage",portfolioAnalysisLink:".defaultAnalysisLink",toolbar:".toolbar",loginButton:"#loginButton",loginErrorText:"#loginErrorText",ajaxLoadingMask:"#ajaxLoadingMask",chartLoadingMask:"#chartLoadingMask",preventTapMask:"#preventTapMask",userNameTextbox:"#userNameTextbox",passwordTextbox:"#passwordTextbox",tabbar:"nav#tabbar",listAnalysisSettingsDefaultPages:"#listAnalysisSettingsDefaultPages",listAnalysisSettingsUserPages:"#listAnalysisSettingsUserPages",chartsSelectbox:"#chartsSelectbox",analysisPageNameTextbox:"#analysisPageNameTextbox",saveChartSettings:"#saveChartSettings",addNewAnalysisPage:"#addNewAnalysisPage",analysisTitle:"#analysisTitle",loadingText:"#loadingText",listLanguagesPages:"#listLanguagesPages",timePeriodStartDateText:"#timePeriodStartDateText",timePeriodEndDateText:"#timePeriodEndDateText",errorMessageText:"#errorMessageText",stayLoggedCheckbox:"#stayLoggedCheckbox",userEmailLabel:"#userEmailLabel",summaryTitleName:"#summaryTitleName",summaryTitleBenchmarkName:"#summaryTitleBenchmarkName",resetCurrentSettingsButton:"#resetCurrentSettingsButton",resetAllSettingsButton:"#resetAllSettingsButton",reloadAppButton:"#reloadAppButton",analysisComponentFullScreenButton:".analysisComponentFullScreenButton",fullScreenContainer:"#fullScreenContainer",minimizeButton:"#minimizeButton",fullScreenMask:"#fullScreenMask",turnIcon:"#turnIcon",presentationTitle:"#presentationTitle",presentationChartsContainer:"#presentationChartsContainer",presentationTimePeriodStartDateText:"#presentationTimePeriodStartDateText",presentationTimePeriodEndDateText:"#presentationTimePeriodEndDateText",presentationSummaryTitleName:"#presentationSummaryTitleName",presentationSummaryTitleBenchmarkName:"#presentationSummaryTitleBenchmarkName"};
 return a
 });
 WebAppLoader.addModule({name:"settings",dataObjects:["appSettings","userSettings"],isShared:true},function(){var h={},a={},i={},f=[],g=this.getConsole(),j=this.getDataObject("userSettings"),b=this.getDataObject("appSettings");
@@ -4120,25 +4120,25 @@ $(b.fullScreenPage).show();
 $(b.fullScreenPage).animate({opacity:1},{duration:750,easing:"ease-out",complete:function(){d.raiseEvent("onEnter",l)
 }})
 }function e(){f=false;
-$(b.fullScreenPage).animate({opacity:0},{duration:750,easing:"ease-out",complete:function(){$(b.fullScreenPage).css({display:"none"})
-}});
+$(b.fullScreenPage).animate({opacity:0},{duration:750,easing:"ease-out",complete:function(){$(b.fullScreenPage).css({display:"none"});
 d.raiseEvent("onExit")
+}})
 }function h(){return f
 }function k(){var p=Math.abs(window.orientation-90),n="0",q="0",m="0",l=false;
 p=(p==180)?0:p;
-if(a.isIPad()){if(p==90){q="1004px";
+if(a.isIPad()){if(p==90){q="1004px !important";
 m="768px";
 n="768px";
 l=true
-}else{q="1024px";
+}else{q="1024px !important";
 m="748px";
 n="0";
 l=false
-}}else{if(p==90){q="460px";
+}}else{if(p==90){q="460px !important";
 m="320px";
 n="320px";
 l=true
-}else{q="480px";
+}else{q="480px !important";
 m="310px";
 n="0";
 l=false
@@ -4485,9 +4485,14 @@ n.iOSLog.debug("rebuilt on onChartLoaded");
 n.scroll.saveScrollPosition();
 n.scroll.rebuild("analysis",{restorePosition:true})
 }});
-n.presentationManager.on("onBeforeEnter",function(p){a("#fullScreenHeader h2").html(a("#analysis h1").html());
-a("#fullScreenSummary .summaryTitle h2").html(a("#analysisSummary .summaryTitle h2").html());
-a("#fullScreenSummary .summaryTitle h3").html(a("#analysisSummary .summaryTitle h3").html());
+n.updatePresentationSummaryInfo=function(){var p=a(c.analysisTitle).html()||"",u=a(c.timePeriodStartDateText).html()||"",t=a(c.timePeriodEndDateText).html()||"",s=a(c.summaryTitleName).html()||"",q=a(c.summaryTitleBenchmarkName).html()||"";
+a(c.presentationTitle).html(p);
+a(c.presentationTimePeriodStartDateText).html(u);
+a(c.presentationTimePeriodEndDateText).html(t);
+a(c.presentationSummaryTitleName).html(s);
+a(c.presentationSummaryTitleBenchmarkName).html(q)
+};
+n.presentationManager.on("onBeforeEnter",function(p){n.updatePresentationSummaryInfo();
 n.scroll.saveScrollPosition();
 n.scroll.rebuild("fullScreenContainer",{iScrollOptions:{hScroll:true,vScroll:false,hScrollbar:true,snap:true,snapThreshold:50,bounce:false,momentum:false},restorePosition:true});
 n.scroll.scrollToPage(p.chartOrder,0,0)
@@ -4495,8 +4500,8 @@ n.scroll.scrollToPage(p.chartOrder,0,0)
 n.presentationManager.on("onEnter",function(p){n.isFullScreen=true
 });
 n.presentationManager.on("onExit",function(){n.isFullScreen=false;
-n.iOSLog.debug("rebuilt on onExit");
-n.scroll.rebuild("analysis",{restorePosition:true})
+n.scroll.rebuild("analysis",{restorePosition:true});
+n.iOSLog.debug("rebuilt on onExit")
 });
 n.scroll.on("onScrolledToPage",function(p){});
 n.showAnalysisSettingsPage=function(){var q={},p;
@@ -4655,11 +4660,12 @@ a(c.eulaPage+"_partial").append('<div class="genericContainer">'+e.htmlDecode(p)
 h.log("onEulaEnd")
 });
 n.pageEventsManager.on("onAnalysisEnd",function(){n.iOSLog.debug("rebuilt on onAnalysisEnd");
-n.scroll.rebuild("analysis");
+n.scroll.rebuild("analysis",{restorePosition:true});
 n.tabbar.getButton("settings").setHighlight(false);
 h.log("onAnalysisEnd")
 });
-n.pageEventsManager.on("onSettingsStart",function(){n.scroll.rebuild("settings",{clickSafeMode:true});
+n.pageEventsManager.on("onSettingsStart",function(){n.scroll.saveScrollPosition();
+n.scroll.rebuild("settings",{clickSafeMode:true});
 h.log("onSettingsStart")
 });
 n.pageEventsManager.on("onSettingsEnd",function(){h.log("onSettingsEnd")
@@ -4784,10 +4790,15 @@ g.unloadModule("themesManager");
 g.unloadModule("toolbar");
 g.unloadModule("presentationManager");
 n.startHere();
+n.preventTap=function(p){if(p){n.mask.show("preventTap");
+n.tabbar.getButton("settings").setDisabled(true)
+}else{n.mask.hide("preventTap");
+n.tabbar.getButton("settings").setDisabled(false)
+}};
 n.synchronizeOrientation=function(t){var p=25,s=1000,q=null,t=e.getValueAs(t,"boolean");
 if(n.isFullScreen){return
 }p=(n.settings.appSettings.animatedChartResizing)?500:25;
-n.mask.show("preventTap");
+n.preventTap(true);
 if(t){n.scroll.saveScrollPosition()
 }a(".analysisComponentContainer").each(function(){var u,v,w,x,y,A,z,B;
 v=a(this);
@@ -4812,10 +4823,10 @@ if(n.settings.appSettings.automaticChartRepositioning){n.synchronizeOrientation.
 setTimeout(function(){if(n.synchronizeOrientation.pendingCount>0){n.synchronizeOrientation.pendingCount-=1
 }if(n.synchronizeOrientation.pendingCount===0){n.scroll.rebuild("analysis");
 if(n.synchronizeOrientation.chartToDisplay!==""){n.scroll.scrollToElement("#"+n.synchronizeOrientation.chartToDisplay,75,25)
-}n.mask.hide("preventTap")
+}n.preventTap(false)
 }},p+s)
 }else{setTimeout(function(){n.scroll.rebuild("analysis",{restorePosition:t});
-n.mask.hide("preventTap");
+n.preventTap(false);
 n.iOSLog.debug("rebuilt on synchronizeOrientation")
 },p+s)
 }};

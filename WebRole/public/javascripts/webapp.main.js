@@ -436,13 +436,23 @@ Zepto(function ($) {
     // PRESENTATION MODE
     // ------------------------------------------
 
+    theApp.updatePresentationSummaryInfo = function () {
+        var analysisTitle               = $(el.analysisTitle).html() || '',
+            timePeriodStartDateText     = $(el.timePeriodStartDateText).html() || '',
+            timePeriodEndDateText       = $(el.timePeriodEndDateText).html() || '',
+            summaryTitleName            = $(el.summaryTitleName).html() || '',
+            summaryTitleBenchmarkName   = $(el.summaryTitleBenchmarkName).html() || '';
+
+        // Set values from the analysis summary info to the presentation summary info.
+        $(el.presentationTitle).html(analysisTitle);
+        $(el.presentationTimePeriodStartDateText).html(timePeriodStartDateText);
+        $(el.presentationTimePeriodEndDateText).html(timePeriodEndDateText);
+        $(el.presentationSummaryTitleName).html(summaryTitleName);
+        $(el.presentationSummaryTitleBenchmarkName).html(summaryTitleBenchmarkName);
+    };
+
     theApp.presentationManager.on('onBeforeEnter', function (data) {
-        // Get summary info.
-        $('#fullScreenHeader h2').html($('#analysis h1').html()); // ASA TODO: Add method to toolbar to get the current title.
-        $('#fullScreenSummary .summaryTitle h2').html($('#analysisSummary .summaryTitle h2').html());
-        $('#fullScreenSummary .summaryTitle h3').html($('#analysisSummary .summaryTitle h3').html());
-        // $('#fullScreenSummary .summaryTitle h2').html($('#analysisSummary h1').html());
-        // $('#fullScreenSummary .summaryTitle h3').html($('#analysisSummary h1').html());
+        theApp.updatePresentationSummaryInfo();
 
         // Save scroll position and rebuild a new one.
         // useTransform: true, zoom: true, zoomMax: 1.5 },
@@ -469,8 +479,8 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onExit', function () {
         theApp.isFullScreen = false;
-        theApp.iOSLog.debug('rebuilt on onExit');
         theApp.scroll.rebuild('analysis', { restorePosition: true });
+        theApp.iOSLog.debug('rebuilt on onExit');
     });
 
     theApp.scroll.on('onScrolledToPage', function (page) {
@@ -911,7 +921,7 @@ Zepto(function ($) {
 
     theApp.pageEventsManager.on('onAnalysisEnd', function () {
         theApp.iOSLog.debug('rebuilt on onAnalysisEnd');
-        theApp.scroll.rebuild('analysis');
+        theApp.scroll.rebuild('analysis', { restorePosition: true });
 
         // Deselect Settings button.
         theApp.tabbar.getButton('settings').setHighlight(false);
@@ -920,6 +930,7 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onSettingsStart', function () {
+        theApp.scroll.saveScrollPosition();
         theApp.scroll.rebuild('settings', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onSettingsStart');
     });
@@ -1195,6 +1206,19 @@ Zepto(function ($) {
     // EXTRA FUNCTIONALITIES
     // ------------------------------------------
 
+    theApp.preventTap = function (prevent) {
+        if (prevent) {
+            // Show the mask and disable the settings button.
+            theApp.mask.show('preventTap');
+            theApp.tabbar.getButton('settings').setDisabled(true);
+
+        } else {
+            // Hide the mask and enable the settings button.
+            theApp.mask.hide('preventTap');
+            theApp.tabbar.getButton('settings').setDisabled(false);
+        }
+    };
+
     theApp.synchronizeOrientation = function (restorePosition) {
         var animationSpeed  = 25,
             rebuildingDelay = 1000,
@@ -1210,7 +1234,8 @@ Zepto(function ($) {
             ? 500
             : 25;
 
-        theApp.mask.show('preventTap');
+        theApp.preventTap(true);
+        // theApp.mask.show('preventTap');
 
         if (restorePosition) {
             theApp.scroll.saveScrollPosition();
@@ -1266,14 +1291,16 @@ Zepto(function ($) {
                     if (theApp.synchronizeOrientation.chartToDisplay !== '') {
                         theApp.scroll.scrollToElement('#' + theApp.synchronizeOrientation.chartToDisplay, 75, 25);
                     }
-             
-                    theApp.mask.hide('preventTap');
+                    
+                    theApp.preventTap(false);
+                    // theApp.mask.hide('preventTap');
                 }
             }, animationSpeed + rebuildingDelay);
         } else {
             setTimeout(function () {
                 theApp.scroll.rebuild('analysis', { restorePosition: restorePosition });
-                theApp.mask.hide('preventTap');
+                theApp.preventTap(false);
+                // theApp.mask.hide('preventTap');
                 theApp.iOSLog.debug('rebuilt on synchronizeOrientation');
             }, animationSpeed + rebuildingDelay);
         }

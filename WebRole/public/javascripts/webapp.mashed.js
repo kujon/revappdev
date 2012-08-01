@@ -9640,59 +9640,64 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
 
     pageElements = {
         // App pages.
-        blankPage                           : '#blank_page',
-        dashboardPage                       : '#dashboard',
-        homePage                            : '#home',
-        portfoliosPage                      : '#portfolios',
-        portfolioAnalysisPage               : '#portfolioAnalysis',
-        analysisPage                        : '#analysis',
-        eulaPage                            : '#eula',
-        settingsPage                        : '#settings',
-        loginPage                           : '#login',
-        startupPage                         : '#startup',
-        chartSettingsPage                   : '#chartSettings',
-        themesPage                          : '#themes',
-        languageSettingsPages               : '#languageSettings',
-        errorPage                           : '#error',
-        fullScreenPage                      : '#fullScreenPage',
+        blankPage                               : '#blank_page',
+        dashboardPage                           : '#dashboard',
+        homePage                                : '#home',
+        portfoliosPage                          : '#portfolios',
+        portfolioAnalysisPage                   : '#portfolioAnalysis',
+        analysisPage                            : '#analysis',
+        eulaPage                                : '#eula',
+        settingsPage                            : '#settings',
+        loginPage                               : '#login',
+        startupPage                             : '#startup',
+        chartSettingsPage                       : '#chartSettings',
+        themesPage                              : '#themes',
+        languageSettingsPages                   : '#languageSettings',
+        errorPage                               : '#error',
+        fullScreenPage                          : '#fullScreenPage',
 	
 
         // Elements.
-        portfolioAnalysisLink               : '.defaultAnalysisLink',
-        toolbar                             : '.toolbar',
-        loginButton                         : '#loginButton',
-        loginErrorText                      : '#loginErrorText',
-        ajaxLoadingMask                     : '#ajaxLoadingMask',
-        chartLoadingMask                    : '#chartLoadingMask',
-        preventTapMask                      : '#preventTapMask',
-        userNameTextbox                     : '#userNameTextbox',
-        passwordTextbox                     : '#passwordTextbox',
-        tabbar                              : 'nav#tabbar',
-        listAnalysisSettingsDefaultPages    : '#listAnalysisSettingsDefaultPages',
-        listAnalysisSettingsUserPages       : '#listAnalysisSettingsUserPages',
-        chartsSelectbox                     : '#chartsSelectbox',
-        analysisPageNameTextbox             : '#analysisPageNameTextbox',
-        saveChartSettings                   : '#saveChartSettings',
-        addNewAnalysisPage                  : '#addNewAnalysisPage',
-        analysisTitle                       : '#analysisTitle',
-        loadingText                         : '#loadingText',
-        listLanguagesPages                  : '#listLanguagesPages',
-        timePeriodStartDateText             : '#timePeriodStartDateText',
-        timePeriodEndDateText               : '#timePeriodEndDateText',
-        errorMessageText                    : '#errorMessageText',
-        stayLoggedCheckbox                  : '#stayLoggedCheckbox',
-        userEmailLabel                      : '#userEmailLabel',
-        summaryTitleName                    : '#summaryTitleName',
-        summaryTitleBenchmarkName           : '#summaryTitleBenchmarkName',
-        resetCurrentSettingsButton          : '#resetCurrentSettingsButton',
-        resetAllSettingsButton              : '#resetAllSettingsButton',
-        reloadAppButton                     : '#reloadAppButton',
-        analysisComponentFullScreenButton   : '.analysisComponentFullScreenButton',
-        fullScreenContainer                 : '#fullScreenContainer',
-        minimizeButton                      : '#minimizeButton',
-        fullScreenMask                      : '#fullScreenMask',
-	    turnIcon                            : '#turnIcon',
-        presentationChartsContainer         : '#presentationChartsContainer'
+        portfolioAnalysisLink                   : '.defaultAnalysisLink',
+        toolbar                                 : '.toolbar',
+        loginButton                             : '#loginButton',
+        loginErrorText                          : '#loginErrorText',
+        ajaxLoadingMask                         : '#ajaxLoadingMask',
+        chartLoadingMask                        : '#chartLoadingMask',
+        preventTapMask                          : '#preventTapMask',
+        userNameTextbox                         : '#userNameTextbox',
+        passwordTextbox                         : '#passwordTextbox',
+        tabbar                                  : 'nav#tabbar',
+        listAnalysisSettingsDefaultPages        : '#listAnalysisSettingsDefaultPages',
+        listAnalysisSettingsUserPages           : '#listAnalysisSettingsUserPages',
+        chartsSelectbox                         : '#chartsSelectbox',
+        analysisPageNameTextbox                 : '#analysisPageNameTextbox',
+        saveChartSettings                       : '#saveChartSettings',
+        addNewAnalysisPage                      : '#addNewAnalysisPage',
+        analysisTitle                           : '#analysisTitle',
+        loadingText                             : '#loadingText',
+        listLanguagesPages                      : '#listLanguagesPages',
+        timePeriodStartDateText                 : '#timePeriodStartDateText',
+        timePeriodEndDateText                   : '#timePeriodEndDateText',
+        errorMessageText                        : '#errorMessageText',
+        stayLoggedCheckbox                      : '#stayLoggedCheckbox',
+        userEmailLabel                          : '#userEmailLabel',
+        summaryTitleName                        : '#summaryTitleName',
+        summaryTitleBenchmarkName               : '#summaryTitleBenchmarkName',
+        resetCurrentSettingsButton              : '#resetCurrentSettingsButton',
+        resetAllSettingsButton                  : '#resetAllSettingsButton',
+        reloadAppButton                         : '#reloadAppButton',
+        analysisComponentFullScreenButton       : '.analysisComponentFullScreenButton',
+        fullScreenContainer                     : '#fullScreenContainer',
+        minimizeButton                          : '#minimizeButton',
+        fullScreenMask                          : '#fullScreenMask',
+	    turnIcon                                : '#turnIcon',
+        presentationTitle                       : '#presentationTitle',
+        presentationChartsContainer             : '#presentationChartsContainer',
+        presentationTimePeriodStartDateText     : '#presentationTimePeriodStartDateText',
+        presentationTimePeriodEndDateText       : '#presentationTimePeriodEndDateText',
+        presentationSummaryTitleName            : '#presentationSummaryTitleName',
+        presentationSummaryTitleBenchmarkName   : '#presentationSummaryTitleBenchmarkName'
     };
 
     return pageElements;
@@ -10459,9 +10464,8 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         fullScreen = false;
         $(el.fullScreenPage).animate({ opacity: 0 }, { duration: 750, easing: 'ease-out', complete: function () {
             $(el.fullScreenPage).css({ 'display': 'none' });
+            eventManager.raiseEvent('onExit');
         }});
-        
-        eventManager.raiseEvent('onExit');
     }
 
     function isFullScreen() {
@@ -10481,24 +10485,24 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         
         if (device.isIPad()) {
             if (o == 90) {
-                width     = '1004px';
+                width     = '1004px !important';
                 height    = '768px';
                 left      = '768px';
                 forceTurn = true;
             } else {
-                width     = '1024px';
+                width     = '1024px !important';
                 height    = '748px';
                 left      = '0';
                 forceTurn = false;
             }
         } else {
             if (o == 90) {
-                width     = '460px';
+                width     = '460px !important';
                 height    = '320px';
                 left      = '320px';
                 forceTurn = true;
             } else {
-                width     = '480px';
+                width     = '480px !important';
                 height    = '310px';
                 left      = '0';
                 forceTurn = false;
@@ -10515,7 +10519,7 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
                 $(el.fullScreenMask).css({ 'display': 'none' });
             }});
         }
-
+        
         $(el.fullScreenContainer).css({ 
             width: width,
             height: height,
@@ -11820,13 +11824,23 @@ Zepto(function ($) {
     // PRESENTATION MODE
     // ------------------------------------------
 
+    theApp.updatePresentationSummaryInfo = function () {
+        var analysisTitle               = $(el.analysisTitle).html() || '',
+            timePeriodStartDateText     = $(el.timePeriodStartDateText).html() || '',
+            timePeriodEndDateText       = $(el.timePeriodEndDateText).html() || '',
+            summaryTitleName            = $(el.summaryTitleName).html() || '',
+            summaryTitleBenchmarkName   = $(el.summaryTitleBenchmarkName).html() || '';
+
+        // Set values from the analysis summary info to the presentation summary info.
+        $(el.presentationTitle).html(analysisTitle);
+        $(el.presentationTimePeriodStartDateText).html(timePeriodStartDateText);
+        $(el.presentationTimePeriodEndDateText).html(timePeriodEndDateText);
+        $(el.presentationSummaryTitleName).html(summaryTitleName);
+        $(el.presentationSummaryTitleBenchmarkName).html(summaryTitleBenchmarkName);
+    };
+
     theApp.presentationManager.on('onBeforeEnter', function (data) {
-        // Get summary info.
-        $('#fullScreenHeader h2').html($('#analysis h1').html()); // ASA TODO: Add method to toolbar to get the current title.
-        $('#fullScreenSummary .summaryTitle h2').html($('#analysisSummary .summaryTitle h2').html());
-        $('#fullScreenSummary .summaryTitle h3').html($('#analysisSummary .summaryTitle h3').html());
-        // $('#fullScreenSummary .summaryTitle h2').html($('#analysisSummary h1').html());
-        // $('#fullScreenSummary .summaryTitle h3').html($('#analysisSummary h1').html());
+        theApp.updatePresentationSummaryInfo();
 
         // Save scroll position and rebuild a new one.
         // useTransform: true, zoom: true, zoomMax: 1.5 },
@@ -11853,8 +11867,8 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onExit', function () {
         theApp.isFullScreen = false;
-        theApp.iOSLog.debug('rebuilt on onExit');
         theApp.scroll.rebuild('analysis', { restorePosition: true });
+        theApp.iOSLog.debug('rebuilt on onExit');
     });
 
     theApp.scroll.on('onScrolledToPage', function (page) {
@@ -12295,7 +12309,7 @@ Zepto(function ($) {
 
     theApp.pageEventsManager.on('onAnalysisEnd', function () {
         theApp.iOSLog.debug('rebuilt on onAnalysisEnd');
-        theApp.scroll.rebuild('analysis');
+        theApp.scroll.rebuild('analysis', { restorePosition: true });
 
         // Deselect Settings button.
         theApp.tabbar.getButton('settings').setHighlight(false);
@@ -12304,6 +12318,7 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onSettingsStart', function () {
+        theApp.scroll.saveScrollPosition();
         theApp.scroll.rebuild('settings', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onSettingsStart');
     });
@@ -12579,6 +12594,19 @@ Zepto(function ($) {
     // EXTRA FUNCTIONALITIES
     // ------------------------------------------
 
+    theApp.preventTap = function (prevent) {
+        if (prevent) {
+            // Show the mask and disable the settings button.
+            theApp.mask.show('preventTap');
+            theApp.tabbar.getButton('settings').setDisabled(true);
+
+        } else {
+            // Hide the mask and enable the settings button.
+            theApp.mask.hide('preventTap');
+            theApp.tabbar.getButton('settings').setDisabled(false);
+        }
+    };
+
     theApp.synchronizeOrientation = function (restorePosition) {
         var animationSpeed  = 25,
             rebuildingDelay = 1000,
@@ -12594,7 +12622,8 @@ Zepto(function ($) {
             ? 500
             : 25;
 
-        theApp.mask.show('preventTap');
+        theApp.preventTap(true);
+        // theApp.mask.show('preventTap');
 
         if (restorePosition) {
             theApp.scroll.saveScrollPosition();
@@ -12650,14 +12679,16 @@ Zepto(function ($) {
                     if (theApp.synchronizeOrientation.chartToDisplay !== '') {
                         theApp.scroll.scrollToElement('#' + theApp.synchronizeOrientation.chartToDisplay, 75, 25);
                     }
-             
-                    theApp.mask.hide('preventTap');
+                    
+                    theApp.preventTap(false);
+                    // theApp.mask.hide('preventTap');
                 }
             }, animationSpeed + rebuildingDelay);
         } else {
             setTimeout(function () {
                 theApp.scroll.rebuild('analysis', { restorePosition: restorePosition });
-                theApp.mask.hide('preventTap');
+                theApp.preventTap(false);
+                // theApp.mask.hide('preventTap');
                 theApp.iOSLog.debug('rebuilt on synchronizeOrientation');
             }, animationSpeed + rebuildingDelay);
         }
