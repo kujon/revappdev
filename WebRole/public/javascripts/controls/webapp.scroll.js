@@ -40,8 +40,9 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
     }
     
     function scrollToElement(element, offset, time) {
-        var top = 0,
-            el  = null;
+        var top           = 0,
+            el            = null,
+            animationTime = helper.getValueAs(time, 'number');
         
         try { el = $(element); } catch (e) {}
                 
@@ -51,7 +52,7 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
             try {
                 top = (el.offset().top * -1) + offset || 0;
                 top += myScroll.wrapperOffsetTop;
-                myScroll.scrollTo(0, top, time + 100);
+                myScroll.scrollTo(0, top, animationTime + 100);
             } catch (e) {
 
             }
@@ -59,9 +60,11 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
     }
 
     function scrollTo(x, y, time) {
+        var animationTime = helper.getValueAs(time, 'number');
+
         setTimeout(function () {
             try {
-                myScroll.scrollTo(x, y  - myScroll.wrapperOffsetTop, time || 1000, true);
+                myScroll.scrollTo(x, y  - myScroll.wrapperOffsetTop, animationTime, true);
             } catch (e) {
 
             }
@@ -69,25 +72,18 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
     }
     
     function scrollToPage(pageX, pageY, time) {
+        var animationTime = helper.getValueAs(time, 'number');
+
         setTimeout(function () {
             try {
-                myScroll.scrollToPage(pageX || 0, pageY || 0, time || 1000, true);
+                myScroll.scrollToPage(pageX || 0, pageY || 0, animationTime, true);
             } catch (e) {
 
             }
         }, 100);
     }
 
-    /*
-        var name                    = getValueAs(config.name, 'string'),
-            hasEvents               = getValueAs(config.hasEvents, 'boolean'),
-            isShared                = getValueAs(config.isShared, 'boolean'),
-            isPlugin                = getValueAs(config.isPlugin, 'boolean'),
-            pluginsToLoad           = getValueAs(config.plugins, 'array'),
-            sharedModulesToLoad     = getValueAs(config.sharedModules, 'array'),
-    */
-
-    function rebuildScroll(id, config) { // clickSafeMode, optionConfig, forceRebuilding, restorePosition) iScrollConfig{
+    function rebuildScroll(id, config) {
         var wrapper         = 'div#' + id + ' #wrapper',
             config          = config || {},
             clickSafeMode   = helper.getValueAs(config.clickSafeMode, 'boolean'),
@@ -115,20 +111,17 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
             }
         };
 
-        //        options.onScrollEnd = function() {
-//            var page = 0;
-//            
-//            try {
-//                page = Math.round(Math.abs(this.x / this.wrapperW)); // Page calculated correctly.
-//                // console.log(this.x / this.wrapperW);
-//            } catch (e) {
-//                // Sometime currPageX returns a wrong value when it tries to get the last page. 
-//                page = this.currPageX;
-//            }
-//            // console.log('onScrolledToPage: ' + page);
-//            eventManager.raiseEvent('onScrolledToPage', page);
-//            // alert('onScrollEnd: ' + this.currPageX + ' vs ' + Math.round(Math.abs(this.x / this.wrapperW)));
-//        };
+        options.onScrollEnd = function() {
+            var page = 0;
+            
+            try {
+                page = Math.round(Math.abs(this.x / this.wrapperW)); // Page calculated correctly.
+            } catch (e) {
+                // Sometime currPageX returns a wrong value when it tries to get the last page. 
+                page = this.currPageX;
+            }
+            eventManager.raiseEvent('onScrolledToPage', page);
+        };
 
         
 //        options.onScrollMove = function() {

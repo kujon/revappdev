@@ -3244,17 +3244,19 @@ f=g.y
 q=q||0;
 setTimeout(function(){try{g.scrollTo(e,f)
 }catch(s){}},100)
-}function n(s,t,u){var v=0,q=null;
-try{q=$(s)
-}catch(p){}if(!q){return
-}setTimeout(function(){try{v=(q.offset().top*-1)+t||0;
-v+=g.wrapperOffsetTop;
-g.scrollTo(0,v,u+100)
-}catch(w){}},100)
-}function m(q,s,p){setTimeout(function(){try{g.scrollTo(q,s-g.wrapperOffsetTop,p||1000,true)
-}catch(t){}},100)
-}function o(p,q,s){setTimeout(function(){try{g.scrollToPage(p||0,q||0,s||1000,true)
-}catch(t){}},100)
+}function n(t,u,v){var w=0,s=null,p=c.getValueAs(v,"number");
+try{s=$(t)
+}catch(q){}if(!s){return
+}setTimeout(function(){try{w=(s.offset().top*-1)+u||0;
+w+=g.wrapperOffsetTop;
+g.scrollTo(0,w,p+100)
+}catch(x){}},100)
+}function m(s,t,q){var p=c.getValueAs(q,"number");
+setTimeout(function(){try{g.scrollTo(s,t-g.wrapperOffsetTop,p,true)
+}catch(u){}},100)
+}function o(q,s,t){var p=c.getValueAs(t,"number");
+setTimeout(function(){try{g.scrollToPage(q||0,s||0,p,true)
+}catch(u){}},100)
 }function h(t,q){var x="div#"+t+" #wrapper",q=q||{},p=c.getValueAs(q.clickSafeMode,"boolean"),s=c.getValueAs(q.forceRebuilding,"boolean"),w=c.getValueAs(q.restorePosition,"boolean"),u=c.getValueAs(q.iScrollOptions,"object");
 if(d&&!s){return
 }else{d=true
@@ -3263,6 +3265,11 @@ u.onBeforeScrollStart=function(y){var z=y.target;
 while(z.nodeType!=1){z=z.parentNode
 }if(p&&z.tagName!="SELECT"&&z.tagName!="INPUT"&&z.tagName!="TEXTAREA"){y.preventDefault()
 }};
+u.onScrollEnd=function(){var z=0;
+try{z=Math.round(Math.abs(this.x/this.wrapperW))
+}catch(y){z=this.currPageX
+}a.raiseEvent("onScrolledToPage",z)
+};
 if(w){u.x=e;
 u.y=f
 }if(g){g.destroy();
@@ -4421,7 +4428,7 @@ n.updateAnalysisPage(t)
 n.updateAnalysisPage=function(q){var p=q||n.getLastAnalysisObjectUsed();
 n.tabbar.getButton("settings").setHighlight(false);
 n.nav.goToPage(a(c.analysisPage),"dissolve");
-function t(A){var y=[],w={},u={},B=A.code,C=A.name,v=null,x="",z;
+function t(A){var y=[],w={},u={},B=A.code,C=A.name,v=null,x="",D=0,z;
 w=n.analysisManager.getData("analysisPages");
 u=jLinq.from(w.items).equals("id",p.analysisId).select();
 if(u[0]&&u[0].charts){v=u[0].charts;
@@ -4430,28 +4437,30 @@ x=u[0].name
 x=w.items[0].name
 }y=jLinq.from(v).sort("order").select();
 a(c.analysisTitle).html(x);
-a.each(A.timePeriods,function(E,F){var G,D;
-if(F.code===p.timePeriodId){n.chartComponents.setTimePeriod(y,F);
-G=Date.parse(F.startDate);
-D=Date.parse(F.endDate);
-n.customChartTimePeriods.timePeriods=F.code;
-n.customChartTimePeriods.startDate=F.startDate;
-n.customChartTimePeriods.endDate=F.endDate;
-a(c.timePeriodStartDateText).html(G.toString("MMM d, yyyy"));
-a(c.timePeriodEndDateText).html(D.toString("MMM d, yyyy"));
+a.each(A.timePeriods,function(F,G){var H,E;
+if(G.code===p.timePeriodId){n.chartComponents.setTimePeriod(y,G);
+H=Date.parse(G.startDate);
+E=Date.parse(G.endDate);
+n.customChartTimePeriods.timePeriods=G.code;
+n.customChartTimePeriods.startDate=G.startDate;
+n.customChartTimePeriods.endDate=G.endDate;
+a(c.timePeriodStartDateText).html(H.toString("MMM d, yyyy"));
+a(c.timePeriodEndDateText).html(E.toString("MMM d, yyyy"));
 return false
 }});
 n.setLastAnalysisObjectUsed(p);
 n.setLastAnalysisObjectUsed({portfolioId:B,portfolioName:C});
-n.tabbar.getButton("settings").setHighlight(false);
 n.saveLastAnalysisObjectUsed();
+n.tabbar.getButton("settings").setHighlight(false);
 n.synchronizeFavouriteButton();
 n.synchronizeConsoleButton();
-n.chartComponents.render(y,"#analysis_partial");
+n.chartComponents.render(y,c.analysisPage+"_partial");
 n.synchronizeOrientation();
-a(c.analysisComponentFullScreenButton).on("tap",function(E,F){var D={chartId:a(this).attr("data-chartId"),chartOrder:a(this).attr("data-order")};
-n.presentationManager.enterPresentationMode(D)
-})
+a(c.analysisComponentFullScreenButton).on("tap",function(F,G){var E={chartId:a(this).attr("data-chartId"),chartOrder:a(this).attr("data-order")};
+n.presentationManager.enterPresentationMode(E)
+});
+D=parseInt((y.length||1)*b.maxWidth(),10);
+a(c.presentationChartsContainer).width(D)
 }function s(u){t(u)
 }n.portfolioManager.loadPortfolioAnalysis(p.portfolioId,s)
 };
@@ -4469,20 +4478,24 @@ if(p.hasClass("gridContainer")&&p.parent().data("realHeight")<1){t=n.resizingSet
 chartHeight=n.resizingSettings.rescaleTable(t,b.orientation());
 p.height(chartHeight);
 p.parent().data("realHeight",t);
-n.scroll.rebuild("analysis")
+n.iOSLog.debug("rebuilt on onChartLoaded");
+n.scroll.saveScrollPosition();
+n.scroll.rebuild("analysis",{restorePosition:true})
 }});
 n.presentationManager.on("onBeforeEnter",function(p){a("#fullScreenHeader h2").html(a("#analysis h1").html());
 a("#fullScreenSummary .summaryTitle h2").html(a("#analysisSummary .summaryTitle h2").html());
 a("#fullScreenSummary .summaryTitle h3").html(a("#analysisSummary .summaryTitle h3").html());
 n.scroll.saveScrollPosition();
 n.scroll.rebuild("fullScreenContainer",{iScrollOptions:{hScroll:true,vScroll:false,hScrollbar:true,snap:true,snapThreshold:50,bounce:false,momentum:false},restorePosition:true});
-n.scroll.scrollToPage(p.chartOrder,0,1500)
+n.scroll.scrollToPage(p.chartOrder,0,0)
 });
 n.presentationManager.on("onEnter",function(p){n.isFullScreen=true
 });
 n.presentationManager.on("onExit",function(){n.isFullScreen=false;
+n.iOSLog.debug("rebuilt on onExit");
 n.scroll.rebuild("analysis",{restorePosition:true})
 });
+n.scroll.on("onScrolledToPage",function(p){});
 n.showAnalysisSettingsPage=function(){var q={},p;
 q=n.analysisManager.getData("analysisPages");
 p=jLinq.from(q.items).sort("order","userDefined").select(function(s){return{name:s.name,id:s.id,userDefined:s.userDefined}
@@ -4638,7 +4651,8 @@ a(c.eulaPage+"_partial").append('<div class="genericContainer">'+e.htmlDecode(p)
 });
 h.log("onEulaEnd")
 });
-n.pageEventsManager.on("onAnalysisEnd",function(){n.scroll.rebuild("analysis");
+n.pageEventsManager.on("onAnalysisEnd",function(){n.iOSLog.debug("rebuilt on onAnalysisEnd");
+n.scroll.rebuild("analysis");
 n.tabbar.getButton("settings").setHighlight(false);
 h.log("onAnalysisEnd")
 });
@@ -4799,7 +4813,7 @@ if(n.synchronizeOrientation.chartToDisplay!==""){n.scroll.scrollToElement("#"+n.
 }},p+s)
 }else{setTimeout(function(){n.scroll.rebuild("analysis",{restorePosition:true});
 n.mask.hide("preventTap");
-n.iOSLog.debug("rebuilt")
+n.iOSLog.debug("rebuilt on synchronizeOrientation")
 },p+s)
 }};
 n.synchronizeOrientation.pendingCount=0;

@@ -641,21 +641,6 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         load(chartsToLoad);
     }
 
-//    function addChartToPresentation(chartToAdd) {
-//        var sb          = new helper.StringBuilder(),
-//            chartId     = chartToAdd.getContainerId() || null,
-//            containerId = '';
-
-//        if (!chartId) return;
-
-//        containerId = "presentation-" + chartId;
-//        sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
-//        $(el.presentationChartsContainer).append(sb.toString());
-
-////        var presentationChart = chartToAdd.clone();
-////        presentationChart.setContainerId(containerId);
-//    }
-
     // TODO: Investigate...
     chartManager.on('onAnalysisLoaded', function () {
         eventManager.raiseEvent('onAllChartsLoaded');
@@ -675,10 +660,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
     });
 
     chartManager.on('chartReady', function (chart) {
-        // addChartToPresentation(chart)
-        //        var clonedChart = chart.clone();
-        //        $('#' + chartId).parent().removeClass('genericLoadingMask');
-        //        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
+        // Add code here...
     });
 
     chartComponents.load = load;

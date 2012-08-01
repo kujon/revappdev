@@ -290,13 +290,14 @@ Zepto(function ($) {
         theApp.nav.goToPage($(el.analysisPage), 'dissolve');
 
         function renderAnalysisPage(portfolio) {
-            var chartsToRender = [],
-                analysisPagesData = {},
-                analysisPage = {},
-                portfolioId = portfolio.code,
-                portfolioName = portfolio.name,
-                analysisPageCharts = null,
-                analysisPageTitle = '',
+            var chartsToRender        = [],
+                analysisPagesData     = {},
+                analysisPage          = {},
+                portfolioId           = portfolio.code,
+                portfolioName         = portfolio.name,
+                analysisPageCharts    = null,
+                analysisPageTitle     = '',
+                presentationViewWidth = 0,
                 i;
 
             analysisPagesData = theApp.analysisManager.getData('analysisPages');
@@ -345,21 +346,25 @@ Zepto(function ($) {
                 }
             });
 
+            // Set and save the last used analysis object.
             theApp.setLastAnalysisObjectUsed(analysisDataObject);
             theApp.setLastAnalysisObjectUsed({
                 portfolioId: portfolioId,
                 portfolioName: portfolioName
             });
+            theApp.saveLastAnalysisObjectUsed();
 
             // Deselect Settings button when charts have been rendered.
             theApp.tabbar.getButton('settings').setHighlight(false);
 
-            theApp.saveLastAnalysisObjectUsed();
+            // Synchronize toolbar buttons.
             theApp.synchronizeFavouriteButton();
             theApp.synchronizeConsoleButton();
 
-            theApp.chartComponents.render(chartsToRender, '#analysis_partial');
+            theApp.chartComponents.render(chartsToRender, el.analysisPage + '_partial');
             theApp.synchronizeOrientation();
+
+            // Generic UI stuffs.
             $(el.analysisComponentFullScreenButton).on('tap', function (e, info) {
                 var data = {
                     chartId:  $(this).attr('data-chartId'),
@@ -368,6 +373,10 @@ Zepto(function ($) {
 
                 theApp.presentationManager.enterPresentationMode(data);
             });
+
+            // Set the width of the presentation view in order to contain all charts.
+            presentationViewWidth = parseInt((chartsToRender.length || 1) * device.maxWidth(), 10);
+            $(el.presentationChartsContainer).width(presentationViewWidth);
         }
 
         function onLoadPortfolioAnalysisCompleted(portfolio) {
@@ -407,8 +416,9 @@ Zepto(function ($) {
 
             $chart.height(chartHeight);
             $chart.parent().data('realHeight',  realHeight);
-
-            theApp.scroll.rebuild('analysis');
+            theApp.iOSLog.debug('rebuilt on onChartLoaded');
+            theApp.scroll.saveScrollPosition();
+            theApp.scroll.rebuild('analysis', { restorePosition: true });
         }
         // $chart.parent().parent().css({ 'opacity': 1 });
     });
@@ -441,7 +451,7 @@ Zepto(function ($) {
             restorePosition: true
         });
 
-        theApp.scroll.scrollToPage(data.chartOrder, 0, 1500);
+        theApp.scroll.scrollToPage(data.chartOrder, 0, 0);
     });
 
     theApp.presentationManager.on('onEnter', function (data) {
@@ -450,19 +460,13 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onExit', function () {
         theApp.isFullScreen = false;
-        // theApp.scroll.restoreScrollPosition();
+        theApp.iOSLog.debug('rebuilt on onExit');
         theApp.scroll.rebuild('analysis', { restorePosition: true });
     });
 
-//    theApp.scroll.on('onScrolledToPage', function (page) {
-//        var chartTitle = '';
-
-//        if ( theApp.isFullScreen) { 
-//            chartTitle = $(el.presentationChartsContainer + ' div:nth-child(' + (page + 1) + ')').data('title');
-//            $('#fullScreenHeader h2').html(chartTitle);
-//            //return; 
-//        }
-//    });
+    theApp.scroll.on('onScrolledToPage', function (page) {
+        // Add code here...
+    });
 
     // ------------------------------------------
     // SETTINGS PAGES
@@ -897,6 +901,7 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onAnalysisEnd', function () {
+        theApp.iOSLog.debug('rebuilt on onAnalysisEnd');
         theApp.scroll.rebuild('analysis');
 
         // Deselect Settings button.
@@ -1256,7 +1261,7 @@ Zepto(function ($) {
             setTimeout(function () {
                 theApp.scroll.rebuild('analysis', { restorePosition: true });
                 theApp.mask.hide('preventTap');
-                theApp.iOSLog.debug('rebuilt');
+                theApp.iOSLog.debug('rebuilt on synchronizeOrientation');
             }, animationSpeed + rebuildingDelay);
         }
     };
