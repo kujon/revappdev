@@ -112,7 +112,7 @@
 						
 		#reset
 			.toolbar
-				h1 #{lang.settingsPages.themesText}
+				h1 #{lang.settingsPages.resetText}
 				a.back(href='#settings') #{lang.shared.backText}
 			ul.rounded
 				li#resetCurrentSettingsButton.centeredText #{lang.settingsPages.resetCurrentSettingsText}
@@ -257,7 +257,7 @@
 				h3 #{lang.analysisPage.endDate}
 		#wrapper(style="top: 68px; height: 680px !important;")	
 			#horizontal_scroller
-				#testChart
+				#presentationChartsContainer
 					// #a.presentationContainer a
 					// #b.presentationContainer b
 					// #c.presentationContainer c
@@ -266,10 +266,10 @@
 	#fullScreenMask
 	#turnIcon
 
-#myloading.modalBackground
+#ajaxLoadingMask.modalTransparentBackground.showLoading
 
 #preventTapMask.modalTransparentBackground
 
-#myLoadingCharts.modalBackground
+#chartLoadingMask.modalTransparentBackground
 	#loadingText
 	

@@ -18,7 +18,7 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
     masks.ajax = {
         name        : 'ajax',
         enabled     : true,
-        el          : el.loadingMask
+        el          : el.ajaxLoadingMask
     };
 
     masks.analysis = {
@@ -35,7 +35,7 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
     
     masks['default'] = masks.ajax;
 
-    $(el.loadingMask).click(function(){
+    $(el.ajaxLoadingMask).click(function(){
         hide('ajax');
     });
 

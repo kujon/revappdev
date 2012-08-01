@@ -160,7 +160,7 @@ html, body
     clear: both;
 }
 
-#testChart 
+#presentationChartsContainer 
 {
     /*display: table-cell;*/
     width: 5120px;
@@ -169,7 +169,7 @@ html, body
     padding-left: 10px;
 }
 
-/*#testChart div:last-child 
+/*#presentationChartsContainer div:last-child 
 {
     background-color: Green !important;
     clear: both;
@@ -306,28 +306,30 @@ html, body
     height: 100%;
     position: absolute;
     left: 0;
-    top: 0;
+    top: 44px;
+    bottom: 68px;
     display: none;
+    background-image: -webkit-radial-gradient(
+        rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .5) 95%
+    );
+    background-repeat: no-repeat;
+    background-position: center center;	    
 }
 
-#myloading
+.showLoading
+{
+    background-image: -webkit-radial-gradient(
+        rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .5) 95%
+        ), url('../images/loading.gif') !important;
+}
+/*#ajaxLoadingMask
 {
     background-image: url('../images/loading.gif');
     background-repeat: no-repeat;
     background-position: center center;	
-}
+    display: none;
+}*/
 
-/*
-#myloading img, #myLoadingCharts img
-{
-    width: 32px;
-    height: 32px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin: -16px 0 0 -16px;
-}
-*/
 #loadingText {
 	width: 200px;
 	position: absolute;

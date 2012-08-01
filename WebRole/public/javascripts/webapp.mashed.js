@@ -6983,14 +6983,15 @@ WebAppLoader.addModule({ name: 'portfoliosList', plugins: [],
 // ISCROLL
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true }, function () {
     var scroll              = {},
         eventManager        = this.getEventManager(),
-        myScroll, // Please don't initialize myScroll.
+        helper              = this.getPlugin('helper'),
         savedScrollPosition = [],
         lastXPosition       = 0,
         lastYPosition       = 0,
-        isRebuilding        = false; 
+        isRebuilding        = false,
+        myScroll;           // Please don't initialize myScroll.
 
     /* Use this for high compatibility (iDevice + Android)*/
     document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
@@ -7058,20 +7059,34 @@ WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
         }, 100);
     }
 
-    function rebuildScroll(id, clickSafeMode, optionConfig, forceRebuilding, restorePosition) {
+    /*
+        var name                    = getValueAs(config.name, 'string'),
+            hasEvents               = getValueAs(config.hasEvents, 'boolean'),
+            isShared                = getValueAs(config.isShared, 'boolean'),
+            isPlugin                = getValueAs(config.isPlugin, 'boolean'),
+            pluginsToLoad           = getValueAs(config.plugins, 'array'),
+            sharedModulesToLoad     = getValueAs(config.sharedModules, 'array'),
+    */
+
+    function rebuildScroll(id, config) { // clickSafeMode, optionConfig, forceRebuilding, restorePosition) iScrollConfig{
+        var wrapper         = 'div#' + id + ' #wrapper',
+            config          = config || {},
+            clickSafeMode   = helper.getValueAs(config.clickSafeMode, 'boolean'),
+            forceRebuilding = helper.getValueAs(config.forceRebuilding, 'boolean'),
+            restorePosition = helper.getValueAs(config.restorePosition, 'boolean'),         
+            options         = helper.getValueAs(config.iScrollOptions, 'object');
+
         if (isRebuilding && !forceRebuilding) {
             return;
         } else {
             isRebuilding = true;
         }
 
-        var wrapper = 'div#' + id + ' #wrapper',
-            options = optionConfig || {}; // { hScrollbar: false, vScrollbar: true }
-
-        options.useTransform = (optionConfig && optionConfig.useTransform)
-            ? optionConfig.useTransform
+        options.useTransform = (options.useTransform)
+            ? options.useTransform
             : false;
 
+        // Overriden events.
         options.onBeforeScrollStart = function (e) {
             var target = e.target;
             while (target.nodeType != 1) target = target.parentNode;
@@ -7081,28 +7096,7 @@ WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
             }
         };
 
-        if (restorePosition) {
-            options.x = lastXPosition;
-            options.y = lastYPosition;
-        }
-
-        // Remove comments from these options if you want to activate the snap.
-        // options.snap = 'hr';
-        // options.momentum = true;
-        // options.zoom = true;
-        // options.snap = true;
-        // options.momentum = false;
-        // options.hScrollbar = false;
-        // options.vScrollbar = false;
-
-        // options.hScroll = false;
-        // options.vScroll = true;
-        
-//        options.onScrollMove = function() {
-//            //alert('onScrollMove');
-//        };
-//        
-//        options.onScrollEnd = function() {
+        //        options.onScrollEnd = function() {
 //            var page = 0;
 //            
 //            try {
@@ -7116,6 +7110,30 @@ WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
 //            eventManager.raiseEvent('onScrolledToPage', page);
 //            // alert('onScrollEnd: ' + this.currPageX + ' vs ' + Math.round(Math.abs(this.x / this.wrapperW)));
 //        };
+
+        
+//        options.onScrollMove = function() {
+//            //alert('onScrollMove');
+//        };
+//        
+
+
+        // Try to restore any previous position if requested.
+        if (restorePosition) {
+            options.x = lastXPosition;
+            options.y = lastYPosition;
+        }
+
+        // Remove comments from these options if you want to override defaults.
+        // options.snap = 'hr';
+        // options.momentum = true;
+        // options.zoom = true;
+        // options.snap = true;
+        // options.momentum = false;
+        // options.hScrollbar = false;
+        // options.vScrollbar = false;
+        // options.hScroll = false;
+        // options.vScroll = true;
 
         if (myScroll) {
             myScroll.destroy();
@@ -7153,7 +7171,7 @@ WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
         }
     }
 
-    scroll.rebuild = rebuildScroll;
+    scroll.rebuild = rebuildScroll; // Alias
     scroll.goUp = goUp;
     scroll.saveScrollPosition = saveScrollPosition;
     scroll.restoreScrollPosition = restoreScrollPosition;
@@ -8017,7 +8035,7 @@ WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true
 // CHARTS MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedModules: ['chartManager', 'localizationManager'],
+WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedModules: ['chartManager', 'localizationManager', 'pageElements'],
     dataObjects: ['charts'], hasEvents: true, isShared: true
 }, function () {
 
@@ -8027,8 +8045,9 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         helper           = this.getPlugin('helper'),
         chartManager     = this.getSharedModule('chartManager'),
         lang             = this.getSharedModule('localizationManager').getLanguage() || {},
-        createdCharts    = {},
+        el               = this.getSharedModule('pageElements'),
         chartsDataObject = this.getDataObject('charts'),
+        createdCharts    = {},
         chartsData       = null;
 
     chartsDataObject.define({
@@ -8566,7 +8585,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             sb.append('<div class="presentationContainer"><h2>{0}</h2>', chartTitle);
             sb.append('<div id="{0}" data-title="{2}">{1}</div>', containerId, chartId, chartTitle);
             sb.append('</div>');
-            $('#testChart').append(sb.toString());
+            $(el.presentationChartsContainer).append(sb.toString());
         }
 
         function addChartToAnalysisSection(chartToAdd, containerClass) {
@@ -8664,7 +8683,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
 
 //        containerId = "presentation-" + chartId;
 //        sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
-//        $('#testChart').append(sb.toString());
+//        $(el.presentationChartsContainer).append(sb.toString());
 
 ////        var presentationChart = chartToAdd.clone();
 ////        presentationChart.setContainerId(containerId);
@@ -9442,7 +9461,7 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
     masks.ajax = {
         name        : 'ajax',
         enabled     : true,
-        el          : el.loadingMask
+        el          : el.ajaxLoadingMask
     };
 
     masks.analysis = {
@@ -9459,7 +9478,7 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
     
     masks['default'] = masks.ajax;
 
-    $(el.loadingMask).click(function(){
+    $(el.ajaxLoadingMask).click(function(){
         hide('ajax');
     });
 
@@ -9667,8 +9686,8 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         toolbar                             : '.toolbar',
         loginButton                         : '#loginButton',
         loginErrorText                      : '#loginErrorText',
-        loadingMask                         : '#myloading',
-        chartLoadingMask                    : '#myLoadingCharts',
+        ajaxLoadingMask                     : '#ajaxLoadingMask',
+        chartLoadingMask                    : '#chartLoadingMask',
         preventTapMask                      : '#preventTapMask',
         userNameTextbox                     : '#userNameTextbox',
         passwordTextbox                     : '#passwordTextbox',
@@ -9696,7 +9715,8 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         fullScreenContainer                 : '#fullScreenContainer',
         minimizeButton                      : '#minimizeButton',
         fullScreenMask                      : '#fullScreenMask',
-	    turnIcon                            : '#turnIcon'
+	    turnIcon                            : '#turnIcon',
+        presentationChartsContainer         : '#presentationChartsContainer'
     };
 
     return pageElements;
@@ -11814,14 +11834,21 @@ Zepto(function ($) {
         // $('#fullScreenSummary .summaryTitle h3').html($('#analysisSummary h1').html());
 
         // Save scroll position and rebuild a new one.
+        // useTransform: true, zoom: true, zoomMax: 1.5 },
         theApp.scroll.saveScrollPosition();        
         theApp.scroll.rebuild(
-            'fullScreenContainer', 
-            false, 
-            {   hScroll: true, vScroll: false, hScrollbar: true, snap: true, bounce: false, momentum: false, snapThreshold: 50 }, // Note: x uses negative values.
-            // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false },
-            true
-        );
+            'fullScreenContainer', { 
+            iScrollOptions : {
+                // Scrolling options:
+                hScroll: true, vScroll: false, hScrollbar: true,
+                // Snap options:
+                snap: true, snapThreshold: 50, bounce: false, momentum: false
+                // Zoom options:
+                // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false
+            },
+            restorePosition: true
+        });
+
         theApp.scroll.scrollToPage(data.chartOrder, 0, 1500);
     });
 
@@ -11832,14 +11859,14 @@ Zepto(function ($) {
     theApp.presentationManager.on('onExit', function () {
         theApp.isFullScreen = false;
         // theApp.scroll.restoreScrollPosition();
-        theApp.scroll.rebuild('analysis', false, null, false, true);
+        theApp.scroll.rebuild('analysis', { restorePosition: true });
     });
 
 //    theApp.scroll.on('onScrolledToPage', function (page) {
 //        var chartTitle = '';
 
 //        if ( theApp.isFullScreen) { 
-//            chartTitle = $('#testChart div:nth-child(' + (page + 1) + ')').data('title');
+//            chartTitle = $(el.presentationChartsContainer + ' div:nth-child(' + (page + 1) + ')').data('title');
 //            $('#fullScreenHeader h2').html(chartTitle);
 //            //return; 
 //        }
@@ -12061,7 +12088,7 @@ Zepto(function ($) {
             $(el.analysisPage + '_partial').html('');
 
             // Clear the presentation view.
-            $('#testChart').html('');
+            $(el.presentationChartsContainer).html('');
         }
     };
 
@@ -12287,7 +12314,7 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onSettingsStart', function () {
-        theApp.scroll.rebuild('settings', true); // Pass in true to ensure form elements are clickable.
+        theApp.scroll.rebuild('settings', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onSettingsStart');
     });
 
@@ -12296,12 +12323,12 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onAnalysisSettingsEnd', function () {
-        theApp.scroll.rebuild('analysisSettings', true); // Pass in true to ensure form elements are clickable.
+        theApp.scroll.rebuild('analysisSettings', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onAnalysisSettingsEnd');
     });
 
     theApp.pageEventsManager.on('onAnalysisPagesSettingsStart', function () {
-        theApp.scroll.rebuild('analysisPagesSettings', true); // Pass in true to ensure form elements are clickable.
+        theApp.scroll.rebuild('analysisPagesSettings', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         theApp.showAnalysisSettingsPage();
         output.log('onAnalysisPagesSettingsStart');
     });
@@ -12316,7 +12343,7 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onAboutEnd', function () {
-        theApp.scroll.rebuild('about', true); // Pass in true to ensure form elements are clickable.
+        theApp.scroll.rebuild('about', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onAboutEnd');
     });
 
@@ -12326,7 +12353,7 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onResetEnd', function () {
-        theApp.scroll.rebuild('reset', true); // Pass in true to ensure form elements are clickable.
+        theApp.scroll.rebuild('reset', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onResetEnd');
     });
 
@@ -12635,7 +12662,7 @@ Zepto(function ($) {
             }, animationSpeed + rebuildingDelay);
         } else {
             setTimeout(function () {
-                theApp.scroll.rebuild('analysis', false, null, false, true);
+                theApp.scroll.rebuild('analysis', { restorePosition: true });
                 theApp.mask.hide('preventTap');
                 theApp.iOSLog.debug('rebuilt');
             }, animationSpeed + rebuildingDelay);

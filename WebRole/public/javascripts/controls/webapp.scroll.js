@@ -2,14 +2,15 @@
 // ISCROLL
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true }, function () {
     var scroll              = {},
         eventManager        = this.getEventManager(),
-        myScroll, // Please don't initialize myScroll.
+        helper              = this.getPlugin('helper'),
         savedScrollPosition = [],
         lastXPosition       = 0,
         lastYPosition       = 0,
-        isRebuilding        = false; 
+        isRebuilding        = false,
+        myScroll;           // Please don't initialize myScroll.
 
     /* Use this for high compatibility (iDevice + Android)*/
     document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
@@ -77,20 +78,34 @@ WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
         }, 100);
     }
 
-    function rebuildScroll(id, clickSafeMode, optionConfig, forceRebuilding, restorePosition) {
+    /*
+        var name                    = getValueAs(config.name, 'string'),
+            hasEvents               = getValueAs(config.hasEvents, 'boolean'),
+            isShared                = getValueAs(config.isShared, 'boolean'),
+            isPlugin                = getValueAs(config.isPlugin, 'boolean'),
+            pluginsToLoad           = getValueAs(config.plugins, 'array'),
+            sharedModulesToLoad     = getValueAs(config.sharedModules, 'array'),
+    */
+
+    function rebuildScroll(id, config) { // clickSafeMode, optionConfig, forceRebuilding, restorePosition) iScrollConfig{
+        var wrapper         = 'div#' + id + ' #wrapper',
+            config          = config || {},
+            clickSafeMode   = helper.getValueAs(config.clickSafeMode, 'boolean'),
+            forceRebuilding = helper.getValueAs(config.forceRebuilding, 'boolean'),
+            restorePosition = helper.getValueAs(config.restorePosition, 'boolean'),         
+            options         = helper.getValueAs(config.iScrollOptions, 'object');
+
         if (isRebuilding && !forceRebuilding) {
             return;
         } else {
             isRebuilding = true;
         }
 
-        var wrapper = 'div#' + id + ' #wrapper',
-            options = optionConfig || {}; // { hScrollbar: false, vScrollbar: true }
-
-        options.useTransform = (optionConfig && optionConfig.useTransform)
-            ? optionConfig.useTransform
+        options.useTransform = (options.useTransform)
+            ? options.useTransform
             : false;
 
+        // Overriden events.
         options.onBeforeScrollStart = function (e) {
             var target = e.target;
             while (target.nodeType != 1) target = target.parentNode;
@@ -100,28 +115,7 @@ WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
             }
         };
 
-        if (restorePosition) {
-            options.x = lastXPosition;
-            options.y = lastYPosition;
-        }
-
-        // Remove comments from these options if you want to activate the snap.
-        // options.snap = 'hr';
-        // options.momentum = true;
-        // options.zoom = true;
-        // options.snap = true;
-        // options.momentum = false;
-        // options.hScrollbar = false;
-        // options.vScrollbar = false;
-
-        // options.hScroll = false;
-        // options.vScroll = true;
-        
-//        options.onScrollMove = function() {
-//            //alert('onScrollMove');
-//        };
-//        
-//        options.onScrollEnd = function() {
+        //        options.onScrollEnd = function() {
 //            var page = 0;
 //            
 //            try {
@@ -135,6 +129,30 @@ WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
 //            eventManager.raiseEvent('onScrolledToPage', page);
 //            // alert('onScrollEnd: ' + this.currPageX + ' vs ' + Math.round(Math.abs(this.x / this.wrapperW)));
 //        };
+
+        
+//        options.onScrollMove = function() {
+//            //alert('onScrollMove');
+//        };
+//        
+
+
+        // Try to restore any previous position if requested.
+        if (restorePosition) {
+            options.x = lastXPosition;
+            options.y = lastYPosition;
+        }
+
+        // Remove comments from these options if you want to override defaults.
+        // options.snap = 'hr';
+        // options.momentum = true;
+        // options.zoom = true;
+        // options.snap = true;
+        // options.momentum = false;
+        // options.hScrollbar = false;
+        // options.vScrollbar = false;
+        // options.hScroll = false;
+        // options.vScroll = true;
 
         if (myScroll) {
             myScroll.destroy();
@@ -172,7 +190,7 @@ WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
         }
     }
 
-    scroll.rebuild = rebuildScroll;
+    scroll.rebuild = rebuildScroll; // Alias
     scroll.goUp = goUp;
     scroll.saveScrollPosition = saveScrollPosition;
     scroll.restoreScrollPosition = restoreScrollPosition;

@@ -29,8 +29,8 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         toolbar                             : '.toolbar',
         loginButton                         : '#loginButton',
         loginErrorText                      : '#loginErrorText',
-        loadingMask                         : '#myloading',
-        chartLoadingMask                    : '#myLoadingCharts',
+        ajaxLoadingMask                     : '#ajaxLoadingMask',
+        chartLoadingMask                    : '#chartLoadingMask',
         preventTapMask                      : '#preventTapMask',
         userNameTextbox                     : '#userNameTextbox',
         passwordTextbox                     : '#passwordTextbox',
@@ -58,7 +58,8 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         fullScreenContainer                 : '#fullScreenContainer',
         minimizeButton                      : '#minimizeButton',
         fullScreenMask                      : '#fullScreenMask',
-	    turnIcon                            : '#turnIcon'
+	    turnIcon                            : '#turnIcon',
+        presentationChartsContainer         : '#presentationChartsContainer'
     };
 
     return pageElements;

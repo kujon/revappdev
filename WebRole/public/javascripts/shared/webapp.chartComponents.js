@@ -2,7 +2,7 @@
 // CHARTS MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedModules: ['chartManager', 'localizationManager'],
+WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedModules: ['chartManager', 'localizationManager', 'pageElements'],
     dataObjects: ['charts'], hasEvents: true, isShared: true
 }, function () {
 
@@ -12,8 +12,9 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         helper           = this.getPlugin('helper'),
         chartManager     = this.getSharedModule('chartManager'),
         lang             = this.getSharedModule('localizationManager').getLanguage() || {},
-        createdCharts    = {},
+        el               = this.getSharedModule('pageElements'),
         chartsDataObject = this.getDataObject('charts'),
+        createdCharts    = {},
         chartsData       = null;
 
     chartsDataObject.define({
@@ -551,7 +552,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             sb.append('<div class="presentationContainer"><h2>{0}</h2>', chartTitle);
             sb.append('<div id="{0}" data-title="{2}">{1}</div>', containerId, chartId, chartTitle);
             sb.append('</div>');
-            $('#testChart').append(sb.toString());
+            $(el.presentationChartsContainer).append(sb.toString());
         }
 
         function addChartToAnalysisSection(chartToAdd, containerClass) {
@@ -649,7 +650,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
 
 //        containerId = "presentation-" + chartId;
 //        sb.append('<div id="{0}" class="presentationContainer">{1}</div>', containerId, chartId);
-//        $('#testChart').append(sb.toString());
+//        $(el.presentationChartsContainer).append(sb.toString());
 
 ////        var presentationChart = chartToAdd.clone();
 ////        presentationChart.setContainerId(containerId);

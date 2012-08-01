@@ -426,14 +426,21 @@ Zepto(function ($) {
         // $('#fullScreenSummary .summaryTitle h3').html($('#analysisSummary h1').html());
 
         // Save scroll position and rebuild a new one.
+        // useTransform: true, zoom: true, zoomMax: 1.5 },
         theApp.scroll.saveScrollPosition();        
         theApp.scroll.rebuild(
-            'fullScreenContainer', 
-            false, 
-            {   hScroll: true, vScroll: false, hScrollbar: true, snap: true, bounce: false, momentum: false, snapThreshold: 50 }, // Note: x uses negative values.
-            // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false },
-            true
-        );
+            'fullScreenContainer', { 
+            iScrollOptions : {
+                // Scrolling options:
+                hScroll: true, vScroll: false, hScrollbar: true,
+                // Snap options:
+                snap: true, snapThreshold: 50, bounce: false, momentum: false
+                // Zoom options:
+                // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false
+            },
+            restorePosition: true
+        });
+
         theApp.scroll.scrollToPage(data.chartOrder, 0, 1500);
     });
 
@@ -444,14 +451,14 @@ Zepto(function ($) {
     theApp.presentationManager.on('onExit', function () {
         theApp.isFullScreen = false;
         // theApp.scroll.restoreScrollPosition();
-        theApp.scroll.rebuild('analysis', false, null, false, true);
+        theApp.scroll.rebuild('analysis', { restorePosition: true });
     });
 
 //    theApp.scroll.on('onScrolledToPage', function (page) {
 //        var chartTitle = '';
 
 //        if ( theApp.isFullScreen) { 
-//            chartTitle = $('#testChart div:nth-child(' + (page + 1) + ')').data('title');
+//            chartTitle = $(el.presentationChartsContainer + ' div:nth-child(' + (page + 1) + ')').data('title');
 //            $('#fullScreenHeader h2').html(chartTitle);
 //            //return; 
 //        }
@@ -673,7 +680,7 @@ Zepto(function ($) {
             $(el.analysisPage + '_partial').html('');
 
             // Clear the presentation view.
-            $('#testChart').html('');
+            $(el.presentationChartsContainer).html('');
         }
     };
 
@@ -899,7 +906,7 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onSettingsStart', function () {
-        theApp.scroll.rebuild('settings', true); // Pass in true to ensure form elements are clickable.
+        theApp.scroll.rebuild('settings', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onSettingsStart');
     });
 
@@ -908,12 +915,12 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onAnalysisSettingsEnd', function () {
-        theApp.scroll.rebuild('analysisSettings', true); // Pass in true to ensure form elements are clickable.
+        theApp.scroll.rebuild('analysisSettings', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onAnalysisSettingsEnd');
     });
 
     theApp.pageEventsManager.on('onAnalysisPagesSettingsStart', function () {
-        theApp.scroll.rebuild('analysisPagesSettings', true); // Pass in true to ensure form elements are clickable.
+        theApp.scroll.rebuild('analysisPagesSettings', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         theApp.showAnalysisSettingsPage();
         output.log('onAnalysisPagesSettingsStart');
     });
@@ -928,7 +935,7 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onAboutEnd', function () {
-        theApp.scroll.rebuild('about', true); // Pass in true to ensure form elements are clickable.
+        theApp.scroll.rebuild('about', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onAboutEnd');
     });
 
@@ -938,7 +945,7 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onResetEnd', function () {
-        theApp.scroll.rebuild('reset', true); // Pass in true to ensure form elements are clickable.
+        theApp.scroll.rebuild('reset', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onResetEnd');
     });
 
@@ -1247,7 +1254,7 @@ Zepto(function ($) {
             }, animationSpeed + rebuildingDelay);
         } else {
             setTimeout(function () {
-                theApp.scroll.rebuild('analysis', false, null, false, true);
+                theApp.scroll.rebuild('analysis', { restorePosition: true });
                 theApp.mask.hide('preventTap');
                 theApp.iOSLog.debug('rebuilt');
             }, animationSpeed + rebuildingDelay);
