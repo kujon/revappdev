@@ -23,7 +23,7 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         eventManager.raiseEvent('onBeforeEnter', data);
 
         $(el.fullScreenPage).show();
-        $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 1500, easing: 'ease-out', complete: function () {
+        $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
             eventManager.raiseEvent('onEnter', data);
         }});
                 

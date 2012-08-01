@@ -3255,21 +3255,23 @@ f.scrollTo(0,u,t+100)
 }catch(s){}},100)
 }function n(o,p,q){setTimeout(function(){try{f.scrollToPage(o||0,p||0,q||1000,true)
 }catch(s){}},100)
-}function g(q,o,s,p){if(c&&!p){return
+}function g(q,o,s,p,v){if(c&&!p){return
 }else{c=true
-}var v="div#"+q+" #wrapper",t=s||{};
+}var w="div#"+q+" #wrapper",t=s||{};
 t.useTransform=(s&&s.useTransform)?s.useTransform:false;
-t.onBeforeScrollStart=function(w){var x=w.target;
-while(x.nodeType!=1){x=x.parentNode
-}if(o&&x.tagName!="SELECT"&&x.tagName!="INPUT"&&x.tagName!="TEXTAREA"){w.preventDefault()
+t.onBeforeScrollStart=function(x){var y=x.target;
+while(y.nodeType!=1){y=y.parentNode
+}if(o&&y.tagName!="SELECT"&&y.tagName!="INPUT"&&y.tagName!="TEXTAREA"){x.preventDefault()
 }};
-if(f){f.destroy();
+if(v){t.x=d;
+t.y=e
+}if(f){f.destroy();
 f=null;
-function u(w){function x(y){if(y.length>0){y.remove();
-if(w.next().length>0){u(w.next())
-}}}x(w.next())
-}u($(v).find("#scroller","#horizontal_scroller"))
-}if($(v).get(0)){setTimeout(function(){f=new iScroll($(v).get(0),t);
+function u(x){function y(z){if(z.length>0){z.remove();
+if(x.next().length>0){u(x.next())
+}}}y(x.next())
+}u($(w).find("#scroller","#horizontal_scroller"))
+}if($(w).get(0)){setTimeout(function(){f=new iScroll($(w).get(0),t);
 c=false
 },25)
 }}function b(){try{f.scrollTo(0,0,200)
@@ -4107,7 +4109,7 @@ function c(l){f=true;
 k();
 d.raiseEvent("onBeforeEnter",l);
 $(b.fullScreenPage).show();
-$(b.fullScreenPage).animate({opacity:1},{duration:1500,easing:"ease-out",complete:function(){d.raiseEvent("onEnter",l)
+$(b.fullScreenPage).animate({opacity:1},{duration:750,easing:"ease-out",complete:function(){d.raiseEvent("onEnter",l)
 }})
 }function e(){f=false;
 $(b.fullScreenPage).animate({opacity:0},{duration:750,easing:"ease-out",complete:function(){$(b.fullScreenPage).css({display:"none"})
@@ -4474,13 +4476,12 @@ a("#fullScreenSummary .summaryTitle h2").html(a("#analysisSummary .summaryTitle 
 a("#fullScreenSummary .summaryTitle h3").html(a("#analysisSummary .summaryTitle h3").html());
 n.scroll.saveScrollPosition();
 n.scroll.rebuild("fullScreenContainer",false,{hScroll:true,vScroll:false,hScrollbar:true,snap:true,bounce:false,momentum:false,snapThreshold:50},true);
-n.scroll.scrollToPage(p.chartOrder,0,500)
+n.scroll.scrollToPage(p.chartOrder,0,1500)
 });
 n.presentationManager.on("onEnter",function(p){n.isFullScreen=true
 });
 n.presentationManager.on("onExit",function(){n.isFullScreen=false;
-n.scroll.rebuild("analysis");
-n.scroll.restoreScrollPosition()
+n.scroll.rebuild("analysis",false,null,false,true)
 });
 n.showAnalysisSettingsPage=function(){var q={},p;
 q=n.analysisManager.getData("analysisPages");
@@ -4770,6 +4771,7 @@ n.synchronizeOrientation=function(){var p=25,s=1000,q=null;
 if(n.isFullScreen){return
 }p=(n.settings.appSettings.animatedChartResizing)?500:25;
 n.mask.show("preventTap");
+n.scroll.saveScrollPosition();
 a(".analysisComponentContainer").each(function(){var t,u,v,w,x,z,y,A;
 u=a(this);
 t=u.children().filter(".resizableChart");
@@ -4784,13 +4786,10 @@ u.data("realHeight",v)
 }else{A=u.data("realHeight");
 w=parseInt(A*y,10);
 x=parseInt(A*z,10)
-}n.iOSLog.debug(w+" - "+x);
-if(b.orientation()==="landscape"){t.css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"});
-u.height(w);
-n.iOSLog.debug("* "+w)
+}if(b.orientation()==="landscape"){t.css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"});
+u.height(w)
 }else{t.css({"-webkit-transform":"scale(.69)","-webkit-transform-origin":"left top"});
-u.height(x);
-n.iOSLog.debug("* "+x)
+u.height(x)
 }});
 if(n.settings.appSettings.automaticChartRepositioning){n.synchronizeOrientation.pendingCount+=1;
 setTimeout(function(){if(n.synchronizeOrientation.pendingCount>0){n.synchronizeOrientation.pendingCount-=1
@@ -4798,7 +4797,7 @@ setTimeout(function(){if(n.synchronizeOrientation.pendingCount>0){n.synchronizeO
 if(n.synchronizeOrientation.chartToDisplay!==""){n.scroll.scrollToElement("#"+n.synchronizeOrientation.chartToDisplay,75,25)
 }n.mask.hide("preventTap")
 }},p+s)
-}else{setTimeout(function(){n.scroll.rebuild("analysis");
+}else{setTimeout(function(){n.scroll.rebuild("analysis",false,null,false,true);
 n.mask.hide("preventTap");
 n.iOSLog.debug("rebuilt")
 },p+s)

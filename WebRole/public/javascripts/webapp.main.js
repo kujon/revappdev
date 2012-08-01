@@ -408,7 +408,6 @@ Zepto(function ($) {
             $chart.height(chartHeight);
             $chart.parent().data('realHeight',  realHeight);
 
-            // theApp.iOSLog.debug('Table resized: ' + chartId + ': ' + chartHeight + ' -> ' + realHeight);
             theApp.scroll.rebuild('analysis');
         }
         // $chart.parent().parent().css({ 'opacity': 1 });
@@ -435,7 +434,7 @@ Zepto(function ($) {
             // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false },
             true
         );
-        theApp.scroll.scrollToPage(data.chartOrder, 0, 500);
+        theApp.scroll.scrollToPage(data.chartOrder, 0, 1500);
     });
 
     theApp.presentationManager.on('onEnter', function (data) {
@@ -444,8 +443,8 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onExit', function () {
         theApp.isFullScreen = false;
-        theApp.scroll.rebuild('analysis');
-        theApp.scroll.restoreScrollPosition();
+        // theApp.scroll.restoreScrollPosition();
+        theApp.scroll.rebuild('analysis', false, null, false, true);
     });
 
 //    theApp.scroll.on('onScrolledToPage', function (page) {
@@ -1190,6 +1189,7 @@ Zepto(function ($) {
             : 25;
 
         theApp.mask.show('preventTap');
+        theApp.scroll.saveScrollPosition();
 
         $('.analysisComponentContainer').each(function(){
             var $component, $container, containerHeight, containerLandscapeHeight, 
@@ -1217,16 +1217,12 @@ Zepto(function ($) {
                 containerPortraitHeight = parseInt(realHeightData * portraitScaleRatio, 10);
             }
             
-            theApp.iOSLog.debug(containerLandscapeHeight + ' - ' + containerPortraitHeight);
-
             if (device.orientation() === 'landscape') {
                 $component.css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});
                 $container.height(containerLandscapeHeight);
-                theApp.iOSLog.debug('* ' + containerLandscapeHeight);
             } else {
                 $component.css({'-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top'});  
                 $container.height(containerPortraitHeight);
-                theApp.iOSLog.debug('* ' + containerPortraitHeight);
            }
         });
 
@@ -1251,7 +1247,7 @@ Zepto(function ($) {
             }, animationSpeed + rebuildingDelay);
         } else {
             setTimeout(function () {
-                theApp.scroll.rebuild('analysis');
+                theApp.scroll.rebuild('analysis', false, null, false, true);
                 theApp.mask.hide('preventTap');
                 theApp.iOSLog.debug('rebuilt');
             }, animationSpeed + rebuildingDelay);

@@ -77,7 +77,7 @@ WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
         }, 100);
     }
 
-    function rebuildScroll(id, clickSafeMode, optionConfig, forceRebuilding) {
+    function rebuildScroll(id, clickSafeMode, optionConfig, forceRebuilding, restorePosition) {
         if (isRebuilding && !forceRebuilding) {
             return;
         } else {
@@ -99,6 +99,11 @@ WebAppLoader.addModule({ name: 'scroll', hasEvents: true }, function () {
                 e.preventDefault();
             }
         };
+
+        if (restorePosition) {
+            options.x = lastXPosition;
+            options.y = lastYPosition;
+        }
 
         // Remove comments from these options if you want to activate the snap.
         // options.snap = 'hr';
