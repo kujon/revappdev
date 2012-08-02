@@ -23,7 +23,7 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
     });
     
     // Enlarge and center the title to prevet ellispsis.
-    $('#jqt .toolbar > h1').width(300).css('margin', '1px 0 0 -150px');
+    $('#jqt .toolbar > h1').width('80%').css({ 'margin': '0 0 0 -40%'});
 
     function getButton(index) {
         if (typeof index == 'string') {

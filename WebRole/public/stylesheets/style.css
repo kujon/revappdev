@@ -72,6 +72,11 @@ html, body
 	-webkit-transition: opacity 1s;
 }*/
 
+.analysisWrapper 
+{
+    top: 105px !important;
+ }
+
 #analysis_partial h2, #analysisSummary h2, #analysisSummary h3 {    
     font-family: HelveticaNeue-Bold !important;
     margin: 0 !important;
@@ -311,7 +316,7 @@ html, body
     height: 100%;
     position: absolute;
     left: 0;
-    top: 100px; /* 44px; */
+    top: 44px;
     bottom: 68px;
     display: none;
     background-image: -webkit-radial-gradient(

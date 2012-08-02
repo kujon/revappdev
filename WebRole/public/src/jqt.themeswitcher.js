@@ -30,7 +30,8 @@
                     themeIncluded: [
                         {title: 'Awesome', href: scriptpath + '../themes/css/mobile-dark.css'},
                         {title: 'Apple', href: scriptpath + '../themes/css/apple.css'},
-                        {title: 'Boring', href: scriptpath + '../themes/css/jqtouch.css'}
+                        {title: 'Boring', href: scriptpath + '../themes/css/jqtouch.css'},
+                        {title: 'Revolution', href: scriptpath + '../themes/css/revolution.css'}
                     ]
                 },
                 options = $.extend({}, defaults, jQT.settings);

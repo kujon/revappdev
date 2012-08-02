@@ -2139,7 +2139,8 @@ var Zepto = (function () {
                     themeIncluded: [
                         {title: 'Awesome', href: scriptpath + '../themes/css/mobile-dark.css'},
                         {title: 'Apple', href: scriptpath + '../themes/css/apple.css'},
-                        {title: 'Boring', href: scriptpath + '../themes/css/jqtouch.css'}
+                        {title: 'Boring', href: scriptpath + '../themes/css/jqtouch.css'},
+                        {title: 'Revolution', href: scriptpath + '../themes/css/revolution.css'}
                     ]
                 },
                 options = $.extend({}, defaults, jQT.settings);
@@ -7455,7 +7456,7 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
     });
     
     // Enlarge and center the title to prevet ellispsis.
-    $('#jqt .toolbar > h1').width(300).css('margin', '1px 0 0 -150px');
+    $('#jqt .toolbar > h1').width('80%').css({ 'margin': '0 0 0 -40%'});
 
     function getButton(index) {
         if (typeof index == 'string') {
@@ -9095,7 +9096,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                 maxColor, minColor, midColor, midGradientPosition,
                 values = [], sliceOptions = [],
                 isAllPositiveOrNegative, containerId, gaugeLegendId,
-                presentationContainerId;
+                presentationContainerId, tableWidth, tableHeight;
 
             output.log(data);
 
@@ -9118,8 +9119,10 @@ WebAppLoader.addModule({ name: 'chartManager',
             });
 
             if (type === 'Table') {
-                chart.setOption('height', chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
-                chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
+                tableWidth = '96% !important;'; // chartDefaults.resizingSettings.tableWidth + 'px !important'; // ASA
+                tableHeight = chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()) + 'px !important';
+                chart.setOption('height', tableHeight);
+                chart.setOption('width', tableWidth);
             }
 
             // If our chart is a pie chart and we're displaying it as a heatmap...
@@ -9260,7 +9263,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                 presentationChart.setOption('height', 680);
                 presentationChart.setOption('width', 1024);
             } else {
-                presentationChart.setOption('width', 1024);
+                presentationChart.setOption('width', '96% !important');
             }
             presentationChart.draw();
         }
@@ -11444,7 +11447,8 @@ Zepto(function ($) {
     theApp.defaultLanguage = "en-US";
 
     theApp.isFullScreen = false;
-    
+    theApp.preventAnalysisRebuilding = false;
+
     /* ----------------------- ON/OFF ----------------------- /
        'Switch comments off changing /* in //* and viceversa'
     // ------------------------------------------------------ */
@@ -11753,7 +11757,7 @@ Zepto(function ($) {
             theApp.synchronizeOrientation(false);
 
             // Generic UI stuffs.
-            $(el.analysisComponentFullScreenButton).on('tap', function (e, info) {
+            $(el.analysisComponentFullScreenButton).on('click', function (e, info) {
                 var data = {
                     chartId:  $(this).attr('data-chartId'),
                     chartOrder: $(this).attr('data-order')
@@ -11841,7 +11845,7 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onBeforeEnter', function (data) {
         theApp.updatePresentationSummaryInfo();
-
+        // theApp.scroll.scrollToPage(1);
         // Save scroll position and rebuild a new one.
         // useTransform: true, zoom: true, zoomMax: 1.5 },
         theApp.scroll.saveScrollPosition();        
@@ -11863,12 +11867,16 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onEnter', function (data) {
         theApp.isFullScreen = true;
+        // theApp.preventAnalysisRebuilding = true; // ASA TEST
     });
 
     theApp.presentationManager.on('onExit', function () {
         theApp.isFullScreen = false;
         theApp.scroll.rebuild('analysis', { restorePosition: true });
         theApp.iOSLog.debug('rebuilt on onExit');
+        // theApp.synchronizeOrientation(false); // ASA TEST
+        // theApp.preventAnalysisRebuilding = false; // ASA TEST
+        
     });
 
     theApp.scroll.on('onScrolledToPage', function (page) {
@@ -12308,8 +12316,10 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onAnalysisEnd', function () {
-        theApp.iOSLog.debug('rebuilt on onAnalysisEnd');
-        theApp.scroll.rebuild('analysis', { restorePosition: true });
+        if (!theApp.preventAnalysisRebuilding) {
+            theApp.iOSLog.debug('rebuilt on onAnalysisEnd');
+            theApp.scroll.rebuild('analysis', { restorePosition: true });
+        }
 
         // Deselect Settings button.
         theApp.tabbar.getButton('settings').setHighlight(false);

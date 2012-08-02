@@ -56,7 +56,8 @@ Zepto(function ($) {
     theApp.defaultLanguage = "en-US";
 
     theApp.isFullScreen = false;
-    
+    theApp.preventAnalysisRebuilding = false;
+
     /* ----------------------- ON/OFF ----------------------- /
        'Switch comments off changing /* in //* and viceversa'
     // ------------------------------------------------------ */
@@ -365,7 +366,7 @@ Zepto(function ($) {
             theApp.synchronizeOrientation(false);
 
             // Generic UI stuffs.
-            $(el.analysisComponentFullScreenButton).on('tap', function (e, info) {
+            $(el.analysisComponentFullScreenButton).on('click', function (e, info) {
                 var data = {
                     chartId:  $(this).attr('data-chartId'),
                     chartOrder: $(this).attr('data-order')
@@ -453,7 +454,7 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onBeforeEnter', function (data) {
         theApp.updatePresentationSummaryInfo();
-
+        // theApp.scroll.scrollToPage(1);
         // Save scroll position and rebuild a new one.
         // useTransform: true, zoom: true, zoomMax: 1.5 },
         theApp.scroll.saveScrollPosition();        
@@ -475,12 +476,16 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onEnter', function (data) {
         theApp.isFullScreen = true;
+        // theApp.preventAnalysisRebuilding = true; // ASA TEST
     });
 
     theApp.presentationManager.on('onExit', function () {
         theApp.isFullScreen = false;
         theApp.scroll.rebuild('analysis', { restorePosition: true });
         theApp.iOSLog.debug('rebuilt on onExit');
+        // theApp.synchronizeOrientation(false); // ASA TEST
+        // theApp.preventAnalysisRebuilding = false; // ASA TEST
+        
     });
 
     theApp.scroll.on('onScrolledToPage', function (page) {
@@ -920,8 +925,10 @@ Zepto(function ($) {
     });
 
     theApp.pageEventsManager.on('onAnalysisEnd', function () {
-        theApp.iOSLog.debug('rebuilt on onAnalysisEnd');
-        theApp.scroll.rebuild('analysis', { restorePosition: true });
+        if (!theApp.preventAnalysisRebuilding) {
+            theApp.iOSLog.debug('rebuilt on onAnalysisEnd');
+            theApp.scroll.rebuild('analysis', { restorePosition: true });
+        }
 
         // Deselect Settings button.
         theApp.tabbar.getButton('settings').setHighlight(false);

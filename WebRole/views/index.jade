@@ -59,10 +59,11 @@
 				.summaryReturn
 					h2#timePeriodEndDateText
 					h3 #{lang.analysisPage.endDate}
-			#wrapper(style="top:105px")
+			#wrapper.analysisWrapper
 				#scroller
 					#analysis_partial				
-
+			#analysisBar
+			#analysisLogo
 		#eula(data-pageEvents="both", class='pageWithEvents')
 			.toolbar
 				h1 #{lang.eulaPage.eulaText}
@@ -74,7 +75,7 @@
 		#settings(data-pageEvents="both")
 			.toolbar
 				h1 #{lang.settingsPages.settingsText}
-			#wrapper
+			#wrapper.settingsWrapper
 				#scroller
 					// h2 #{lang.settingsPages.applicationSettingsText}
 					ul.rounded

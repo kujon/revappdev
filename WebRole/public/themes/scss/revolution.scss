@@ -1,0 +1,208 @@
+/************************************************
+ * COLORS
+ ***********************************************/
+
+$base-color: #fff;
+$page-background-color: #ffffff;
+$highlight-color: #0065a4;
+
+$list-background-color: #ffffff;
+
+$toolbar-background-color: #0065a4;
+$toolbar-button-color: saturate(darken($toolbar-background-color, 10), 20);
+
+$rev-red-color: #B6121B;
+$rev-darkred-color: #920f15;
+$rev-blue-color: #0065a4;
+$rev-darkblue-color: #005991;
+$rev-darkgrey-color: #43525A;
+$rev-midgrey-color: #839097;
+$rev-lightgrey-color: #C1C7CB;
+
+@import 'include/core';
+
+/************************************************
+ * FONTS
+ ***********************************************/
+
+@include font-face("TizaRegular", font-files("tiza-webfont.svg"));
+@include font-face("CopystructNormal", font-files("copystructN-webfont.svg"));
+@include font-face("CopystructBold", font-files("copystructB-webfont.svg"));
+
+$toolbar-font-family: "TizaRegular";
+$summaryNormal-font-family: "CopystructNormal";
+$summaryBold-font-family: "CopystructBold";
+
+/************************************************
+ * POSITIONS
+ ***********************************************/
+
+#jqt {
+    > * {
+        @include background-image(
+            background_noise($size: 60, $opacity: .07),
+            bevel-gradient($base-color)
+        );
+    }
+
+    .toolbar {
+        @include background-image(
+            linear-gradient(rgba($rev-red-color, 1), rgba($rev-darkred-color, 1))
+            /*glossy-gradient($rev-red-color, $contrast: .45)*/
+        );
+		
+		/* Custom Borders */
+		border-bottom: none !important;
+
+		h1 {
+			color: #fff !important;
+			font-size: 20px !important;
+			font-family: $toolbar-font-family !important;
+			letter-spacing: 0;
+			text-shadow: #666 0 1px 0;
+			line-height:30px;
+			padding-top: 12px !important;
+
+		}
+    }
+		
+	h2 {
+		color: $rev-blue-color;
+		text-shadow: #666 0 1px 0;
+	}
+	
+    ul {
+        li {
+            border: 1px solid $rev-midgrey-color;
+			background-color: #ffffff;
+			color: #000;
+            //@include background-gradient(rgba($base-color, .2), matte);
+
+            a {
+				color: #000;
+                // @include color-by-background($base-color);
+            }
+        
+            .toggle input[type="checkbox"] {
+                @include border-radius(5px);
+                background: #fff url(../img/jqt/on_off.png) 0 0 no-repeat;
+            }
+
+            input[type='submit'] {
+                @include background-gradient(color-by-background($list-background-color), glossy);
+                border: 1px outset black;
+            }
+
+            small.counter {
+                @include box-shadow(rgba(#fff,.1) 0 1px 0);
+            }
+        }
+    }
+}
+
+/************************************************
+ * ANALYSIS
+ ***********************************************/
+
+ .analysisWrapper 
+{
+    top: 106px !important;
+    background-image: url('../../../images/texture.jpg');	
+}
+
+.settingsWrapper 
+{
+    background-image: url('../../../images/texture.jpg');	
+}
+
+/************************************************
+ * ANALYSIS - SUMMARY SECTION
+ ***********************************************/
+
+#analysisSummary
+{
+    margin: 0;
+    padding: 10px 30px;
+    height: 36px !important;
+    overflow: hidden;
+    background-color: $rev-blue-color !important;
+}
+
+#analysisBar
+{
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    z-index: 1000;
+    height: 40px;
+    background-image: url('../../../images/bluegrunge_bar.png');
+    background-repeat: repeat-x;
+}
+
+#analysisLogo
+{
+    position: absolute;
+    top: 5px;
+    left: 25px;
+    z-index: 1500;
+    height: 30px;
+    width: 30px;
+    background-image: url('../../../images/revolution_logo.png');
+    background-repeat: no-repeat;
+}
+
+#analysis_partial h2, #analysisSummary h2, #analysisSummary h3 {    
+    font-family: $summaryNormal-font-family !important;
+}
+ 
+.summaryTitle h2, .summaryReturn h2 {
+    font-family: HelveticaNeue-Bold !important; 
+	font-size: 14px !important;
+}
+
+.summaryTitle h2 { text-transform: uppercase;}
+.summaryTitle h3 { font-family: HelveticaNeue-Light !important; font-size: 11px !important;}
+.summaryReturn h3 { font-family: HelveticaNeue-Light !important; font-size: 11px !important; } 
+
+
+.analysisComponentHeader h2 {
+	color: $rev-blue-color !important;
+	font-size: 18px !important;
+}
+
+.analysisComponentContainer {
+    border: 1px solid $rev-midgrey-color !important;
+}
+
+.analysisSummarySection {
+    border-bottom: 1px solid $rev-midgrey-color !important;
+}
+
+/************************************************
+ * TABBAR - ICONS
+ ***********************************************/
+
+#tabbar .home{
+-webkit-mask-image: url(../../../images/logo.png);
+
+}
+
+#tabbar .portfolios{
+    -webkit-mask-image: url(../../../images/wallet_grunge.png);
+}
+
+#tabbar .analysis{
+    -webkit-mask-image: url(../../../images/trend_grunge.png);
+}
+
+#tabbar .timeperiods{
+    -webkit-mask-image: url(../../../images/calendar_grunge.png);
+}
+
+#tabbar .settings{
+    -webkit-mask-image: url(../../../images/settings_grunge.png);
+}
+
+#tabbar .favourites{
+    -webkit-mask-image: url(../../../images/favourites_grunge.png);
+}

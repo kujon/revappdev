@@ -187,7 +187,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                 maxColor, minColor, midColor, midGradientPosition,
                 values = [], sliceOptions = [],
                 isAllPositiveOrNegative, containerId, gaugeLegendId,
-                presentationContainerId;
+                presentationContainerId, tableWidth, tableHeight;
 
             output.log(data);
 
@@ -210,8 +210,10 @@ WebAppLoader.addModule({ name: 'chartManager',
             });
 
             if (type === 'Table') {
-                chart.setOption('height', chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
-                chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
+                tableWidth = '96% !important;'; // chartDefaults.resizingSettings.tableWidth + 'px !important'; // ASA
+                tableHeight = chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()) + 'px !important';
+                chart.setOption('height', tableHeight);
+                chart.setOption('width', tableWidth);
             }
 
             // If our chart is a pie chart and we're displaying it as a heatmap...
@@ -352,7 +354,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                 presentationChart.setOption('height', 680);
                 presentationChart.setOption('width', 1024);
             } else {
-                presentationChart.setOption('width', 1024);
+                presentationChart.setOption('width', '96% !important');
             }
             presentationChart.draw();
         }

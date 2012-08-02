@@ -428,6 +428,9 @@
     <Content Include="node_modules\socket.io\node_modules\socket.io-client\lib\vendor\web-socket-js\README.md" />
     <Content Include="adapters.js" />
     <Content Include="manifest.js" />
+    <Content Include="public\images\bluegrunge_bar.png" />
+    <Content Include="public\images\btn_console_off.png" />
+    <Content Include="public\images\btn_console_on.png" />
     <Content Include="public\images\btn_favourites_off.png" />
     <Content Include="public\images\btn_favourites_on.png" />
     <Content Include="public\images\btn_logo2.png" />
@@ -437,6 +440,7 @@
     <Content Include="public\images\cloud.png" />
     <Content Include="public\images\favourites.png" />
     <Content Include="public\images\Gear.png" />
+    <Content Include="public\images\highlight-gauge.png" />
     <Content Include="public\images\info.png" />
     <Content Include="public\images\iphone.png" />
     <Content Include="public\images\loading.gif" />
@@ -446,6 +450,9 @@
     <Content Include="public\images\logo.png" />
     <Content Include="public\images\mini_logo.png" />
     <Content Include="public\images\more.png" />
+    <Content Include="public\images\redgrunge.png" />
+    <Content Include="public\images\redgrunge_bar.png" />
+    <Content Include="public\images\revolution_logo.png" />
     <Content Include="public\images\settings.png" />
     <Content Include="public\images\splash-landscape-retina.gif" />
     <Content Include="public\images\splash-landscape.gif" />
@@ -457,6 +464,7 @@
     <Content Include="public\images\sw-header.png" />
     <Content Include="public\images\sw-slot-border.png" />
     <Content Include="public\images\test_chart.png" />
+    <Content Include="public\images\texture.jpg" />
     <Content Include="public\images\toolbar_logo.png" />
     <Content Include="public\images\Tools.png" />
     <Content Include="public\images\trend.png" />
@@ -521,12 +529,15 @@
     <Content Include="public\stylesheets\blackbird.css" />
     <Content Include="public\stylesheets\blackbird_icons.png" />
     <Content Include="public\stylesheets\blackbird_panel.png" />
+    <Content Include="public\stylesheets\fonts\copystructB-webfont.svg" />
+    <Content Include="public\stylesheets\fonts\copystructN-webfont.svg" />
     <Content Include="public\stylesheets\jqtouch.css" />
     <Content Include="public\stylesheets\jquery.swipeButton-1.2.css" />
     <Content Include="public\stylesheets\login.css" />
     <Content Include="public\stylesheets\itabbar.css" />
     <Content Include="public\stylesheets\spinningwheel.css" />
     <Content Include="public\stylesheets\style.css" />
+    <Content Include="public\stylesheets\fonts\tiza-webfont.svg" />
     <Content Include="public\stylesheets\webapp.mashed.css" />
     <Content Include="public\stylesheets\webapp.minified.css" />
     <Content Include="public\test.htm" />
@@ -541,6 +552,10 @@
       <DependentUpon>mobile-dark.css</DependentUpon>
     </Content>
     <Content Include="public\themes\css\mobile.css" />
+    <Content Include="public\themes\css\revolution.css" />
+    <Content Include="public\themes\scss\revolution.css">
+      <DependentUpon>revolution.scss</DependentUpon>
+    </Content>
     <Content Include="routes\web-methods.js" />
     <Content Include="web-api.js" />
     <Content Include="node_modules\socket.io\node_modules\socket.io-client\lib\vendor\web-socket-js\WebSocketMainInsecure.zip" />
@@ -1091,6 +1106,7 @@
     <Content Include="views\index.jade" />
     <Content Include="views\layout.jade" />
     <Content Include="views\layout_dev.jade" />
+    <Content Include="public\themes\scss\revolution.scss" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\iisnode.msi" />
