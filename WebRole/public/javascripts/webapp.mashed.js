@@ -7608,2056 +7608,6 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
     return toolbar;
 });
 // ------------------------------------------
-// CHARTS MANAGER
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedModules: ['chartManager', 'localizationManager', 'pageElements'],
-    dataObjects: ['charts'], hasEvents: true, isShared: true
-}, function () {
-
-    var chartComponents  = {},
-        output           = this.getConsole(),
-        eventManager     = this.getEventManager(),
-        helper           = this.getPlugin('helper'),
-        chartManager     = this.getSharedModule('chartManager'),
-        lang             = this.getSharedModule('localizationManager').getLanguage() || {},
-        el               = this.getSharedModule('pageElements'),
-        chartsDataObject = this.getDataObject('charts'),
-        createdCharts    = {},
-        chartsData       = null;
-
-    chartsDataObject.define({
-        // ------------------------------------------
-        // BAR CHARTS
-        // ------------------------------------------
-
-        'performance_bar': {
-            chartId: 'performance_bar',
-            title: lang.chart.performanceBarTitle,
-            chartType: 'BarChart',
-            include: 'childSegments',
-            measures: ['rp'],
-            includeMeasuresFor: ['childSegments'],
-            options: {
-                hAxis: { title: 'Return' }
-            }
-        },
-        'risk_bar': {
-            chartId: 'risk_bar',
-            title: lang.chart.riskBarTitle,
-            chartType: 'BarChart',
-            include: 'childSegments',
-            measures: ['wp', 'contributionvar'],
-            includeMeasuresFor: ['childSegments'],
-            options: {
-                hAxis: { title: 'Return' }
-            }
-        },
-        'allocation_bar': {
-            chartId: 'allocation_bar',
-            title: lang.chart.allocationbarTitle,
-            chartType: 'BarChart',
-            include: 'childSegments',
-            measures: ['wover'],
-            includeMeasuresFor: ['childSegments'],
-            options: {
-                hAxis: { title: 'Excess Weight %' }
-            }
-        },
-        'contribution_bar': {
-            chartId: 'contribution_bar',
-            title: lang.chart.contributionBarTitle,
-            chartType: 'BarChart',
-            include: 'securities',
-            measures: ['ctp'],
-            includeMeasuresFor: ['securities'],
-            options: {
-                hAxis: { title: 'Contribution' }
-            }
-        },
-        'attribution_bar': {
-            chartId: 'attribution_bar',
-            title: lang.chart.attributionBarTitle,
-            chartType: 'BarChart',
-            include: 'childSegments',
-            measures: ['wendover', 'etotal'],
-            includeMeasuresFor: ['childSegments']
-        },
-        'fixedIncomeContribution_bar': {
-            chartId: 'fixedIncomeContribution_bar',
-            title: lang.chart.fixedIncomeContributionBarTitle,
-            chartType: 'BarChart',
-            include: 'none',
-            measures: ['ctpyc', 'ctpspread', 'ctpcur'],
-            includeMeasuresFor: ['segment'],
-            options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#FF6600', '#CC0000', '#FFCC00']
-            }
-        },
-        'carryContribution_bar': {
-            chartId: 'carryContribution_bar',
-            title: lang.chart.carryContributionBarTitle,
-            chartType: 'BarChart',
-            include: 'none',
-            measures: ['ctpsystcarry', 'ctpspeccarry'],
-            includeMeasuresFor: ['segment'],
-            options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#336600', '#990000']
-            }
-        },
-        'yieldCurveContribution_bar': {
-            chartId: 'yieldCurveContribution_bar',
-            title: lang.chart.yieldCurveContributionBarTitle,
-            chartType: 'BarChart',
-            include: 'none',
-            measures: ['ctpshift', 'ctptwist', 'ctpbutterfly', 'ctprolldown'],
-            includeMeasuresFor: ['segment'],
-            options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#CD66CD', '#339900', '#FF9900', '#660000']
-            }
-        },
-        'riskNumbers_bar': {
-            chartId: 'riskNumbers_bar',
-            title: lang.chart.riskNumbersBarTitle,
-            chartType: 'BarChart',
-            include: 'none',
-            measures: ['ytmpend', 'mdpend'],
-            includeMeasuresFor: ['segment'],
-            options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#336699', '#530066']
-            }
-        },
-
-        // ------------------------------------------
-        // BUBBLE CHARTS
-        // ------------------------------------------
-
-        'performance_bubble': {
-            chartId: 'performance_bubble',
-            title: lang.chart.performanceBubbleTitle,
-            chartType: 'BubbleChart',
-            include: 'childSegments',
-            measures: ['stddevann', 'returnannifgtyr', 'wpabsolute'],
-            includeMeasuresFor: ['childSegments'],
-            options: {
-                hAxis: { title: 'Annualized Volatility' },
-                vAxis: { title: 'Annualized Return' }
-            }
-        },
-        'risk_bubble': {
-            chartId: 'risk_bubble',
-            title: lang.chart.riskBubbleTitle,
-            chartType: 'BubbleChart',
-            include: 'childSegments',
-            measures: ['valueatriskpercent', 'rp', 'wpabsolute'],
-            includeMeasuresFor: ['childSegments'],
-            options: {
-                hAxis: { title: '% Value at Risk' },
-                vAxis: { title: 'Return' }
-            }
-        },
-
-        // ------------------------------------------
-        // COLUMN CHARTS
-        // ------------------------------------------
-
-        'contribution_column': {
-            chartId: 'contribution_column',
-            title: lang.chart.contributionColumnTitle,
-            chartType: 'ColumnChart',
-            include: 'childSegments',
-            measures: ['ctp', 'ctb'],
-            includeMeasuresFor: ['childSegments'],
-            options: {
-                vAxis: { title: 'Return %' }
-            }
-        },
-        'interestRatesExposure_column': {
-            chartId: 'interestRatesExposure_column',
-            title: lang.chart.interestRatesExposureColumnTitle,
-            chartType: 'ColumnChart',
-            include: 'childSegments',
-            measures: ['interestratesdown100percent', 'interestratesdown50percent', 'interestratesup50percent', 'interestratesup100percent'],
-            includeMeasuresFor: ['childSegments'],
-            options: {
-                vAxis: { title: 'Exposure %' },
-                colors: ['#CC0000', '#CD66CD', '#FFCC00', '#3399CC']
-            }
-        },
-        'creditSpreadsExposure_column': {
-            chartId: 'creditSpreadsExposure_column',
-            title: lang.chart.creditSpreadsExposureColumnTitle,
-            chartType: 'ColumnChart',
-            include: 'childSegments',
-            measures: ['creditspreadsdown100percent', 'creditspreadsdown50percent', 'creditspreadsup50percent', 'creditspreadsup100percent'],
-            includeMeasuresFor: ['childSegments'],
-            options: {
-                vAxis: { title: 'Exposure %' },
-                colors: ['#CC0000', '#CD66CD', '#FFCC00', '#3399CC']
-            }
-        },
-        'dv01Exposure_column': {
-            chartId: 'dv01Exposure_column',
-            title: lang.chart.dv01ExposureColumnTitle,
-            chartType: 'ColumnChart',
-            include: 'childSegments',
-            measures: ['interestratesdv01percent', 'creditspreadsdv01percent', 'inflationratesdv01percent'],
-            includeMeasuresFor: ['childSegments'],
-            options: {
-                vAxis: { title: 'Exposure %' },
-                colors: ['#3399CC', '#336699', '#003366']
-            }
-        },
-        'attribution_column': {
-            chartId: 'attribution_column',
-            title: lang.chart.attributionColumnTitle,
-            chartType: 'ColumnChart',
-            include: 'childSegments',
-            measures: ['etotal', 'ealloc', 'eselecinter'],
-            includeMeasuresFor: ['childSegments'],
-            options: {
-                colors: ['#003366', '#FF6600', '#990066']
-            }
-        },
-
-        // ------------------------------------------
-        // PIE CHARTS
-        // ------------------------------------------
-
-        'allocation_pie': {
-            chartId: 'allocation_pie',
-            title: lang.chart.allocationPieTitle,
-            chartType: 'PieChart',
-            include: 'childSegments',
-            measures: ['wpabsoluteend'],
-            includeMeasuresFor: ['childSegments']
-        },
-        'contribution_pie': {
-            chartId: 'contribution_pie',
-            title: lang.chart.contributionPieTitle,
-            chartType: 'PieChart',
-            include: 'childSegments',
-            isHeatMap: true,
-            isGradientReversed: false,
-            measures: ['wpabsoluteend', 'ctp'],
-            includeMeasuresFor: ['childSegments']
-        },
-        'risk_pie': {
-            chartId: 'risk_pie',
-            title: lang.chart.riskPietitle,
-            chartType: 'PieChart',
-            include: 'childSegments',
-            isHeatMap: true,
-            isGradientReversed: true,
-            measures: ['wpabsoluteend', 'contributionvar'],
-            includeMeasuresFor: ['childSegments']
-        },
-
-        // ------------------------------------------
-        // MASTER GRIDS
-        // ------------------------------------------
-
-        'performanceMaster_grid': {
-            chartId: 'performanceMaster_grid',
-            title: lang.chart.performanceMasterTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: ['wp', 'rp', 'rb', 'relr', 'ctp'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-        'contributionMaster_grid': {
-            chartId: 'contributionMaster_grid',
-            title: lang.chart.contributionMasterTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: ['wp', 'ctp', 'wb', 'ctb'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-        'attributionMaster_grid': {
-            chartId: 'attributionMaster_grid',
-            title: lang.chart.attributionMasterTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: ['wp', 'wb', 'ealloc', 'eselecinter', 'eallocc', 'etotal'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-        'fixedIncomeMaster_grid': {
-            chartId: 'fixedIncomeMaster_grid',
-            title: lang.chart.fixedIncomeMasterTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: ['wp', 'rp', 'rpyc', 'rpspread', 'ctp'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-        'allocationMaster_grid': {
-            chartId: 'allocationMaster_grid',
-            title: lang.chart.allocationMasterTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: ['wp', 'wpgross', 'shortexposureend', 'longexposureend', 'mvend'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-        'riskMaster_grid': {
-            chartId: 'riskMaster_grid',
-            title: lang.chart.riskMasterTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: ['wp', 'valueatrisk', 'valueatriskpercent', 'contributionvar', 'expectedvolatilitypercent'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-
-        // ------------------------------------------
-        // REGULAR GRIDS
-        // ------------------------------------------
-
-        'performance_grid': {
-            chartId: 'performance_grid',
-            title: lang.chart.performanceGridTitle,
-            chartType: 'Table',
-            include: 'none',
-            measures: [
-                'rp', 'returnann', 'stddevann', 'relr',
-                'periodaverage', 'oneperiodhigh', 'oneperiodlow',
-                'maxloss', 'percentpositiveperiods', 'correlation',
-                'alpha', 'beta', 'rsquared', 'sharperatio',
-                'treynorratio', 'inforatioxs'
-            ],
-            includeMeasuresFor: ['segment']
-        },
-        'attribution_grid': {
-            chartId: 'attribution_grid',
-            title: lang.chart.attributionGridTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: [
-                'ctp', 'ctb', 'ealloclocal', 'eselecinterlocal', 'etotalc', 'etotalmca'
-            ],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-        'fixedIncome_grid': {
-            chartId: 'fixedIncome_grid',
-            title: lang.chart.fixedIncomeGridTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: [
-                'ttmpend', 'ytmpend', 'mdpend', 'durwpend', 'spreadpend'
-            ],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-        'fixedIncomeContribution_grid': {
-            chartId: 'fixedIncomeContribution_grid',
-            title: lang.chart.fixedIncomeContributionGridTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: [
-                'ctp', 'ctpyc', 'ctpcarry', 'ctpspread', 'ctpcur', 'ctpother', 'ctpresidual'
-            ],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-        'fixedIncomeExposure_grid': {
-            chartId: 'fixedIncomeExposure_grid',
-            title: lang.chart.fixedIncomeExposureGridTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: [
-                'wpend', 'interestratesdv01percent', 'creditspreadsdv01percent', 'inflationratesdv01percent'
-            ],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-        'performanceTopTen_grid': {
-            chartId: 'performanceTopTen_grid',
-            title: lang.chart.performanceTopTenGridTitle,
-            chartType: 'Table',
-            include: 'securities',
-            measures: ['wpend', 'rp', 'ctp'],
-            oData: { orderby: 'wpend-Earliest desc', top: 10 },
-            includeMeasuresFor: ['securities']
-        },
-        'contributionTopTen_grid': {
-            chartId: 'contributionTopTen_grid',
-            title: lang.chart.contributionTopTenGridTitle,
-            chartType: 'Table',
-            include: 'securities',
-            measures: ['wpend', 'rp', 'ctp'],
-            oData: { orderby: 'ctp-Earliest desc', top: 10 },
-            includeMeasuresFor: ['securities']
-        },
-        'riskTopTen_grid': {
-            chartId: 'riskTopTen_grid',
-            title: lang.chart.riskTopTenGridTitle,
-            chartType: 'Table',
-            include: 'securities',
-            measures: ['wpend', 'expectedshortfallpercent', 'valueatriskpercent', 'expectedvolatilitypercent'],
-            oData: { orderby: 'valueatriskpercent-Earliest desc', top: 10 },
-            includeMeasuresFor: ['securities']
-        },
-
-        // ------------------------------------------
-        // TREE MAP CHARTS
-        // ------------------------------------------
-
-        'performance_treemap': {
-            chartId: 'performance_treemap',
-            title: lang.chart.performanceTreemapTitle,
-            chartType: 'TreeMap',
-            include: 'securities',
-            measures: ['wpabsoluteend', 'rp'],
-            includeMeasuresFor: ['segment', 'securities']
-        },
-        'risk_treemap': {
-            chartId: 'risk_treemap',
-            title: lang.chart.riskTreemapTitle,
-            chartType: 'TreeMap',
-            include: 'childSegments',
-            measures: ['wpabsoluteend', 'contributionvar'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
-
-        // ------------------------------------------
-        // LINE CHARTS
-        // ------------------------------------------
-
-        'performance_line': {
-            chartId: 'performance_line',
-            title: lang.chart.performanceLineTitle,
-            chartType: 'LineChart',
-            measures: ['rp', 'rb'],
-            seriesType: 'cumulativeIndexed'
-        },
-
-        // ------------------------------------------
-        // CHART GROUPS
-        // ------------------------------------------
-
-        'fi_contribution_group': {
-            chartId: 'fi_contribution_group',
-            title: lang.chart.fixedIncomeContributionsGroupTitle,
-            chartType: 'Group',
-            charts: [{
-                chartId: 'fixedIncomeContribution_bar',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'carryContribution_bar',
-                width: '50%',
-                height: '100%'
-
-            }, {
-                chartId: 'yieldCurveContribution_bar',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'riskNumbers_bar',
-                width: '50%',
-                height: '100%'
-            }]
-        },
-        'fi_exposures_group': {
-            chartId: 'fi_exposures_group',
-            title: lang.chart.fixedIncomeExposuresGroupTitle,
-            chartType: 'Group',
-            charts: [{
-                chartId: 'interestRatesExposure_column',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'creditSpreadsExposure_column',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'dv01Exposure_column',
-                width: '50%',
-                height: '100%'
-            }]
-        },
-        'fi_gridRiskNumber_group': {
-            chartId: 'fi_gridRiskNumber_group',
-            title: lang.chart.fixedIncomeRiskNumbersGroupTitle,
-            chartType: 'Group',
-            charts: [{
-                chartId: 'fixedIncome_grid',
-                width: '100%',
-                height: '100%'
-            }, {
-                chartId: 'fixedIncomeContribution_grid',
-                width: '100%',
-                height: '100%'
-            }]
-        }
-    });
-
-    chartsData = chartsDataObject.getData();
-
-    // Public
-    function load(chartsToLoad) {
-        var chartToLoad, chartId, newRequest = true;
-
-        for (var i = 0; i < chartsToLoad.length; i++) {
-            chartId = chartsToLoad[i].chartId;
-
-            // If the chart has been created...
-            if (createdCharts[chartId]) {
-                // Use it else...
-                chartToLoad = createdCharts[chartId];
-            } else {
-                // Create a new chart and return it.
-                chartToLoad = chartManager.create(chartsData[chartId]);
-                createdCharts[chartId] = chartToLoad;
-            }
-
-            chartManager.load(chartToLoad, newRequest);
-
-            // Change the status of newRequest only if a valid chart has been loaded.
-            if (chartToLoad) {
-                newRequest = false;
-            }
-        }
-    }
-
-    function setTimePeriod(charts, timePeriod) {
-        $.each(charts, function (index, chart) {
-            var config;
-
-            // Assign our time period to different objects depending if the chart 
-            // has already been created or not; the chart config if it's not yet 
-            // created, or add it to the actual chart object if it is.
-            config = createdCharts[chart.chartId] || chartsData[chart.chartId];
-            config.timePeriods = timePeriod.code;
-            config.startDate = timePeriod.startDate;
-            config.endDate = timePeriod.endDate;
-        });
-    }
-
-    function render(charts, renderTo) {
-        var chartsToLoad = [],
-            htmlToAppend = '',
-            chartToAdd   = '',
-            chartOrder   = 0;
-
-        function openAnalysisSection(chartId, chartTitle) {
-            htmlToAppend = '';
-            htmlToAppend +=
-                '<hr class = "snapper" style="visibility: hidden;" data-chartId="' + chartId + '" />' +
-                '<div class="analysisSummarySection">' +
-                '    <div class="analysisComponentContainer">' +
-                '       <div class="analysisComponentHeader">' +
-                '           <h2>' + chartTitle + '</h2>' +
-                '           <div class="analysisComponentFullScreenButton" data-order="' + chartOrder + '" data-chartId="' + chartId + '"></div>' +
-                '       </div>';
-
-            chartOrder += 1;
-
-            // In order to increase the performances we add the chart to the presentation container here.
-            addChartToPresentation(chartId, chartTitle);
-        }
-        
-        function addChartToPresentation(chartId, chartTitle) {
-            var sb          = new helper.StringBuilder(),
-                containerId = "presentation-" + chartId;
-
-            sb.append('<div class="presentationContainer"><h2>{0}</h2>', chartTitle);
-            // sb.append('<div id="{0}" style="width: 1024px; height: 300px; overflow: hidden;">', 'scroll-' + containerId);
-            sb.append('<div id="{0}" data-title="{1}">{1}</div>', containerId, chartTitle);
-            // sb.append('</div>');
-            sb.append('</div>');
-
-            $(el.presentationChartsContainer).append(sb.toString());
-        }
-
-        function addChartToAnalysisSection(chartToAdd, containerClass) {
-            htmlToAppend +=
-                '        <div id="' + chartToAdd.chartId + '" class="' + containerClass + '"></div>';
-        }
-
-        function addChartToGroup(chartToAdd) {
-            htmlToAppend +=
-                '        <div id="' + chartToAdd.chartId +
-                '" class="halfSizeChart" style="width: ' + chartToAdd.width + ';' +
-                'height: ' + chartToAdd.height + ';"></div>';
-        }
-
-        function closeAnalysisSection() {
-            htmlToAppend +=
-                '        <div style="clear: both;"></div>' +
-                '    </div>' +
-                '</div>';
-        }
-
-        function appendHtmlToAnalysisSection() {
-            $(renderTo).append($(htmlToAppend));
-        }
-
-        function addChartToChartsToRender(chartToAdd) {
-            var chartsToRender = [],
-                isGroup        = false,
-                containerClass;
-
-            // Exit if the chart to add doesn't exist.
-            if (!chartToAdd) {
-                output.log('addChartToChartsToRender: Skipped empty chart');
-                return;
-            }
-
-            // Extract the charts to render if the current chart is a group.
-            if (chartToAdd.chartType === 'Group') {
-                chartsToRender = chartToAdd.charts;
-                isGroup = true;
-            } else {
-                chartsToRender.push(chartToAdd);
-            }
-
-            if (isGroup) {
-                openAnalysisSection(chartToAdd.chartId, chartToAdd.title);
-            }
-
-            // Define a wrapper DIV class for the chart container depending on
-            // the chart type. If the chart is a table, it sets its own height,
-            // so an explicit class defining height is not required.
-            containerClass = (chartToAdd.chartType === 'Table') ? 'gridContainer resizableChart' : 'chartContainer resizableChart';
-
-            // Create the chart containers according to the chart types.
-            for (var i = 0; i < chartsToRender.length; i++) {
-                chart = chartsData[chartsToRender[i].chartId] || null;
-
-                // Add current chart to the list of charts to load.
-                chartsToLoad.push(chart);
-
-                if (chart) {
-                    if (isGroup) {
-                        addChartToGroup(chartsToRender[i]);
-                    } else {
-                        openAnalysisSection(chart.chartId, chart.title);
-                        addChartToAnalysisSection(chartsToRender[i], containerClass);
-                        closeAnalysisSection();
-                        appendHtmlToAnalysisSection();
-                    }
-                }
-            }
-
-            if (isGroup) {
-                closeAnalysisSection();
-                appendHtmlToAnalysisSection();
-            }
-        }
-
-        for (var i = 0; i < charts.length; i++) {
-            chartToAdd = chartsData[charts[i].chartId] || null;
-
-            addChartToChartsToRender(chartToAdd);
-        }
-
-        load(chartsToLoad);
-    }
-
-    // TODO: Investigate...
-    chartManager.on('onAnalysisLoaded', function () {
-        eventManager.raiseEvent('onAllChartsLoaded');
-    });
-
-    chartManager.on('onAnalysisLoading', function (chartCount, chartTotal) {
-        eventManager.raiseEvent('onChartsLoading', chartCount, chartTotal);
-    });
-
-    chartManager.on('showMask', function (chartId) {
-        $('#' + chartId).parent().addClass('genericLoadingMask');
-    });
-
-    chartManager.on('hideMask', function (chartId, numRows) {
-        $('#' + chartId).parent().removeClass('genericLoadingMask');
-        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
-    });
-
-    chartManager.on('chartReady', function (chart) {
-        // Add code here...
-        // helper.touchScroll(chart.getContainerId());
-    });
-
-    chartComponents.load = load;
-    chartComponents.render = render;
-    chartComponents.setTimePeriod = setTimePeriod;
-
-    return chartComponents;
-});
-// ------------------------------------------
-// CHART MANAGER
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'chartManager',
-    sharedModules: ['settings', 'chartDefaults', 'colorManager', 'localizationManager', 'ajaxManager'],
-    isShared: true, hasEvents: true
-}, function () {
-    var chartBase = {},
-        charts = [],
-        eventManager = this.getEventManager(),
-        chartDefaults = this.getSharedModule('chartDefaults'),
-        siteUrls = this.getSharedModule('settings').siteUrls,
-        colorManager = this.getSharedModule('colorManager'),
-        lang = this.getSharedModule('localizationManager').getLanguage() || {},
-        ajaxManager = this.getSharedModule('ajaxManager'),
-        output = this.getConsole(),
-        chartCount = 0,
-        chartTotal = 0,
-        isLoading = false;
-
-    function resetCounter() {
-        chartCount = 0;
-        chartTotal = 0;
-        isLoading = false;
-    }
-
-    function startCounter() {
-        resetCounter();
-        isLoading = true;
-    }
-
-    function stopCounter() {
-        resetCounter();
-    }
-
-    // Function to be called when the chart has finished attempting to load.
-    // NOTE: 'Finished' does not necessarily infer success - a chart may have 
-    // unsuccessfully attempted to load and in doing so will pass an error
-    // object as an argument to this function.
-    function onChartReady(info) {
-        var container;
-
-        // Regardless of any error state, we still want the attempted load count to be
-        // updated and the 'onAnalysisLoading' and 'onAnalysisLoaded' events raised.
-        if (isLoading) {
-            chartCount += 1;
-            eventManager.raiseEvent('onAnalysisLoading', chartCount, chartTotal);
-
-            // If all of the charts created have been loaded...
-            if (chartCount === chartTotal) {
-                // ...fire the onAnalysisLoaded event.
-                stopCounter();
-                eventManager.raiseEvent('onAnalysisLoaded');
-            }
-        }
-
-        if (info && info.chartId) {
-            eventManager.raiseEvent('hideMask', info.chartId, info.numRows);
-        }
-
-        // If we've got an error...
-        if (info && info.errorObj && info.errorObj.id) {
-            // ...retrieve the container of the chart causing the problem.
-            container = google.visualization.errors.getContainer(info.errorObj.id);
-            // Display a generic error message rather than a potentially confusing Google one.
-            $('#' + container.id).html(lang.errors.chartFailedText);
-        }
-    }
-
-    // Function to create a new chart.
-    // 'config' - An object containing configuration properties for the chart to be created.
-    function create(config) {
-
-        if (!config) {
-            output.log('Config is not specified.');
-            return;
-        }
-
-        var id = config.chartId || null,
-            type = config.chartType || null,
-            options = config.options || {},
-            defaults = {},
-            chart = null;
-
-        // Return nothing if a chart ID or chart type has not been specified.
-        if (!id || !type) {
-            output.log('Chart ID or type is not specified.');
-            return;
-        }
-
-        // Retrieve the defaults for the given chart type, if available.
-        defaults = (chartDefaults && chartDefaults[type])
-            ? chartDefaults[type]
-            : {};
-
-        // Apply defaults then any overrides to a new object.
-        options = $.extend({}, defaults, options);
-
-        // Add a transparent background to all charts.
-        options.backgroundColor = { fill: 'transparent' };
-
-        // Create a new visualization wrapper instance, using the type, options and ID.
-        chart = new google.visualization.ChartWrapper({
-            chartType: type,
-            options: options,
-            containerId: id
-        });
-
-        eventManager.raiseEvent('chartReady', chart);
-        eventManager.raiseEvent('showMask', config.chartId);
-
-        // Although it's not part of the Google API, store 
-        // the parameters for this chart in the object.
-        chart.endDate = config.endDate;
-        chart.include = config.include;
-        chart.includeMeasuresFor = config.includeMeasuresFor;
-        chart.isGradientReversed = config.isGradientReversed;
-        chart.isHeatMap = config.isHeatMap;
-        chart.measures = config.measures;
-        chart.oData = config.oData;
-        chart.seriesType = config.seriesType;
-        chart.startDate = config.startDate;
-        chart.timePeriods = config.timePeriods;
-
-        
-        google.visualization.events.addListener(chart, 'error', function (errorObj) {
-            onChartReady({ errorObj: errorObj });
-        });
-        // Return the chart.
-        return chart;
-    }
-
-    // Function to load the given chart with data.
-    // 'chart'  - The instance of the Google Visualization API chart object to load.
-    function load(chart, newRequest) {
-        var type, params, url, formatter;
-
-        // Don't attempt to load the chart if it doesn't exist yet.
-        if (!chart) {
-            return;
-        }
-
-        // Restart the counter every new request.
-        if (newRequest) {
-            startCounter();
-        }
-
-        // Increase the running chart total.
-        chartTotal++;
-
-        // Get the current chart type.
-        type = chart.getChartType();
-
-        // Create a new number formatter.
-        formatter = new google.visualization.NumberFormat({
-            decimalSymbol: lang.shared.decimalSymbol,
-            fractionDigits: 3,
-            groupingSymbol: lang.shared.groupingSymbol,
-            negativeColor: '#cc0000',
-            negativeParens: false
-        });
-
-        // Define our basic parameters.
-        params = {
-            type: type
-        };
-
-        // Only include parameters in the object if they exist.
-        if (chart.endDate) { params.endDate = chart.endDate; }
-        if (chart.include) { params.include = chart.include; }
-        if (chart.includeMeasuresFor) { params.includeMeasuresFor = chart.includeMeasuresFor; }
-        if (chart.measures) { params.measures = chart.measures; }
-        if (chart.oData) { params.oData = chart.oData; }
-        if (chart.startDate) { params.startDate = chart.startDate; }
-        if (chart.seriesType) { params.seriesType = chart.seriesType; }
-        if (chart.timePeriods) { params.timePeriods = chart.timePeriods; }
-
-        // Define the correct URL to use to retrieve data based on the chart type.
-        url = (type === 'LineChart') ? siteUrls.timeSeries : siteUrls.segmentsTreeNode;
-
-        eventManager.raiseEvent('showMask', chart.getContainerId());
-
-        // Callback function to be invoked when data is returned from the server.
-        function onDataLoaded(data) {
-            var dataTable, i, min, max, minDisplay, maxDisplay,
-                maxColor, minColor, midColor, midGradientPosition,
-                values = [], sliceOptions = [],
-                isAllPositiveOrNegative, containerId, gaugeLegendId,
-                presentationContainerId, tableWidth, tableHeight;
-
-            output.log(data);
-
-            // Create a new visualization DataTable instance based on the data.
-            dataTable = new google.visualization.DataTable(data);
-
-            // Loop round the columns, applying the formatter to 'number' columns.
-            for (i = 0; i < dataTable.getNumberOfColumns(); i++) {
-                if (dataTable.getColumnType(i) === 'number') {
-                    formatter.format(dataTable, i);
-                }
-            }
-
-            // Register the chart with the ready and error event listeners.
-            google.visualization.events.addListener(chart, 'ready', function () {
-                onChartReady({
-                    chartId: chart.getContainerId(),
-                    numRows: dataTable.getNumberOfRows() // Used to calculate the height of the chart later.
-                }); 
-            });
-
-            if (type === 'Table') {
-                tableWidth = '980px !important;'; // chartDefaults.resizingSettings.tableWidth + 'px !important'; // ASA
-                tableHeight = (dataTable.getNumberOfRows() > 10)
-                    ? chartDefaults.resizingSettings.calculateTableHeight(10) + 'px !important'
-                    : chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()) + 'px !important';
-                chart.setOption('height', tableHeight);
-                chart.setOption('width', tableWidth);
-            }
-
-            // If our chart is a pie chart and we're displaying it as a heatmap...
-            if (type === 'PieChart' && chart.isHeatMap) {
-
-                // ...sort the data by our heatmap measure.
-                dataTable.sort([{ column: 2}]);
-
-                // Collate the heatmap measure from the datatable.
-                for (i = 0; i < dataTable.getNumberOfRows(); i++) {
-                    values.push(dataTable.getValue(i, 2));
-                }
-
-                // Get the highest and lowest values from the heatmap measure values.
-                min = Math.min.apply(Math, values);
-                max = Math.max.apply(Math, values);
-
-                // Get the formatted values for our min and max values from the dataTable,
-                // since they already have the correct decimal accuracy and localization.
-                // If the min value somehow doesn't exist in the values collection, the
-                // dataTable has given us a null value, which we take to mean zero.
-                if ($.inArray(min, values) !== -1) {
-                    minDisplay = dataTable.getFormattedValue($.inArray(min, values), 2);
-                } else {
-                    minDisplay = '0';
-                }
-
-                if ($.inArray(max, values) !== -1) {
-                    maxDisplay = dataTable.getFormattedValue($.inArray(max, values), 2);
-                } else {
-                    maxDisplay = '0';
-                }
-
-                // Determine the colours we need to use for our gauge.
-                minColor = colorManager.getColorInRange(min, min, max, chart.isGradientReversed);
-                midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
-                maxColor = colorManager.getColorInRange(max, min, max, chart.isGradientReversed);
-
-                // Determine if the values are all positive or all negative.
-                isAllPositiveOrNegative = (min >= 0 && max >= 0) || (min <= 0 && max <= 0);
-
-                // Calculate the percentage position of the mid gradient point if we'll need it.
-                if (!isAllPositiveOrNegative) {
-                    midGradientPosition = 100 - (100 * ((0 - min) / (max - min)));
-                }
-
-                // Loop round the values, and use the colorManager to generate 
-                // a colour in the gradient range for that measure value.
-                for (i = 0; i < values.length; i++) {
-                    sliceOptions.push({
-                        color: colorManager.getColorInRange(values[i], min, max, chart.isGradientReversed)
-                    });
-                }
-
-                // Set the colours as part of the 'slices' chart option.
-                chart.setOption('slices', sliceOptions);
-
-                // Get the chart's container and generate a unique ID for this chart's gauge.
-                containerId = chart.getContainerId();
-                gaugeLegendId = containerId + '-gaugeLegend';
-
-                // Attach an event handler to the 'ready' event.
-                google.visualization.events.addListener(chart, 'ready', function () {
-                    var linearGradientCss, gradientCss, gaugeLegend;
-
-                    // Remove any trace of an existing gauge.
-                    $('#' + gaugeLegendId).remove();
-
-                    // Add an element we can style to the chart's container.
-                    $('#' + containerId).append(
-                        '<div id="' + gaugeLegendId + '" class="gaugeLegend">' +
-                        '    <span class="gaugeLegendMaxValue">' + maxDisplay + '</span>' +
-                        '    <span class="gaugeLegendSelectedValue"></span>' +
-                        '    <span class="gaugeLegendMinValue">' + minDisplay + '</span>' +
-                        '</div>'
-                    );
-
-                    // Now we've recreated the gauge, store a reference to it.
-                    gaugeLegend = $('#' + gaugeLegendId);
-
-                    // If the values are all positive or all negative, we'll just need to create a CSS gradient 
-                    // from the max to min colours. If not, we'll need to go through the mid colour on the way.
-                    linearGradientCss = isAllPositiveOrNegative ?
-                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + minColor + ' 100%)' :
-                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + midColor + ' ' + midGradientPosition + '%, ' + minColor + ' 100%)';
-
-                    gradientCss = isAllPositiveOrNegative ?
-                        'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(1, ' + minColor + '))' :
-                        'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(' + (midGradientPosition / 100) + ', ' + midColor + '), color-stop(1, ' + minColor + '))';
-
-                    // Create a CSS3 gradient between the min and max values.
-                    gaugeLegend.css({
-                        'background-image': linearGradientCss,
-                        'background-image': '-webkit-' + linearGradientCss,
-                        'background-image': '-webkit-' + gradientCss
-                    });
-
-                    // Add an event handler to the chart's 'onmouseover' event.
-                    google.visualization.events.addListener(chart.getChart(), 'onmouseover', function (e) {
-                        var value, formattedValue, position, cssConfig;
-
-                        // Get the heatmap value for the selected row.
-                        value = dataTable.getValue(e.row, 2);
-                        formattedValue = dataTable.getFormattedValue(e.row, 2);
-
-                        // Calculate the percentage position of the value to display on the gauge.
-                        position = 100 * ((value - min) / (max - min));
-
-                        // Create a CSS object to pass to the span. We modify the position
-                        // slightly to allow our span styling to better point at the gauge.
-                        cssConfig = { 'display': 'block', 'top': (position - 2.5) + '%' };
-
-                        // Find the chart legend, then its gaugeLegendSelectedValue, then add the heatmap
-                        // value that's been selected, as well as displaying the value in the correct place.
-                        gaugeLegend.find('span.gaugeLegendSelectedValue').html(formattedValue).css(cssConfig);
-                    });
-
-                    // Add an event handler to the chart's 'onmouseout' event.
-                    google.visualization.events.addListener(chart.getChart(), 'onmouseout', function (e) {
-                        // Hide any heatmap values that are currently on display.
-                        gaugeLegend.find('span.gaugeLegendSelectedValue').css('display', 'none');
-                    });
-
-                });
-            }
-
-            // Set the data table for the chart.
-            chart.setDataTable(dataTable);
-
-            // Draw the chart.
-            chart.draw();
-
-            // ASA: Test
-            var presentationChart = chart.clone();
-            presentationContainerId = 'presentation-' + chart.getContainerId();
-            presentationChart.setContainerId(presentationContainerId);
-            if (type !== 'Table') {
-                presentationChart.setOption('height', 660);
-                presentationChart.setOption('width', 1024);
-            } else {
-                presentationChart.setOption('width', '96% !important');
-                presentationChart.setOption('height', '660px !important');
-            }
-            presentationChart.draw();
-        }
-
-        // Attempt to load the data.
-        // NOTE: The dataType is set to 'text' rather than 'json' to stop Zepto
-        // attempting to parse dates which the Google Visualization API expects 
-        // to parse itself, causing an error.
-        ajaxManager.post(url, params, onDataLoaded, 'text');
-    }
-
-    chartBase.create = create;
-    chartBase.load = load;
-
-    return chartBase;
-});
-// ------------------------------------------
-// ANALYSIS MANAGER
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'], 
-    sharedModules: [], dataObjects: ['analysisPages'], hasEvents: true }, function () {
-
-    var analysisManager         = {},
-        output                  = this.getConsole(),
-        eventManager            = this.getEventManager(),
-        helper                  = this.getPlugin('helper'),
-        analysisPagesDataObj    = this.getDataObject('analysisPages'),
-        charts                  = [],
-        analysisPages           = {};
-
-    analysisPagesDataObj.define({
-        items: [{
-            name        : 'Performance',
-            id          : 'performance',
-            order       : 1,
-            userDefined : false,
-            charts      : [{
-                    chartId : 'performanceMaster_grid',
-                    order   : 1
-                },{
-                    chartId : 'performance_line',
-                    order   : 2
-                },{
-                    chartId : 'performance_grid',
-                    order   : 3
-                },{
-                    chartId : 'performance_bubble',
-                    order   : 4
-                },{
-                    chartId: 'performance_bar',
-                    order   : 5
-                },{
-                    chartId: 'performance_treemap',
-                    order   : 6
-                },{
-                    chartId: 'performanceTopTen_grid',
-                    order   : 7
-                }] 
-        },{
-            name        : 'Risk',
-            id          : 'risk',
-            order       : 2,
-            userDefined : false,
-            charts      : [{
-                    chartId : 'riskMaster_grid',
-                    order   : 1
-                },{
-                    chartId: 'risk_treemap',
-                    order   : 2
-                },{
-                    chartId: 'risk_bar',
-                    order   : 3
-                },{
-                    chartId: 'risk_bubble',
-                    order   : 4
-                },{
-                    chartId: 'risk_pie',
-                    order   : 5
-                },{
-                    chartId: 'riskTopTen_grid',
-                    order   : 6
-                }]             
-        },{
-            name        : 'Asset Allocation',
-            id          : 'assetAllocation',
-            order       : 3,
-            userDefined : false,
-            charts      : [{
-                    chartId : 'allocationMaster_grid',
-                    order   : 1
-                },{
-                    chartId: 'allocation_pie',
-                    order   : 2
-                },{
-                    chartId: 'allocation_bar',
-                    order   : 3
-                }]             
-        },{
-            name        : 'Contribution',
-            id          : 'contribution',
-            order       : 4,
-            userDefined : false,
-            charts      : [{
-                    chartId : 'contributionMaster_grid',
-                    order   : 1
-                },{
-                    chartId: 'contribution_pie',
-                    order   : 2
-                },{
-                    chartId: 'contribution_column',
-                    order   : 3
-                },{
-                    chartId: 'contribution_bar',
-                    order   : 4
-                },{
-                    chartId: 'contributionTopTen_grid',
-                    order   : 5
-                }]            
-        },{
-            name        : 'Attribution',
-            id          : 'attribution',
-            order       : 5,
-            userDefined : false,
-            charts      : [{
-                    chartId : 'attributionMaster_grid',
-                    order   : 1
-                },{
-                    chartId: 'attribution_column',
-                    order   : 2
-                },{
-                    chartId: 'attribution_bar',
-                    order   : 3
-                },{
-                    chartId: 'attribution_grid',
-                    order   : 4
-                }]              
-        },{
-            name        : 'Fixed Income',
-            id          : 'fixedIncome',
-            order       : 6,
-            userDefined : false,
-            charts      : [{
-                    chartId : 'fixedIncomeMaster_grid',
-                    order   : 1
-                },{
-                    title: 'Bar Charts of Fixed Income Contributions:',
-                    chartId: '',
-                    order   : 2
-                },{
-                    chartId: 'fixedIncomeContribution_bar',
-                    order   : 3
-                },{
-                    chartId: 'carryContribution_bar',
-                    order   : 4
-                },{
-                    chartId: 'yieldCurveContribution_bar',
-                    order   : 5
-                },{
-                    chartId: 'riskNumbers_bar',
-                    order   : 6
-                },{
-                    title: 'Column Charts of Fixed Income Exposures:',
-                    chartId: '',
-                    order   : 7
-                },{
-                    chartId: 'interestRatesExposure_column',
-                    order   : 8
-                },{
-                    chartId: 'creditSpreadsExposure_column',
-                    order   : 9
-                },{
-                    chartId: 'dv01Exposure_column',
-                    order   : 10
-                },{
-                    title: 'Grid of Risk Numbers:',
-                    chartId: '',
-                    order   : 11
-                },{
-                    chartId: 'fixedIncome_grid',
-                    order   : 12
-                },{
-                    chartId: 'fixedIncomeContribution_grid',
-                    order   : 13
-                },{
-                    title: 'Grid of FI Exposure',
-                    chartId: '',
-                    order   : 14
-                },{
-                    chartId: 'fixedIncomeExposure_grid',
-                    order   : 15
-                }]   
-        },{
-            name        : 'User Defined Test Page',
-            id          : 'test1',
-            order       : 100,
-            userDefined : true,
-            charts      : [{
-                    chartId: 'fi_contribution_group',
-                    order   : 1
-                }]             
-        }]
-    });
-
-    // Public
-    function restoreDefaults() {
-        analysisPages = analysisPagesDataObj.getData();
-    }
-
-    function analysisUpdated() {
-        eventManager.raiseEvent('onUpdated', analysisPagesDataObj.getData());
-    }
-
-    function init(lastUsernameUsed) {
-        var userAnalysisPages;
-        
-        if (lastUsernameUsed) {
-            analysisPagesDataObj.loadData(lastUsernameUsed);
-        } 
-
-        analysisUpdated();
-    }
-        
-    analysisManager.init = init;
-    analysisManager.update = init; // Alias
-
-    return analysisManager;
-});
-// ------------------------------------------
-// AUTHENTICATION
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'auth', plugins: ['base64'], sharedModules: ['ajaxManager'], hasEvents: true }, function () {
-    var auth            = {},
-        output          = this.getConsole(),
-        eventManager    = this.getEventManager(),
-        base64          = this.getPlugin('base64'),
-        ajaxManager     = this.getSharedModule('ajaxManager'),
-        hash            = '';
-
-    function doLogin(username, password, url, language) {
-        var token, tokenHash;
-        
-        hash = '';
-        tokenHash = base64.encode(username + ':' + password);
-        token = 'Basic ' + tokenHash;
-
-        // Post the created token and the user's email to the authenticate action.
-        ajaxManager.post(url, { email: username, token: token, lang: language }, function (response) {
-            // If our response indicates that the user has been authenticated...
-            if (response.authenticated) {
-                hash = tokenHash;
-                eventManager.raiseEvent('onLoginSuccess', token); //response.portfolioTotal
-            } else {
-                eventManager.raiseEvent('onLoginFailed', response.message);
-            }
-        }, 'json');
-    }
-
-    function getHash() {
-        return hash;
-    }
-
-    auth.doLogin = doLogin;
-    auth.getHash = getHash;
-
-    return auth;
-});
-
-// ------------------------------------------
-// FAVOURITES MANAGER
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'favouritesManager', plugins: ['helper'], 
-    sharedModules: [], dataObjects: ['favourites'], hasEvents: true }, function () {
-
-    var favouritesManager    = {},
-        output               = this.getConsole(),
-        eventManager         = this.getEventManager(),
-        helper               = this.getPlugin('helper'),
-        favouritesDataObj    = this.getDataObject('favourites'),
-        favourites           = {};
-
-    favouritesDataObj.define({
-        items: []
-    });
-
-    function createIdFromAnalysisDataObject(analysisDataObject) {
-        var favouriteId = null,
-            dataObj     = analysisDataObject;
-
-        if (dataObj.portfolioId &&  dataObj.analysisId && dataObj.timePeriodId) {
-            favouriteId = dataObj.portfolioId +  dataObj.analysisId + dataObj.timePeriodId;
-        }
-
-        return favouriteId;
-    }
-    
-    function getFavourteFromAnalysisDataObject(analysisDataObject) {
-        var favouriteObj = {};
-
-        favouriteObj.title        = analysisDataObject.portfolioName + ' - ' +
-                                    analysisDataObject.analysisName + ' - ' +
-                                    analysisDataObject.timePeriodName;
-        favouriteObj.favouriteId  = analysisDataObject.portfolioId +
-                                    analysisDataObject.analysisId +
-                                    analysisDataObject.timePeriodId;
-        favouriteObj.portfolioId  = analysisDataObject.portfolioId;
-        favouriteObj.analysisId   = analysisDataObject.analysisId;
-        favouriteObj.timePeriodId = analysisDataObject.timePeriodId;
-
-        return favouriteObj;
-    }
-
-    function getAnalysisDataObjectFromFavourte(favouriteId) {
-        var favourites         = favouritesDataObj.getData(),
-            analysisDataObject = null,
-            favourite          = {};
-
-        for (var i = 0; i < favourites.items.length; i++) {
-            favourite = favourites.items[i];
-            if (favourite.favouriteId === favouriteId) {
-                // Create a new analysisDataObject and populate it with
-                // values from favourite.
-                analysisDataObject = {}; 
-                analysisDataObject.portfolioId = favourite.portfolioId;
-                analysisDataObject.analysisId = favourite.analysisId;
-                analysisDataObject.timePeriodId= favourite.timePeriodId;
-                return analysisDataObject;   
-            }
-        }
-
-        return analysisDataObject;
-    }
-
-    function favouriteExists(favouriteId) {
-        var favourites = favouritesDataObj.getData();
-    }
-
-    function favouritesUpdated() {
-        eventManager.raiseEvent('onFavouritesUpdated', favouritesDataObj.getData());
-    }
-
-    function init(lastUsernameUsed) {
-        var favourites;
-        
-        if (lastUsernameUsed) {
-            favouritesDataObj.loadData(lastUsernameUsed);
-        } 
-
-        favouritesUpdated();
-    }
-        
-    favouritesManager.init = init;
-    favouritesManager.update = init; // Alias
-    favouritesManager.createIdFromAnalysisDataObject = createIdFromAnalysisDataObject;
-    favouritesManager.getFavourteFromAnalysisDataObject = getFavourteFromAnalysisDataObject;
-    favouritesManager.favouriteExists = favouriteExists;
-    favouritesManager.getAnalysisDataObjectFromFavourte = getAnalysisDataObjectFromFavourte;
-
-    return favouritesManager;
-});
-// ------------------------------------------
-// NAV
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'nav', hasEvents: true }, function () {
-    var nav             = {},
-        eventManager    = this.getEventManager();
-
-    // Navigate to an external page.
-    function navigateTo(url) {
-        window.location = url;
-    }
-
-    // NOTA BENE: In the current version of jQTouch, the animation property doesn't work.
-    function goToPage(idPage, animation) {
-        setTimeout(function () {
-            jQT.goTo($(idPage), animation || 'fade');
-        }, 25);
-    }
-
-    function goToPageWithCallback(idPage, animation, callback) {
-        setTimeout(function () {
-            jQT.goTo($(idPage), animation || 'fade');
-            callback();
-        }, 25);
-    }
-
-    function reloadApp(params) {
-        var paramsToAdd = params || '';
-
-        window.location = './' + paramsToAdd;
-        return false;
-    }
-
-    nav.goToPage = goToPage;
-    nav.goToPageWithCallback = goToPageWithCallback;
-    nav.reloadApp = reloadApp;
-
-    return nav;
-});
-
-// ------------------------------------------
-// EVENT PAGE MANAGER
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedModules: ['pageElements', 'loadingMaskManager'], hasEvents: true }, function () {
-    var pageEventsManager   = {},
-        eventManager        = this.getEventManager(),
-        output              = this.getConsole(),
-        helper              = this.getPlugin('helper'),
-        el                  = this.getSharedModule('pageElements'),
-        mask                = this.getSharedModule('loadingMaskManager');
-
-    $('div[data-pageEvents]').each(function () {
-        var eventHandler = '';
-
-        switch ($(this).attr("data-pageEvents")) {
-            case 'start':
-                $(this).on('pageAnimationStart', function (e, info) {
-                    if (info.direction === 'in') {
-                        eventManager.raiseEvent('on' + helper.capitaliseFirstLetter(this.id) + 'Start');
-                    }
-                });
-                break;
-
-            case 'end':
-                $(this).on('pageAnimationEnd', function (e, info) {
-                    if (info.direction === 'in') {
-                        eventManager.raiseEvent('on' + helper.capitaliseFirstLetter(this.id) + 'End');
-                    }
-                });
-                break;
-
-            case 'both':
-                $(this).on('pageAnimationStart', function (e, info) {
-                    if (info.direction === 'in') {
-                        eventManager.raiseEvent('on' + helper.capitaliseFirstLetter(this.id) + 'Start');
-                    }
-                });
-
-                $(this).on('pageAnimationEnd', function (e, info) {
-                    if (info.direction === 'in') {
-                        eventManager.raiseEvent('on' + helper.capitaliseFirstLetter(this.id) + 'End');
-                    }
-                });
-                break;
-
-            case 'none':
-                break;
-
-            default:
-        }
-    });
-
-    // ------------------------------------------
-    // GLOBAL AJAX EVENTS
-    // ------------------------------------------
-
-    // Global Ajax Call
-    $(document).on('ajaxStart', onAjaxStart);
-    $(document).on('ajaxComplete', onAjaxComplete);
-
-    function onAjaxStart(event, request, settings) {
-        mask.show('ajax');
-        output.log('ajaxStart', event, request, settings);
-    }
-
-    function onAjaxComplete(event, request, settings) {
-        mask.hide('ajax');
-        // Return false to cancel this request.
-        var obj = {};
-        try {
-            obj = JSON.parse(request.response);
-        } catch (e) {
-
-        }
-
-        output.log('ajaxComplete', event, request, settings, obj);
-    }
-
-    return pageEventsManager;
-});
-// ------------------------------------------
-// PORTFOLIO MANAGER
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: ['settings', 'ajaxManager', 'localizationManager'],
-    dataObjects: ['portfolio'], hasEvents: true
-}, function () {
-    var portfolioManager    = {},
-        output              = this.getConsole(),
-        eventManager        = this.getEventManager(),
-        settings            = this.getSharedModule('settings'),
-        portfolioDataObj    = this.getDataObject('portfolio'),
-        lang                = this.getSharedModule('localizationManager').getLanguage() || {},
-        ajaxManager         = this.getSharedModule('ajaxManager'),
-        lastPortfolioIdUsed = '',
-        lastPortfolioUsed   = {};
-
-    portfolioDataObj.define({
-        code: '',
-        name: '',
-        type: '',
-        analysisLink: '',
-        currency: '',
-        version: '',
-        timeStamp: '',
-        timePeriods: []
-    });
-
-    function loadPortfolioAnalysis(portfolioCode, callback) {
-
-        function onGetAnalysisCompleted() {
-            callback(lastPortfolioUsed);
-        }
-
-        function onLoadPortfolioCompleted(defaultAnalysisLink) {
-            getAnalysis(defaultAnalysisLink, onGetAnalysisCompleted);
-        }
-
-        loadPortfolio(portfolioCode, onLoadPortfolioCompleted);
-    }
-
-    function loadPortfolio(portfolioCode, callback) {
-        var defaultPortfolioCode,
-            portfolio = {
-                code: '',
-                type: '',
-                analysisLink: '',
-                currency: '',
-                version: '',
-                timeStamp: '',
-                timePeriods: []
-            };
-
-        // Load default portfolio.
-        function getPortfolioCode() {
-            // TODO: Add code here to select the right portfolio code from:
-            // - First portfolio
-            // - Default portfolio
-            // - Last saved portfolio
-            // - Etc. etc.
-            if (portfolioCode) {
-                return portfolioCode;
-            } else {
-                // Return the first available portfolio.
-                return '';
-            }
-        }
-
-        lastPortfolioIdUsed = portfolio.code = getPortfolioCode();
-        loadPortfolioData(onLoadPortfolioDataCompleted);
-
-        function loadPortfolioData(callback) {
-            var oData = {},
-                defaultAnalysisLink = null;
-
-            // Filter on the portfolio code if provided, otherwise just
-            // retrieve the first portfolio in the default list.
-            if (portfolio.code) {
-                oData.filter = "Code eq '" + portfolio.code + "'";
-            } else {
-                oData.start = 0;
-                oData.top = 1;
-            }
-
-            ajaxManager.post(settings.siteUrls.portfolios, { oData: oData, datatype: 'json' }, function (data) {
-                
-                // If no portfolio data was returned for our query...
-                if (!data || !data.items || data.items.length < 1) {
-                    // ...raise a failure event and return.
-                    eventManager.raiseEvent('onFailed', lang.errors.portfolioNotFoundText);
-                    return;
-                }
-
-                // Persist the portfolio code and the link to its default analysis.
-                portfolio.code = data.items[0].code;
-                defaultAnalysisLink = data.items[0].links.defaultAnalysis.href;
-                
-                // Call the callback.
-                callback({ defaultAnalysisLink: defaultAnalysisLink });
-
-            }, 'json');
-        }
-
-        function onLoadPortfolioDataCompleted(data) {
-            if (data.defaultAnalysisLink) {
-                portfolio.analysisLink = data.defaultAnalysisLink;
-                loadPortfolioAnalysis(data.defaultAnalysisLink, onLoadPortfolioAnalysisCompleted);
-            }
-        }
-
-        function loadPortfolioAnalysis(defaultAnalysisLink, callback) {
-            ajaxManager.post(settings.siteUrls.portfolioAnalysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (data) {
-
-                // If no analysis data was returned for the given portfolio...
-                if (!data || !data.analysis) {
-                    // ...raise a failure event and return.
-                    eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText);
-                    return;
-                }
-
-                // Persist the basic portfolio information.
-                portfolio.name = data.name || '';
-                portfolio.type = data.type || '';
-                portfolio.currency = data.analysis.currency || '';
-                portfolio.version = data.analysis.version || '';
-
-                // If we have results, persist their basic details also.
-                if (data.analysis.results) {
-                    portfolio.timeStamp = data.analysis.results.timeStamp || '';
-                    portfolio.timePeriods = data.analysis.results.timePeriods || [];
-                }
-
-                // Call the callback.
-                callback();
-
-            }, 'json');
-        }
-
-        function onLoadPortfolioAnalysisCompleted() {
-            
-            // Persist the currently selected portfolio.
-            portfolioDataObj.setData(portfolio);
-            lastPortfolioUsed = portfolio;
-
-            // Raise notification events.
-            eventManager.raiseEvent('onPortfolioLoaded', portfolio);
-            eventManager.raiseEvent('onTimePeriodsLoaded', portfolio.timePeriods);
-
-            // Call the callback, passing the analysis link.
-            callback(portfolio.analysisLink);
-        }
-    }
-
-    // Public
-    function getAnalysis(uri, callback) {
-        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (data) {
-
-            // If no analysis HTML template data was returned for the given portfolio...
-            if (!data) {
-                // ...raise a failure event and return.
-                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText);
-                return;
-            }
-
-            // Raise notification events.
-            eventManager.raiseEvent('onAnalysisLoaded', data);
-
-            // Call the callback.
-            callback();
-        }, 'json');
-    }
-
-    portfolioManager.loadPortfolio = loadPortfolio;
-    portfolioManager.getAnalysis = getAnalysis;
-    portfolioManager.loadPortfolioAnalysis = loadPortfolioAnalysis;
-
-    return portfolioManager;
-});
-// ------------------------------------------
-// PRESENTATION MODE MANAGER
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'device'], sharedModules: ['pageElements'], hasEvents: true }, function () {
-    var presentationManager  = {},
-        eventManager        = this.getEventManager(),
-        output              = this.getConsole(),
-        helper              = this.getPlugin('helper'),
-        device              = this.getPlugin('device'),
-        el                  = this.getSharedModule('pageElements'),
-        fullScreen          = false;
-
-    $(el.minimizeButton).on('click', function (e, info) {
-        exitPresentationMode();
-        e.preventDefault();
-    });
-    
-    function enterPresentationMode(data) {
-        fullScreen = true;
-        turnView();
-
-        eventManager.raiseEvent('onBeforeEnter', data);
-
-        $(el.fullScreenPage).show();
-        $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
-            eventManager.raiseEvent('onEnter', data);
-        }});
-                
-    }
-
-    function exitPresentationMode() {
-        fullScreen = false;
-        $(el.fullScreenPage).animate({ opacity: 0 }, { duration: 750, easing: 'ease-out', complete: function () {
-            $(el.fullScreenPage).css({ 'display': 'none' });
-            eventManager.raiseEvent('onExit');
-        }});
-    }
-
-    function isFullScreen() {
-        return fullScreen;
-    }
-
-    // Private
-    function turnView() {
-        // ASA TODO: Use device.orientation()...
-        var o         = Math.abs(window.orientation - 90),
-            left      = '0',
-            width     = '0',
-            height    = '0',
-            forceTurn = false;
-        
-        o = (o == 180) ? 0: o;
-        
-        if (device.isIPad()) {
-            if (o == 90) {
-                width     = '1004px !important';
-                height    = '768px';
-                left      = '768px';
-                forceTurn = true;
-            } else {
-                width     = '1024px !important';
-                height    = '748px';
-                left      = '0';
-                forceTurn = false;
-            }
-        } else {
-            if (o == 90) {
-                width     = '460px !important';
-                height    = '320px';
-                left      = '320px';
-                forceTurn = true;
-            } else {
-                width     = '480px !important';
-                height    = '310px';
-                left      = '0';
-                forceTurn = false;
-            }
-        }
-
-
-        if (forceTurn) {
-            $(el.turnIcon).animate({ opacity: 1 }, { duration: 250, easing: 'ease-out', complete: function () {
-                $(el.fullScreenMask).css({ 'display': 'block' });
-            }});
-        } else {
-            $(el.turnIcon).animate({ opacity: 0 }, { duration: 250, easing: 'ease-out', complete: function () {
-                $(el.fullScreenMask).css({ 'display': 'none' });
-            }});
-        }
-        
-        $(el.fullScreenContainer).css({ 
-            width: width,
-            height: height,
-            '-webkit-transform-origin': 'left top',
-            '-webkit-transform': 'rotate('+ o +'deg)',
-            left: left
-        });
-    }
-
-    $('body').bind('turn', function(event, info){
-        if (isFullScreen()) {
-            turnView();
-        }
-    });
-
-    presentationManager.enterPresentationMode = enterPresentationMode;
-    presentationManager.exitPresentationMode = exitPresentationMode;
-    presentationManager.isFullScreen = isFullScreen;
-
-    return presentationManager;
-});
-// ------------------------------------------
-// REPOSITORIES
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'repositories', sharedModules: ['settings', 'localizationManager', 'ajaxManager'],
-    hasEvents: true }, function () {
-    var repositories    = {},
-        eventManager    = this.getEventManager(),
-        output          = this.getConsole(),
-        settings        = this.getSharedModule('settings'),
-        ajaxManager     = this.getSharedModule('ajaxManager'),
-        lang            = this.getSharedModule('localizationManager').getLanguage() || {};
-
-    // Portfolio Slot Repository
-    repositories.portfoliosSlot = (function () {
-        var repository = {},
-            portfoliosSlotItems = null;
-
-        // Add event handlers to the object.
-        eventManager.attachTo(repository);
-
-        function getPortfoliosSlotItems() {
-            return portfoliosSlotItems;
-        }
-
-        function setPortfoliosSlotItems(items) {
-            portfoliosSlotItems = items;
-            repository.raiseEvent('onItemsChanged', items);
-        }
-
-        function loadData(callback) {
-            var slotItems = {};
-            ajaxManager.post(settings.siteUrls.portfolios, { datatype: 'json' }, function (data) {
-                if (data) {
-                    $.each(data.items, function (i, val) {
-                        slotItems[val.code] = val.name;
-                    });
-                } else {
-                    slotItems.err = lang.spinningWheel.noPortfolioSlotAvailable;
-                }
-
-                setPortfoliosSlotItems(slotItems);
-                callback(slotItems);
-            }, 'json');
-        }
-
-        function getData(callback) {
-            // TODO: Check if portfoliosListChanged is true...
-            if (settings.appSettings.loadPortfoliosSlotDataOnce) {
-                if (!getPortfoliosSlotItems()) {
-                    loadData(function (slotItems) {
-                        callback(slotItems);
-                    });
-                } else {
-                    callback(getPortfoliosSlotItems());
-                }
-            } else {
-                loadData(function (slotItems) {
-                    callback(slotItems);
-                });
-            }
-        }
-
-        repository.getData = getData;
-
-        return repository;
-    })();
-
-    // Analysis Slot Repository.
-    repositories.analysisSlot = (function () {
-        var repository = {},
-            analysisSlotItems = null;
-
-        // Add event handlers to the object.
-        eventManager.attachTo(repository);
-
-        function getAnalysisSlotItems() {
-            // ASA TODO: Investigate...
-            return analysisSlotItems;
-            return (analysisSlotItems)
-                ? analysisSlotItems
-                : { err: lang.spinningWheel.noAnalysisSlotAvailable };
-        }
-
-        function setAnalysisSlotItems(items) {
-            analysisSlotItems = items;
-            repository.raiseEvent('onItemsChanged', items);
-        }
-
-        function setData(analysisPages) {
-            var slotItems = {};
-
-            $.each(analysisPages, function (i, val) {
-                slotItems[val.code] = val.name;
-            });
-
-            setAnalysisSlotItems(slotItems);
-        }
-
-        function getData(callback) {
-            var items = getAnalysisSlotItems();
-            callback(items);
-        }
-
-        repository.getData = getData;
-        repository.setData = setData;
-
-        return repository;
-    })();
-
-    // Time Period Slot Repository.
-    repositories.timePeriodsSlot = (function () {
-        var repository = {},
-            timePeriodsSlotItems = null;
-
-        // Add event handlers to the object.
-        eventManager.attachTo(repository);
-
-        function getTimePeriodsSlotItems() {
-            return (timePeriodsSlotItems)
-                ? timePeriodsSlotItems
-                : { err: lang.spinningWheel.noTimePeriodSlotAvailable };
-        }
-
-        function setTimePeriodsSlotItems(items) {
-            timePeriodsSlotItems = items;
-            repository.raiseEvent('onItemsChanged', items);
-        }
-
-        function setData(timePeriods) {
-            var slotItems = null;
-
-            if (timePeriods && timePeriods.length > 0) {
-                slotItems = {};
-                
-                $.each(timePeriods, function (i, val) {
-                    slotItems[val.code] = val.name;
-                });
-            }
-
-            setTimePeriodsSlotItems(slotItems);
-        }
-
-        function getData(callback) {
-            var items = getTimePeriodsSlotItems(); //appRepository.timePeriodsSlotItems; //getTimePeriodsSlotItems()
-            callback(items);
-        }
-
-        repository.getData = getData;
-        repository.setData = setData;
-
-        return repository;
-    })();
-
-    // Favourites Slot Repository.
-    repositories.favouritesSlot = (function () {
-        var repository = {},
-            favouritesSlotItems = null;
-
-        // Add event handlers to the object.
-        eventManager.attachTo(repository);
-
-        function getFavouritesSlotItems() {
-            return (favouritesSlotItems)
-                ? favouritesSlotItems
-                : { err: lang.spinningWheel.noFavouritesSlotAvailable };
-        }
-
-        function setFavouritesSlotItems(items) {
-            favouritesSlotItems = items;
-            repository.raiseEvent('onItemsChanged', items);
-        }
-
-        function setData(favourites) {
-            var slotItems = null;
-
-            if (favourites && favourites.length > 0) {
-                slotItems = {};
-                
-                $.each(favourites, function (i, val) {
-                    slotItems[val.code] = val.name;
-                });
-            }
-
-            setFavouritesSlotItems(slotItems);
-        }
-
-        function getData(callback) {
-            var items = getFavouritesSlotItems();
-            callback(items);
-        }
-
-        repository.getData = getData;
-        repository.setData = setData;
-
-        return repository;
-    })();
-
-    return repositories;
-});
-// ------------------------------------------
-// THEMES MANAGER
-// ------------------------------------------
-
-WebAppLoader.addModule({ name: 'themesManager', plugins: ['helper'], sharedModules: ['pageElements'], 
-    dataObjects: ['theme'], hasEvents: true }, function () {
-    var themesManager   = {},
-        eventManager    = this.getEventManager(),
-        output          = this.getConsole(),
-        helper          = this.getPlugin('helper'),
-        el              = this.getSharedModule('pageElements'),
-        themeDataObj    = this.getDataObject('theme'),
-        defaultStyle    = 'Awesome';
-
-    themeDataObj.define({
-        name: defaultStyle
-    });
-
-    $(el.themesPage + ' ul li a').on('click', onThemeChange);
-
-    // Private
-    function onThemeChange(event) {
-        var theme = $(this).attr("data-title") || null;
-        eventManager.raiseEvent('onThemeChanged', theme);
-    }
-
-    // Public
-    function switchStyle(theme) {
-        var style = null;
-        if (typeof theme === 'object' && theme.name) {
-            style = theme.name;
-        } else {
-            style = theme;
-        }
-        jQT.switchStyle(style || defaultStyle);
-    }
-
-    themesManager.switchStyle = switchStyle;
-
-    return themesManager;
-});
-// ------------------------------------------
 // AJAX MANAGER
 // ------------------------------------------
 
@@ -11901,6 +9851,1005 @@ WebAppLoader.addModule({ name: 'settings', dataObjects: ['appSettings', 'userSet
     settings.languages = languages;
 
     return settings;
+});
+// ------------------------------------------
+// ANALYSIS MANAGER
+// ------------------------------------------
+
+WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'], 
+    sharedModules: [], dataObjects: ['analysisPages'], hasEvents: true }, function () {
+
+    var analysisManager         = {},
+        output                  = this.getConsole(),
+        eventManager            = this.getEventManager(),
+        helper                  = this.getPlugin('helper'),
+        analysisPagesDataObj    = this.getDataObject('analysisPages'),
+        charts                  = [],
+        analysisPages           = {};
+
+    analysisPagesDataObj.define({
+        items: [{
+            name        : 'Performance',
+            id          : 'performance',
+            order       : 1,
+            userDefined : false,
+            charts      : [{
+                    chartId : 'performanceMaster_grid',
+                    order   : 1
+                },{
+                    chartId : 'performance_line',
+                    order   : 2
+                },{
+                    chartId : 'performance_grid',
+                    order   : 3
+                },{
+                    chartId : 'performance_bubble',
+                    order   : 4
+                },{
+                    chartId: 'performance_bar',
+                    order   : 5
+                },{
+                    chartId: 'performance_treemap',
+                    order   : 6
+                },{
+                    chartId: 'performanceTopTen_grid',
+                    order   : 7
+                }] 
+        },{
+            name        : 'Risk',
+            id          : 'risk',
+            order       : 2,
+            userDefined : false,
+            charts      : [{
+                    chartId : 'riskMaster_grid',
+                    order   : 1
+                },{
+                    chartId: 'risk_treemap',
+                    order   : 2
+                },{
+                    chartId: 'risk_bar',
+                    order   : 3
+                },{
+                    chartId: 'risk_bubble',
+                    order   : 4
+                },{
+                    chartId: 'risk_pie',
+                    order   : 5
+                },{
+                    chartId: 'riskTopTen_grid',
+                    order   : 6
+                }]             
+        },{
+            name        : 'Asset Allocation',
+            id          : 'assetAllocation',
+            order       : 3,
+            userDefined : false,
+            charts      : [{
+                    chartId : 'allocationMaster_grid',
+                    order   : 1
+                },{
+                    chartId: 'allocation_pie',
+                    order   : 2
+                },{
+                    chartId: 'allocation_bar',
+                    order   : 3
+                }]             
+        },{
+            name        : 'Contribution',
+            id          : 'contribution',
+            order       : 4,
+            userDefined : false,
+            charts      : [{
+                    chartId : 'contributionMaster_grid',
+                    order   : 1
+                },{
+                    chartId: 'contribution_pie',
+                    order   : 2
+                },{
+                    chartId: 'contribution_column',
+                    order   : 3
+                },{
+                    chartId: 'contribution_bar',
+                    order   : 4
+                },{
+                    chartId: 'contributionTopTen_grid',
+                    order   : 5
+                }]            
+        },{
+            name        : 'Attribution',
+            id          : 'attribution',
+            order       : 5,
+            userDefined : false,
+            charts      : [{
+                    chartId : 'attributionMaster_grid',
+                    order   : 1
+                },{
+                    chartId: 'attribution_column',
+                    order   : 2
+                },{
+                    chartId: 'attribution_bar',
+                    order   : 3
+                },{
+                    chartId: 'attribution_grid',
+                    order   : 4
+                }]              
+        },{
+            name        : 'Fixed Income',
+            id          : 'fixedIncome',
+            order       : 6,
+            userDefined : false,
+            charts      : [{
+                    chartId : 'fixedIncomeMaster_grid',
+                    order   : 1
+                },{
+                    title: 'Bar Charts of Fixed Income Contributions:',
+                    chartId: '',
+                    order   : 2
+                },{
+                    chartId: 'fixedIncomeContribution_bar',
+                    order   : 3
+                },{
+                    chartId: 'carryContribution_bar',
+                    order   : 4
+                },{
+                    chartId: 'yieldCurveContribution_bar',
+                    order   : 5
+                },{
+                    chartId: 'riskNumbers_bar',
+                    order   : 6
+                },{
+                    title: 'Column Charts of Fixed Income Exposures:',
+                    chartId: '',
+                    order   : 7
+                },{
+                    chartId: 'interestRatesExposure_column',
+                    order   : 8
+                },{
+                    chartId: 'creditSpreadsExposure_column',
+                    order   : 9
+                },{
+                    chartId: 'dv01Exposure_column',
+                    order   : 10
+                },{
+                    title: 'Grid of Risk Numbers:',
+                    chartId: '',
+                    order   : 11
+                },{
+                    chartId: 'fixedIncome_grid',
+                    order   : 12
+                },{
+                    chartId: 'fixedIncomeContribution_grid',
+                    order   : 13
+                },{
+                    title: 'Grid of FI Exposure',
+                    chartId: '',
+                    order   : 14
+                },{
+                    chartId: 'fixedIncomeExposure_grid',
+                    order   : 15
+                }]   
+        },{
+            name        : 'User Defined Test Page',
+            id          : 'test1',
+            order       : 100,
+            userDefined : true,
+            charts      : [{
+                    chartId: 'fi_contribution_group',
+                    order   : 1
+                }]             
+        }]
+    });
+
+    // Public
+    function restoreDefaults() {
+        analysisPages = analysisPagesDataObj.getData();
+    }
+
+    function analysisUpdated() {
+        eventManager.raiseEvent('onUpdated', analysisPagesDataObj.getData());
+    }
+
+    function init(lastUsernameUsed) {
+        var userAnalysisPages;
+        
+        if (lastUsernameUsed) {
+            analysisPagesDataObj.loadData(lastUsernameUsed);
+        } 
+
+        analysisUpdated();
+    }
+        
+    analysisManager.init = init;
+    analysisManager.update = init; // Alias
+
+    return analysisManager;
+});
+// ------------------------------------------
+// AUTHENTICATION
+// ------------------------------------------
+
+WebAppLoader.addModule({ name: 'auth', plugins: ['base64'], sharedModules: ['ajaxManager'], hasEvents: true }, function () {
+    var auth            = {},
+        output          = this.getConsole(),
+        eventManager    = this.getEventManager(),
+        base64          = this.getPlugin('base64'),
+        ajaxManager     = this.getSharedModule('ajaxManager'),
+        hash            = '';
+
+    function doLogin(username, password, url, language) {
+        var token, tokenHash;
+        
+        hash = '';
+        tokenHash = base64.encode(username + ':' + password);
+        token = 'Basic ' + tokenHash;
+
+        // Post the created token and the user's email to the authenticate action.
+        ajaxManager.post(url, { email: username, token: token, lang: language }, function (response) {
+            // If our response indicates that the user has been authenticated...
+            if (response.authenticated) {
+                hash = tokenHash;
+                eventManager.raiseEvent('onLoginSuccess', token); //response.portfolioTotal
+            } else {
+                eventManager.raiseEvent('onLoginFailed', response.message);
+            }
+        }, 'json');
+    }
+
+    function getHash() {
+        return hash;
+    }
+
+    auth.doLogin = doLogin;
+    auth.getHash = getHash;
+
+    return auth;
+});
+
+// ------------------------------------------
+// FAVOURITES MANAGER
+// ------------------------------------------
+
+WebAppLoader.addModule({ name: 'favouritesManager', plugins: ['helper'], 
+    sharedModules: [], dataObjects: ['favourites'], hasEvents: true }, function () {
+
+    var favouritesManager    = {},
+        output               = this.getConsole(),
+        eventManager         = this.getEventManager(),
+        helper               = this.getPlugin('helper'),
+        favouritesDataObj    = this.getDataObject('favourites'),
+        favourites           = {};
+
+    favouritesDataObj.define({
+        items: []
+    });
+
+    function createIdFromAnalysisDataObject(analysisDataObject) {
+        var favouriteId = null,
+            dataObj     = analysisDataObject;
+
+        if (dataObj.portfolioId &&  dataObj.analysisId && dataObj.timePeriodId) {
+            favouriteId = dataObj.portfolioId +  dataObj.analysisId + dataObj.timePeriodId;
+        }
+
+        return favouriteId;
+    }
+    
+    function getFavourteFromAnalysisDataObject(analysisDataObject) {
+        var favouriteObj = {};
+
+        favouriteObj.title        = analysisDataObject.portfolioName + ' - ' +
+                                    analysisDataObject.analysisName + ' - ' +
+                                    analysisDataObject.timePeriodName;
+        favouriteObj.favouriteId  = analysisDataObject.portfolioId +
+                                    analysisDataObject.analysisId +
+                                    analysisDataObject.timePeriodId;
+        favouriteObj.portfolioId  = analysisDataObject.portfolioId;
+        favouriteObj.analysisId   = analysisDataObject.analysisId;
+        favouriteObj.timePeriodId = analysisDataObject.timePeriodId;
+
+        return favouriteObj;
+    }
+
+    function getAnalysisDataObjectFromFavourte(favouriteId) {
+        var favourites         = favouritesDataObj.getData(),
+            analysisDataObject = null,
+            favourite          = {};
+
+        for (var i = 0; i < favourites.items.length; i++) {
+            favourite = favourites.items[i];
+            if (favourite.favouriteId === favouriteId) {
+                // Create a new analysisDataObject and populate it with
+                // values from favourite.
+                analysisDataObject = {}; 
+                analysisDataObject.portfolioId = favourite.portfolioId;
+                analysisDataObject.analysisId = favourite.analysisId;
+                analysisDataObject.timePeriodId= favourite.timePeriodId;
+                return analysisDataObject;   
+            }
+        }
+
+        return analysisDataObject;
+    }
+
+    function favouriteExists(favouriteId) {
+        var favourites = favouritesDataObj.getData();
+    }
+
+    function favouritesUpdated() {
+        eventManager.raiseEvent('onFavouritesUpdated', favouritesDataObj.getData());
+    }
+
+    function init(lastUsernameUsed) {
+        var favourites;
+        
+        if (lastUsernameUsed) {
+            favouritesDataObj.loadData(lastUsernameUsed);
+        } 
+
+        favouritesUpdated();
+    }
+        
+    favouritesManager.init = init;
+    favouritesManager.update = init; // Alias
+    favouritesManager.createIdFromAnalysisDataObject = createIdFromAnalysisDataObject;
+    favouritesManager.getFavourteFromAnalysisDataObject = getFavourteFromAnalysisDataObject;
+    favouritesManager.favouriteExists = favouriteExists;
+    favouritesManager.getAnalysisDataObjectFromFavourte = getAnalysisDataObjectFromFavourte;
+
+    return favouritesManager;
+});
+// ------------------------------------------
+// NAV
+// ------------------------------------------
+
+WebAppLoader.addModule({ name: 'nav', hasEvents: true }, function () {
+    var nav             = {},
+        eventManager    = this.getEventManager();
+
+    // Navigate to an external page.
+    function navigateTo(url) {
+        window.location = url;
+    }
+
+    // NOTA BENE: In the current version of jQTouch, the animation property doesn't work.
+    function goToPage(idPage, animation) {
+        setTimeout(function () {
+            jQT.goTo($(idPage), animation || 'fade');
+        }, 25);
+    }
+
+    function goToPageWithCallback(idPage, animation, callback) {
+        setTimeout(function () {
+            jQT.goTo($(idPage), animation || 'fade');
+            callback();
+        }, 25);
+    }
+
+    function reloadApp(params) {
+        var paramsToAdd = params || '';
+
+        window.location = './' + paramsToAdd;
+        return false;
+    }
+
+    nav.goToPage = goToPage;
+    nav.goToPageWithCallback = goToPageWithCallback;
+    nav.reloadApp = reloadApp;
+
+    return nav;
+});
+
+// ------------------------------------------
+// EVENT PAGE MANAGER
+// ------------------------------------------
+
+WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedModules: ['pageElements', 'loadingMaskManager'], hasEvents: true }, function () {
+    var pageEventsManager   = {},
+        eventManager        = this.getEventManager(),
+        output              = this.getConsole(),
+        helper              = this.getPlugin('helper'),
+        el                  = this.getSharedModule('pageElements'),
+        mask                = this.getSharedModule('loadingMaskManager');
+
+    $('div[data-pageEvents]').each(function () {
+        var eventHandler = '';
+
+        switch ($(this).attr("data-pageEvents")) {
+            case 'start':
+                $(this).on('pageAnimationStart', function (e, info) {
+                    if (info.direction === 'in') {
+                        eventManager.raiseEvent('on' + helper.capitaliseFirstLetter(this.id) + 'Start');
+                    }
+                });
+                break;
+
+            case 'end':
+                $(this).on('pageAnimationEnd', function (e, info) {
+                    if (info.direction === 'in') {
+                        eventManager.raiseEvent('on' + helper.capitaliseFirstLetter(this.id) + 'End');
+                    }
+                });
+                break;
+
+            case 'both':
+                $(this).on('pageAnimationStart', function (e, info) {
+                    if (info.direction === 'in') {
+                        eventManager.raiseEvent('on' + helper.capitaliseFirstLetter(this.id) + 'Start');
+                    }
+                });
+
+                $(this).on('pageAnimationEnd', function (e, info) {
+                    if (info.direction === 'in') {
+                        eventManager.raiseEvent('on' + helper.capitaliseFirstLetter(this.id) + 'End');
+                    }
+                });
+                break;
+
+            case 'none':
+                break;
+
+            default:
+        }
+    });
+
+    // ------------------------------------------
+    // GLOBAL AJAX EVENTS
+    // ------------------------------------------
+
+    // Global Ajax Call
+    $(document).on('ajaxStart', onAjaxStart);
+    $(document).on('ajaxComplete', onAjaxComplete);
+
+    function onAjaxStart(event, request, settings) {
+        mask.show('ajax');
+        output.log('ajaxStart', event, request, settings);
+    }
+
+    function onAjaxComplete(event, request, settings) {
+        mask.hide('ajax');
+        // Return false to cancel this request.
+        var obj = {};
+        try {
+            obj = JSON.parse(request.response);
+        } catch (e) {
+
+        }
+
+        output.log('ajaxComplete', event, request, settings, obj);
+    }
+
+    return pageEventsManager;
+});
+// ------------------------------------------
+// PORTFOLIO MANAGER
+// ------------------------------------------
+
+WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: ['settings', 'ajaxManager', 'localizationManager'],
+    dataObjects: ['portfolio'], hasEvents: true
+}, function () {
+    var portfolioManager    = {},
+        output              = this.getConsole(),
+        eventManager        = this.getEventManager(),
+        settings            = this.getSharedModule('settings'),
+        portfolioDataObj    = this.getDataObject('portfolio'),
+        lang                = this.getSharedModule('localizationManager').getLanguage() || {},
+        ajaxManager         = this.getSharedModule('ajaxManager'),
+        lastPortfolioIdUsed = '',
+        lastPortfolioUsed   = {};
+
+    portfolioDataObj.define({
+        code: '',
+        name: '',
+        type: '',
+        analysisLink: '',
+        currency: '',
+        version: '',
+        timeStamp: '',
+        timePeriods: []
+    });
+
+    function loadPortfolioAnalysis(portfolioCode, callback) {
+
+        function onGetAnalysisCompleted() {
+            callback(lastPortfolioUsed);
+        }
+
+        function onLoadPortfolioCompleted(defaultAnalysisLink) {
+            getAnalysis(defaultAnalysisLink, onGetAnalysisCompleted);
+        }
+
+        loadPortfolio(portfolioCode, onLoadPortfolioCompleted);
+    }
+
+    function loadPortfolio(portfolioCode, callback) {
+        var defaultPortfolioCode,
+            portfolio = {
+                code: '',
+                type: '',
+                analysisLink: '',
+                currency: '',
+                version: '',
+                timeStamp: '',
+                timePeriods: []
+            };
+
+        // Load default portfolio.
+        function getPortfolioCode() {
+            // TODO: Add code here to select the right portfolio code from:
+            // - First portfolio
+            // - Default portfolio
+            // - Last saved portfolio
+            // - Etc. etc.
+            if (portfolioCode) {
+                return portfolioCode;
+            } else {
+                // Return the first available portfolio.
+                return '';
+            }
+        }
+
+        lastPortfolioIdUsed = portfolio.code = getPortfolioCode();
+        loadPortfolioData(onLoadPortfolioDataCompleted);
+
+        function loadPortfolioData(callback) {
+            var oData = {},
+                defaultAnalysisLink = null;
+
+            // Filter on the portfolio code if provided, otherwise just
+            // retrieve the first portfolio in the default list.
+            if (portfolio.code) {
+                oData.filter = "Code eq '" + portfolio.code + "'";
+            } else {
+                oData.start = 0;
+                oData.top = 1;
+            }
+
+            ajaxManager.post(settings.siteUrls.portfolios, { oData: oData, datatype: 'json' }, function (data) {
+                
+                // If no portfolio data was returned for our query...
+                if (!data || !data.items || data.items.length < 1) {
+                    // ...raise a failure event and return.
+                    eventManager.raiseEvent('onFailed', lang.errors.portfolioNotFoundText);
+                    return;
+                }
+
+                // Persist the portfolio code and the link to its default analysis.
+                portfolio.code = data.items[0].code;
+                defaultAnalysisLink = data.items[0].links.defaultAnalysis.href;
+                
+                // Call the callback.
+                callback({ defaultAnalysisLink: defaultAnalysisLink });
+
+            }, 'json');
+        }
+
+        function onLoadPortfolioDataCompleted(data) {
+            if (data.defaultAnalysisLink) {
+                portfolio.analysisLink = data.defaultAnalysisLink;
+                loadPortfolioAnalysis(data.defaultAnalysisLink, onLoadPortfolioAnalysisCompleted);
+            }
+        }
+
+        function loadPortfolioAnalysis(defaultAnalysisLink, callback) {
+            ajaxManager.post(settings.siteUrls.portfolioAnalysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (data) {
+
+                // If no analysis data was returned for the given portfolio...
+                if (!data || !data.analysis) {
+                    // ...raise a failure event and return.
+                    eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText);
+                    return;
+                }
+
+                // Persist the basic portfolio information.
+                portfolio.name = data.name || '';
+                portfolio.type = data.type || '';
+                portfolio.currency = data.analysis.currency || '';
+                portfolio.version = data.analysis.version || '';
+
+                // If we have results, persist their basic details also.
+                if (data.analysis.results) {
+                    portfolio.timeStamp = data.analysis.results.timeStamp || '';
+                    portfolio.timePeriods = data.analysis.results.timePeriods || [];
+                }
+
+                // Call the callback.
+                callback();
+
+            }, 'json');
+        }
+
+        function onLoadPortfolioAnalysisCompleted() {
+            
+            // Persist the currently selected portfolio.
+            portfolioDataObj.setData(portfolio);
+            lastPortfolioUsed = portfolio;
+
+            // Raise notification events.
+            eventManager.raiseEvent('onPortfolioLoaded', portfolio);
+            eventManager.raiseEvent('onTimePeriodsLoaded', portfolio.timePeriods);
+
+            // Call the callback, passing the analysis link.
+            callback(portfolio.analysisLink);
+        }
+    }
+
+    // Public
+    function getAnalysis(uri, callback) {
+        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (data) {
+
+            // If no analysis HTML template data was returned for the given portfolio...
+            if (!data) {
+                // ...raise a failure event and return.
+                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText);
+                return;
+            }
+
+            // Raise notification events.
+            eventManager.raiseEvent('onAnalysisLoaded', data);
+
+            // Call the callback.
+            callback();
+        }, 'json');
+    }
+
+    portfolioManager.loadPortfolio = loadPortfolio;
+    portfolioManager.getAnalysis = getAnalysis;
+    portfolioManager.loadPortfolioAnalysis = loadPortfolioAnalysis;
+
+    return portfolioManager;
+});
+// ------------------------------------------
+// PRESENTATION MODE MANAGER
+// ------------------------------------------
+
+WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'device'], sharedModules: ['pageElements'], hasEvents: true }, function () {
+    var presentationManager  = {},
+        eventManager        = this.getEventManager(),
+        output              = this.getConsole(),
+        helper              = this.getPlugin('helper'),
+        device              = this.getPlugin('device'),
+        el                  = this.getSharedModule('pageElements'),
+        fullScreen          = false;
+
+    $(el.minimizeButton).on('click', function (e, info) {
+        exitPresentationMode();
+        e.preventDefault();
+    });
+    
+    function enterPresentationMode(data) {
+        fullScreen = true;
+        turnView();
+
+        eventManager.raiseEvent('onBeforeEnter', data);
+
+        $(el.fullScreenPage).show();
+        $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
+            eventManager.raiseEvent('onEnter', data);
+        }});
+                
+    }
+
+    function exitPresentationMode() {
+        fullScreen = false;
+        $(el.fullScreenPage).animate({ opacity: 0 }, { duration: 750, easing: 'ease-out', complete: function () {
+            $(el.fullScreenPage).css({ 'display': 'none' });
+            eventManager.raiseEvent('onExit');
+        }});
+    }
+
+    function isFullScreen() {
+        return fullScreen;
+    }
+
+    // Private
+    function turnView() {
+        // ASA TODO: Use device.orientation()...
+        var o         = Math.abs(window.orientation - 90),
+            left      = '0',
+            width     = '0',
+            height    = '0',
+            forceTurn = false;
+        
+        o = (o == 180) ? 0: o;
+        
+        if (device.isIPad()) {
+            if (o == 90) {
+                width     = '1004px !important';
+                height    = '768px';
+                left      = '768px';
+                forceTurn = true;
+            } else {
+                width     = '1024px !important';
+                height    = '748px';
+                left      = '0';
+                forceTurn = false;
+            }
+        } else {
+            if (o == 90) {
+                width     = '460px !important';
+                height    = '320px';
+                left      = '320px';
+                forceTurn = true;
+            } else {
+                width     = '480px !important';
+                height    = '310px';
+                left      = '0';
+                forceTurn = false;
+            }
+        }
+
+
+        if (forceTurn) {
+            $(el.turnIcon).animate({ opacity: 1 }, { duration: 250, easing: 'ease-out', complete: function () {
+                $(el.fullScreenMask).css({ 'display': 'block' });
+            }});
+        } else {
+            $(el.turnIcon).animate({ opacity: 0 }, { duration: 250, easing: 'ease-out', complete: function () {
+                $(el.fullScreenMask).css({ 'display': 'none' });
+            }});
+        }
+        
+        $(el.fullScreenContainer).css({ 
+            width: width,
+            height: height,
+            '-webkit-transform-origin': 'left top',
+            '-webkit-transform': 'rotate('+ o +'deg)',
+            left: left
+        });
+    }
+
+    $('body').bind('turn', function(event, info){
+        if (isFullScreen()) {
+            turnView();
+        }
+    });
+
+    presentationManager.enterPresentationMode = enterPresentationMode;
+    presentationManager.exitPresentationMode = exitPresentationMode;
+    presentationManager.isFullScreen = isFullScreen;
+
+    return presentationManager;
+});
+// ------------------------------------------
+// REPOSITORIES
+// ------------------------------------------
+
+WebAppLoader.addModule({ name: 'repositories', sharedModules: ['settings', 'localizationManager', 'ajaxManager'],
+    hasEvents: true }, function () {
+    var repositories    = {},
+        eventManager    = this.getEventManager(),
+        output          = this.getConsole(),
+        settings        = this.getSharedModule('settings'),
+        ajaxManager     = this.getSharedModule('ajaxManager'),
+        lang            = this.getSharedModule('localizationManager').getLanguage() || {};
+
+    // Portfolio Slot Repository
+    repositories.portfoliosSlot = (function () {
+        var repository = {},
+            portfoliosSlotItems = null;
+
+        // Add event handlers to the object.
+        eventManager.attachTo(repository);
+
+        function getPortfoliosSlotItems() {
+            return portfoliosSlotItems;
+        }
+
+        function setPortfoliosSlotItems(items) {
+            portfoliosSlotItems = items;
+            repository.raiseEvent('onItemsChanged', items);
+        }
+
+        function loadData(callback) {
+            var slotItems = {};
+            ajaxManager.post(settings.siteUrls.portfolios, { datatype: 'json' }, function (data) {
+                if (data) {
+                    $.each(data.items, function (i, val) {
+                        slotItems[val.code] = val.name;
+                    });
+                } else {
+                    slotItems.err = lang.spinningWheel.noPortfolioSlotAvailable;
+                }
+
+                setPortfoliosSlotItems(slotItems);
+                callback(slotItems);
+            }, 'json');
+        }
+
+        function getData(callback) {
+            // TODO: Check if portfoliosListChanged is true...
+            if (settings.appSettings.loadPortfoliosSlotDataOnce) {
+                if (!getPortfoliosSlotItems()) {
+                    loadData(function (slotItems) {
+                        callback(slotItems);
+                    });
+                } else {
+                    callback(getPortfoliosSlotItems());
+                }
+            } else {
+                loadData(function (slotItems) {
+                    callback(slotItems);
+                });
+            }
+        }
+
+        repository.getData = getData;
+
+        return repository;
+    })();
+
+    // Analysis Slot Repository.
+    repositories.analysisSlot = (function () {
+        var repository = {},
+            analysisSlotItems = null;
+
+        // Add event handlers to the object.
+        eventManager.attachTo(repository);
+
+        function getAnalysisSlotItems() {
+            // ASA TODO: Investigate...
+            return analysisSlotItems;
+            return (analysisSlotItems)
+                ? analysisSlotItems
+                : { err: lang.spinningWheel.noAnalysisSlotAvailable };
+        }
+
+        function setAnalysisSlotItems(items) {
+            analysisSlotItems = items;
+            repository.raiseEvent('onItemsChanged', items);
+        }
+
+        function setData(analysisPages) {
+            var slotItems = {};
+
+            $.each(analysisPages, function (i, val) {
+                slotItems[val.code] = val.name;
+            });
+
+            setAnalysisSlotItems(slotItems);
+        }
+
+        function getData(callback) {
+            var items = getAnalysisSlotItems();
+            callback(items);
+        }
+
+        repository.getData = getData;
+        repository.setData = setData;
+
+        return repository;
+    })();
+
+    // Time Period Slot Repository.
+    repositories.timePeriodsSlot = (function () {
+        var repository = {},
+            timePeriodsSlotItems = null;
+
+        // Add event handlers to the object.
+        eventManager.attachTo(repository);
+
+        function getTimePeriodsSlotItems() {
+            return (timePeriodsSlotItems)
+                ? timePeriodsSlotItems
+                : { err: lang.spinningWheel.noTimePeriodSlotAvailable };
+        }
+
+        function setTimePeriodsSlotItems(items) {
+            timePeriodsSlotItems = items;
+            repository.raiseEvent('onItemsChanged', items);
+        }
+
+        function setData(timePeriods) {
+            var slotItems = null;
+
+            if (timePeriods && timePeriods.length > 0) {
+                slotItems = {};
+                
+                $.each(timePeriods, function (i, val) {
+                    slotItems[val.code] = val.name;
+                });
+            }
+
+            setTimePeriodsSlotItems(slotItems);
+        }
+
+        function getData(callback) {
+            var items = getTimePeriodsSlotItems(); //appRepository.timePeriodsSlotItems; //getTimePeriodsSlotItems()
+            callback(items);
+        }
+
+        repository.getData = getData;
+        repository.setData = setData;
+
+        return repository;
+    })();
+
+    // Favourites Slot Repository.
+    repositories.favouritesSlot = (function () {
+        var repository = {},
+            favouritesSlotItems = null;
+
+        // Add event handlers to the object.
+        eventManager.attachTo(repository);
+
+        function getFavouritesSlotItems() {
+            return (favouritesSlotItems)
+                ? favouritesSlotItems
+                : { err: lang.spinningWheel.noFavouritesSlotAvailable };
+        }
+
+        function setFavouritesSlotItems(items) {
+            favouritesSlotItems = items;
+            repository.raiseEvent('onItemsChanged', items);
+        }
+
+        function setData(favourites) {
+            var slotItems = null;
+
+            if (favourites && favourites.length > 0) {
+                slotItems = {};
+                
+                $.each(favourites, function (i, val) {
+                    slotItems[val.code] = val.name;
+                });
+            }
+
+            setFavouritesSlotItems(slotItems);
+        }
+
+        function getData(callback) {
+            var items = getFavouritesSlotItems();
+            callback(items);
+        }
+
+        repository.getData = getData;
+        repository.setData = setData;
+
+        return repository;
+    })();
+
+    return repositories;
+});
+// ------------------------------------------
+// THEMES MANAGER
+// ------------------------------------------
+
+WebAppLoader.addModule({ name: 'themesManager', plugins: ['helper'], sharedModules: ['pageElements'], 
+    dataObjects: ['theme'], hasEvents: true }, function () {
+    var themesManager   = {},
+        eventManager    = this.getEventManager(),
+        output          = this.getConsole(),
+        helper          = this.getPlugin('helper'),
+        el              = this.getSharedModule('pageElements'),
+        themeDataObj    = this.getDataObject('theme'),
+        defaultStyle    = 'Awesome';
+
+    themeDataObj.define({
+        name: defaultStyle
+    });
+
+    $(el.themesPage + ' ul li a').on('click', onThemeChange);
+
+    // Private
+    function onThemeChange(event) {
+        var theme = $(this).attr("data-title") || null;
+        eventManager.raiseEvent('onThemeChanged', theme);
+    }
+
+    // Public
+    function switchStyle(theme) {
+        var style = null;
+        if (typeof theme === 'object' && theme.name) {
+            style = theme.name;
+        } else {
+            style = theme;
+        }
+        jQT.switchStyle(style || defaultStyle);
+    }
+
+    themesManager.switchStyle = switchStyle;
+
+    return themesManager;
 });
 // ------------------------------------------
 // ANALYSIS SETTINGS PAGE

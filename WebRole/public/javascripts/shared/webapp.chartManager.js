@@ -211,9 +211,7 @@ WebAppLoader.addModule({ name: 'chartManager',
 
             if (type === 'Table') {
                 tableWidth = '980px !important;'; // chartDefaults.resizingSettings.tableWidth + 'px !important'; // ASA
-                tableHeight = (dataTable.getNumberOfRows() > 10)
-                    ? chartDefaults.resizingSettings.calculateTableHeight(10) + 'px !important'
-                    : chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()) + 'px !important';
+                tableHeight = '660px !important'; // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()) + 'px !important';
                 chart.setOption('height', tableHeight);
                 chart.setOption('width', tableWidth);
             }
