@@ -11,9 +11,18 @@ WebAppLoader.addModule({ name: 'nav', hasEvents: true }, function () {
         window.location = url;
     }
 
-    // Future uses.
+    // NOTA BENE: In the current version of jQTouch, the animation property doesn't work.
     function goToPage(idPage, animation) {
-        jQT.goTo($(idPage), animation || 'fade');
+        setTimeout(function () {
+            jQT.goTo($(idPage), animation || 'fade');
+        }, 25);
+    }
+
+    function goToPageWithCallback(idPage, animation, callback) {
+        setTimeout(function () {
+            jQT.goTo($(idPage), animation || 'fade');
+            callback();
+        }, 25);
     }
 
     function reloadApp(params) {
@@ -24,6 +33,7 @@ WebAppLoader.addModule({ name: 'nav', hasEvents: true }, function () {
     }
 
     nav.goToPage = goToPage;
+    nav.goToPageWithCallback = goToPageWithCallback;
     nav.reloadApp = reloadApp;
 
     return nav;

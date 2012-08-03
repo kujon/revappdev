@@ -34,9 +34,10 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
     }
 
     function create(config) {
-        var buttonPrefix = config.buttonPrefix || 'tabbar_btn',
-                badgePrefix = 'tabbar_badge',
-                that = this;
+        var buttonPrefix    = config.buttonPrefix || 'tabbar_btn',
+            badgePrefix     = 'tabbar_badge',
+            doubleTapSpeed  = 2000;
+            that            = this;
 
         tabbarId = config.tabbarId || 'nav#tabbar';
         visible = (typeof config.visible == 'boolean')
@@ -44,9 +45,9 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
                 : true;
 
         $.each(config.items, function (i, val) {
-            var id = helper.capitaliseFirstLetter(val.id),
-                    itemsCount = config.items.length || 1,
-                    buttonWidth = 100 / itemsCount;
+            var id          = helper.capitaliseFirstLetter(val.id),
+                itemsCount  = config.items.length || 1,
+                buttonWidth = 100 / itemsCount;
 
             buttonIndices[val.id] = i;
             buttons[i] = {
@@ -56,6 +57,8 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
                 title: val.title,
                 btnClass: val.btnClass,
                 highlight: val.highlight || false,
+                preventDoubleTap: val.preventDoubleTap || false,
+                isPreventingTap: false,
                 eventHandler: 'on' + id + 'Tap',
                 isHighlighted: false,
                 isDisabled: false,
@@ -117,16 +120,31 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
 
         $(tabbarId + ' ul li a').each(function (i) {
             $(this).on('click', function () {
-                if (visible) {
-                    if (!buttons[i].isDisabled) {
-                        output.log(buttons[i].title + ' was tapped');
-                        buttons[i].toggleHighlighted();
+                var button = buttons[i];
 
-                        eventManager.raiseEvent(buttons[i].eventHandler, buttons[i]);
-                    } else {
-                        output.log(buttons[i].title + ' is disabled');
+                function executeTapEvent() {
+                    if (visible && !button.isDisabled) {
+                        output.log(button.title + ' was tapped');
+                        button.toggleHighlighted();
+                        eventManager.raiseEvent(button.eventHandler,button);
                     }
                 }
+
+                if (button.preventDoubleTap) {
+                    if (!button.isPreventingTap) {
+                        button.isPreventingTap = true;
+                        setTimeout(function () {
+                            button.isPreventingTap = false;
+                        }, doubleTapSpeed);
+                        executeTapEvent();
+                    } else {
+                        // alert('prevent');
+                        return false;
+                    }
+                } else {
+                    executeTapEvent();
+                }
+
             });
         });
 

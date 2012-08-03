@@ -286,7 +286,7 @@ Zepto(function ($) {
         var analysisDataObject = analysisDataObjectValue || theApp.getLastAnalysisObjectUsed();
 
         // Deselect Settings button.
-        theApp.tabbar.getButton('settings').setHighlight(false);
+        theApp.settingsButton.setHighlight(false);
 
         theApp.nav.goToPage($(el.analysisPage), 'dissolve');
 
@@ -356,7 +356,7 @@ Zepto(function ($) {
             theApp.saveLastAnalysisObjectUsed();
 
             // Deselect Settings button when charts have been rendered.
-            theApp.tabbar.getButton('settings').setHighlight(false);
+            theApp.settingsButton.setHighlight(false);
 
             // Synchronize toolbar buttons.
             theApp.synchronizeFavouriteButton();
@@ -717,7 +717,7 @@ Zepto(function ($) {
     // ------------------------------------------
 
     var toolbarConfig = {
-        toolbarId: '#analysis .toolbar',  // TODO: el.tabbar,
+        toolbarId: '#analysis .toolbar',  // TODO: Use page element instead of a hardcoded value.
         buttonPrefix: 'toolbar_btn',
         visible: true,
         items: [
@@ -792,12 +792,13 @@ Zepto(function ($) {
             { id: 'portfolios', title: lang.tabbar.portfolios, btnClass: 'portfolios' },
             { id: 'analysis', title: lang.tabbar.analysis, btnClass: 'analysis' },
             { id: 'timePeriods', title: lang.tabbar.timePeriods, btnClass: 'timeperiods' },
-            { id: 'settings', title: lang.tabbar.settings, btnClass: 'settings', highlight: true }
+            { id: 'settings', title: lang.tabbar.settings, btnClass: 'settings', highlight: true, preventDoubleTap: true }
         ]
     };
 
     theApp.tabbar = loader.loadModule('tabbar');
     theApp.tabbar.create(tabbarConfig);
+    theApp.settingsButton = theApp.tabbar.getButton('settings');
 
     theApp.tabbar.on('onFavouritesTap', function () {
         theApp.spinningWheel.getSlot('favourites').show(theApp.lastFavouriteSelected);
@@ -815,11 +816,23 @@ Zepto(function ($) {
         theApp.spinningWheel.getSlot('timePeriods').show(theApp.getLastAnalysisObjectUsed().timePeriodId);
     });
 
+    theApp.tabbar.on('onTimePeriodsTap', function () {
+        theApp.spinningWheel.getSlot('timePeriods').show(theApp.getLastAnalysisObjectUsed().timePeriodId);
+    });
+    
     theApp.tabbar.on('onSettingsTap', function (button) {
+        // theApp.settingsButton.setDisabled(true);
+        // theApp.settingsButton.preventTap(true);
         if (button.isHighlighted) {
-            theApp.nav.goToPage($(el.settingsPage));
+            theApp.nav.goToPageWithCallback($(el.settingsPage), null, function () {
+                // theApp.settingsButton.setDisabled(false);
+                // theApp.settingsButton.preventTap(false);
+            });
         } else {
-            theApp.nav.goToPage($(el.analysisPage));
+            theApp.nav.goToPageWithCallback($(el.analysisPage), null, function () {
+                // theApp.settingsButton.setDisabled(false);
+                //theApp.settingsButton.preventTap(false);
+            });
         }
     });
 
@@ -931,7 +944,7 @@ Zepto(function ($) {
         }
 
         // Deselect Settings button.
-        theApp.tabbar.getButton('settings').setHighlight(false);
+        theApp.settingsButton.setHighlight(false);
 
         output.log('onAnalysisEnd');
     });
@@ -1217,12 +1230,12 @@ Zepto(function ($) {
         if (prevent) {
             // Show the mask and disable the settings button.
             theApp.mask.show('preventTap');
-            theApp.tabbar.getButton('settings').setDisabled(true);
+            theApp.settingsButton.setDisabled(true);
 
         } else {
             // Hide the mask and enable the settings button.
             theApp.mask.hide('preventTap');
-            theApp.tabbar.getButton('settings').setDisabled(false);
+            theApp.settingsButton.setDisabled(false);
         }
     };
 

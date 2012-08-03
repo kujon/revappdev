@@ -7318,9 +7318,10 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
     }
 
     function create(config) {
-        var buttonPrefix = config.buttonPrefix || 'tabbar_btn',
-                badgePrefix = 'tabbar_badge',
-                that = this;
+        var buttonPrefix    = config.buttonPrefix || 'tabbar_btn',
+            badgePrefix     = 'tabbar_badge',
+            doubleTapSpeed  = 2000;
+            that            = this;
 
         tabbarId = config.tabbarId || 'nav#tabbar';
         visible = (typeof config.visible == 'boolean')
@@ -7328,9 +7329,9 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
                 : true;
 
         $.each(config.items, function (i, val) {
-            var id = helper.capitaliseFirstLetter(val.id),
-                    itemsCount = config.items.length || 1,
-                    buttonWidth = 100 / itemsCount;
+            var id          = helper.capitaliseFirstLetter(val.id),
+                itemsCount  = config.items.length || 1,
+                buttonWidth = 100 / itemsCount;
 
             buttonIndices[val.id] = i;
             buttons[i] = {
@@ -7340,6 +7341,8 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
                 title: val.title,
                 btnClass: val.btnClass,
                 highlight: val.highlight || false,
+                preventDoubleTap: val.preventDoubleTap || false,
+                isPreventingTap: false,
                 eventHandler: 'on' + id + 'Tap',
                 isHighlighted: false,
                 isDisabled: false,
@@ -7401,16 +7404,31 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
 
         $(tabbarId + ' ul li a').each(function (i) {
             $(this).on('click', function () {
-                if (visible) {
-                    if (!buttons[i].isDisabled) {
-                        output.log(buttons[i].title + ' was tapped');
-                        buttons[i].toggleHighlighted();
+                var button = buttons[i];
 
-                        eventManager.raiseEvent(buttons[i].eventHandler, buttons[i]);
-                    } else {
-                        output.log(buttons[i].title + ' is disabled');
+                function executeTapEvent() {
+                    if (visible && !button.isDisabled) {
+                        output.log(button.title + ' was tapped');
+                        button.toggleHighlighted();
+                        eventManager.raiseEvent(button.eventHandler,button);
                     }
                 }
+
+                if (button.preventDoubleTap) {
+                    if (!button.isPreventingTap) {
+                        button.isPreventingTap = true;
+                        setTimeout(function () {
+                            button.isPreventingTap = false;
+                        }, doubleTapSpeed);
+                        executeTapEvent();
+                    } else {
+                        // alert('prevent');
+                        return false;
+                    }
+                } else {
+                    executeTapEvent();
+                }
+
             });
         });
 
@@ -10155,9 +10173,18 @@ WebAppLoader.addModule({ name: 'nav', hasEvents: true }, function () {
         window.location = url;
     }
 
-    // Future uses.
+    // NOTA BENE: In the current version of jQTouch, the animation property doesn't work.
     function goToPage(idPage, animation) {
-        jQT.goTo($(idPage), animation || 'fade');
+        setTimeout(function () {
+            jQT.goTo($(idPage), animation || 'fade');
+        }, 25);
+    }
+
+    function goToPageWithCallback(idPage, animation, callback) {
+        setTimeout(function () {
+            jQT.goTo($(idPage), animation || 'fade');
+            callback();
+        }, 25);
     }
 
     function reloadApp(params) {
@@ -10168,6 +10195,7 @@ WebAppLoader.addModule({ name: 'nav', hasEvents: true }, function () {
     }
 
     nav.goToPage = goToPage;
+    nav.goToPageWithCallback = goToPageWithCallback;
     nav.reloadApp = reloadApp;
 
     return nav;
@@ -11677,7 +11705,7 @@ Zepto(function ($) {
         var analysisDataObject = analysisDataObjectValue || theApp.getLastAnalysisObjectUsed();
 
         // Deselect Settings button.
-        theApp.tabbar.getButton('settings').setHighlight(false);
+        theApp.settingsButton.setHighlight(false);
 
         theApp.nav.goToPage($(el.analysisPage), 'dissolve');
 
@@ -11747,7 +11775,7 @@ Zepto(function ($) {
             theApp.saveLastAnalysisObjectUsed();
 
             // Deselect Settings button when charts have been rendered.
-            theApp.tabbar.getButton('settings').setHighlight(false);
+            theApp.settingsButton.setHighlight(false);
 
             // Synchronize toolbar buttons.
             theApp.synchronizeFavouriteButton();
@@ -12108,7 +12136,7 @@ Zepto(function ($) {
     // ------------------------------------------
 
     var toolbarConfig = {
-        toolbarId: '#analysis .toolbar',  // TODO: el.tabbar,
+        toolbarId: '#analysis .toolbar',  // TODO: Use page element instead of a hardcoded value.
         buttonPrefix: 'toolbar_btn',
         visible: true,
         items: [
@@ -12183,12 +12211,13 @@ Zepto(function ($) {
             { id: 'portfolios', title: lang.tabbar.portfolios, btnClass: 'portfolios' },
             { id: 'analysis', title: lang.tabbar.analysis, btnClass: 'analysis' },
             { id: 'timePeriods', title: lang.tabbar.timePeriods, btnClass: 'timeperiods' },
-            { id: 'settings', title: lang.tabbar.settings, btnClass: 'settings', highlight: true }
+            { id: 'settings', title: lang.tabbar.settings, btnClass: 'settings', highlight: true, preventDoubleTap: true }
         ]
     };
 
     theApp.tabbar = loader.loadModule('tabbar');
     theApp.tabbar.create(tabbarConfig);
+    theApp.settingsButton = theApp.tabbar.getButton('settings');
 
     theApp.tabbar.on('onFavouritesTap', function () {
         theApp.spinningWheel.getSlot('favourites').show(theApp.lastFavouriteSelected);
@@ -12206,11 +12235,23 @@ Zepto(function ($) {
         theApp.spinningWheel.getSlot('timePeriods').show(theApp.getLastAnalysisObjectUsed().timePeriodId);
     });
 
+    theApp.tabbar.on('onTimePeriodsTap', function () {
+        theApp.spinningWheel.getSlot('timePeriods').show(theApp.getLastAnalysisObjectUsed().timePeriodId);
+    });
+    
     theApp.tabbar.on('onSettingsTap', function (button) {
+        // theApp.settingsButton.setDisabled(true);
+        // theApp.settingsButton.preventTap(true);
         if (button.isHighlighted) {
-            theApp.nav.goToPage($(el.settingsPage));
+            theApp.nav.goToPageWithCallback($(el.settingsPage), null, function () {
+                // theApp.settingsButton.setDisabled(false);
+                // theApp.settingsButton.preventTap(false);
+            });
         } else {
-            theApp.nav.goToPage($(el.analysisPage));
+            theApp.nav.goToPageWithCallback($(el.analysisPage), null, function () {
+                // theApp.settingsButton.setDisabled(false);
+                //theApp.settingsButton.preventTap(false);
+            });
         }
     });
 
@@ -12322,7 +12363,7 @@ Zepto(function ($) {
         }
 
         // Deselect Settings button.
-        theApp.tabbar.getButton('settings').setHighlight(false);
+        theApp.settingsButton.setHighlight(false);
 
         output.log('onAnalysisEnd');
     });
@@ -12608,12 +12649,12 @@ Zepto(function ($) {
         if (prevent) {
             // Show the mask and disable the settings button.
             theApp.mask.show('preventTap');
-            theApp.tabbar.getButton('settings').setDisabled(true);
+            theApp.settingsButton.setDisabled(true);
 
         } else {
             // Hide the mask and enable the settings button.
             theApp.mask.hide('preventTap');
-            theApp.tabbar.getButton('settings').setDisabled(false);
+            theApp.settingsButton.setDisabled(false);
         }
     };
 
