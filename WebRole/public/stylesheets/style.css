@@ -237,7 +237,8 @@ html, body
 
 .headerRow { font-family: HelveticaNeue-Bold !important; text-align: left !important; height: 60px !important;}
 .tableRow, .oddTableRow, .selectedTableRow, .hoverTableRow { font-family: HelveticaNeue-Light !important; height: 60px !important;}
-.oddTableRow { background-color: #dddddd; }
+.oddTableRow { background-color: #eeeeee; }
+.selectedTableRow { background-color: #dddddd !important; }
 .tableRow td:first-child, .oddTableRow td:first-child
 {
     /*width: 20%;
