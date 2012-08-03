@@ -3722,7 +3722,7 @@ h={allowHtml:true,alternatingRowStyle:true,page:"enable",pageSize:10,cssClassNam
 i={chartArea:{left:80,top:35,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame};
 k={chartArea:{left:80,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label",pieSliceTextStyle:{color:"#000000"}};
 m={fontFamily:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,headerHeight:25,minColor:"#cc0000",midColor:"#ffffff",maxColor:"#6699cc",maxDepth:3};
-l={chartWidth:960,tableWidth:980,chartLandscapeScaleRatio:1,chartPortraitScaleRatio:0.8,tableLandscapeScaleRatio:1,tablePortraitScaleRatio:0.8,rowHeight:60,headerHeight:60,fixedHeight:60,calculateTableHeight:function(n){return parseInt(n*this.rowHeight+this.headerHeight+this.fixedHeight,10)
+l={chartWidth:960,tableWidth:980,chartLandscapeScaleRatio:1,chartPortraitScaleRatio:0.8,tableLandscapeScaleRatio:1,tablePortraitScaleRatio:0.8,rowHeight:50,headerHeight:50,fixedHeight:10,calculateTableHeight:function(n){return parseInt(n*this.rowHeight+this.headerHeight+this.fixedHeight,10)
 },rescaleChart:function(p,o){var n;
 if(o==="landscape"){n=parseInt(p*this.chartLandscapeScaleRatio,10)
 }else{n=parseInt(p*this.chartPortraitScaleRatio,10)
@@ -3811,8 +3811,6 @@ E++){if(C.getColumnType(E)==="number"){u.format(C,E)
 }}google.visualization.events.addListener(t,"ready",function(){m({chartId:t.getContainerId(),numRows:C.getNumberOfRows()})
 });
 if(y==="Table"){S="980px !important;";
-R="660px !important";
-t.setOption("height",R);
 t.setOption("width",S)
 }if(y==="PieChart"&&t.isHeatMap){C.sort([{column:2}]);
 for(E=0;
@@ -4504,16 +4502,10 @@ n.chartComponents.on("onAllChartsLoaded",function(){h.log("onAllChartsLoaded")
 });
 n.chartComponents.on("onChartsLoading",function(p,q){h.log("onChartsLoading",p,q)
 });
-n.chartComponents.on("onChartLoaded",function(q,s){var p=a("#"+q),t=0;
-chartHeight=0;
-if(p.hasClass("gridContainer")&&p.parent().data("realHeight")<1){t=n.resizingSettings.calculateTableHeight(s);
-chartHeight=n.resizingSettings.rescaleTable(t,b.orientation());
-p.height(chartHeight);
-p.parent().data("realHeight",t);
-n.iOSLog.debug("rebuilt on onChartLoaded");
+n.chartComponents.on("onChartLoaded",function(p,q){n.iOSLog.debug("rebuilt on onChartLoaded");
 n.scroll.saveScrollPosition();
 n.scroll.rebuild("analysis",{restorePosition:true})
-}});
+});
 n.updatePresentationSummaryInfo=function(){var p=a(c.analysisTitle).html()||"",u=a(c.timePeriodStartDateText).html()||"",t=a(c.timePeriodEndDateText).html()||"",s=a(c.summaryTitleName).html()||"",q=a(c.summaryTitleBenchmarkName).html()||"";
 a(c.presentationTitle).html(p);
 a(c.presentationTimePeriodStartDateText).html(u);
@@ -4846,6 +4838,8 @@ v.data("realHeight",w)
 }else{B=v.data("realHeight");
 x=parseInt(B*z,10);
 y=parseInt(B*A,10)
+}if(u.hasClass("gridContainer")){x=0;
+y=0
 }if(b.orientation()==="landscape"){u.css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"});
 v.height(x)
 }else{u.css({"-webkit-transform":"scale(.69)","-webkit-transform-origin":"left top"});

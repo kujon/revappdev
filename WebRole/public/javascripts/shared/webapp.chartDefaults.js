@@ -157,9 +157,9 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
         tableLandscapeScaleRatio: 1,
         tablePortraitScaleRatio: 0.80,
 
-        rowHeight: 60, // Same value of .tableRow and .oddTableRow
-        headerHeight: 60, // Same value of .headerRow
-        fixedHeight: 60,
+        rowHeight: 50, // Same value of .tableRow and .oddTableRow
+        headerHeight: 50, // Same value of .headerRow
+        fixedHeight: 10,
         
         calculateTableHeight: function (numRows) {
             return parseInt(numRows * this.rowHeight + this.headerHeight + this.fixedHeight, 10);

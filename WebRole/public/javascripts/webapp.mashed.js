@@ -8076,7 +8076,7 @@ WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true
     return blackbird;
 });
 // ------------------------------------------
-// CHARTS MANAGER
+// CHARTS COMPONENTS
 // ------------------------------------------
 
 WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedModules: ['chartManager', 'localizationManager', 'pageElements'],
@@ -8909,9 +8909,9 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
         tableLandscapeScaleRatio: 1,
         tablePortraitScaleRatio: 0.80,
 
-        rowHeight: 60, // Same value of .tableRow and .oddTableRow
-        headerHeight: 60, // Same value of .headerRow
-        fixedHeight: 60,
+        rowHeight: 50, // Same value of .tableRow and .oddTableRow
+        headerHeight: 50, // Same value of .headerRow
+        fixedHeight: 10,
         
         calculateTableHeight: function (numRows) {
             return parseInt(numRows * this.rowHeight + this.headerHeight + this.fixedHeight, 10);
@@ -9175,8 +9175,11 @@ WebAppLoader.addModule({ name: 'chartManager',
 
             if (type === 'Table') {
                 tableWidth = '980px !important;'; // chartDefaults.resizingSettings.tableWidth + 'px !important'; // ASA
-                tableHeight = '660px !important'; // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()) + 'px !important';
-                chart.setOption('height', tableHeight);
+                // tableHeight = '660px !important;';
+//                tableHeight = (dataTable.getNumberOfRows() > 10)
+//                    ? chartDefaults.resizingSettings.calculateTableHeight(10) + 'px !important'
+//                    : chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()) + 'px !important';
+//                chart.setOption('height', tableHeight);
                 chart.setOption('width', tableWidth);
             }
 
@@ -11882,21 +11885,25 @@ Zepto(function ($) {
     });
 
     theApp.chartComponents.on('onChartLoaded', function (chartId, numRows) {
-        var $chart      = $('#' + chartId),
-            realHeight  = 0;
-            chartHeight = 0;
-         
-        // My last desperate attempt to resize table charts...       
-        if ($chart.hasClass('gridContainer') && $chart.parent().data('realHeight') < 1) {
-            realHeight = theApp.resizingSettings.calculateTableHeight(numRows);
-            chartHeight = theApp.resizingSettings.rescaleTable(realHeight, device.orientation());
+//        var $chart      = $('#' + chartId),
+//            realHeight  = 0;
+//            chartHeight = 0;
+//         
+//        // My last desperate attempt to resize table charts...       
+//        if ($chart.hasClass('gridContainer') && $chart.parent().data('realHeight') < 1) {
+//            numRows = (numRows > 10)
+//                ? 10
+//                : numRows;
 
-            $chart.height(chartHeight);
-            $chart.parent().data('realHeight',  realHeight);
+//            realHeight = theApp.resizingSettings.calculateTableHeight(numRows);
+//            chartHeight = theApp.resizingSettings.rescaleTable(realHeight, device.orientation());
+
+//            $chart.height(chartHeight);
+//            $chart.parent().data('realHeight',  realHeight);
             theApp.iOSLog.debug('rebuilt on onChartLoaded');
             theApp.scroll.saveScrollPosition();
             theApp.scroll.rebuild('analysis', { restorePosition: true });
-        }
+//        }
     });
 
     // ------------------------------------------
@@ -12744,11 +12751,11 @@ Zepto(function ($) {
                 containerLandscapeHeight = parseInt(realHeightData * landscapeScaleRatio, 10);
                 containerPortraitHeight = parseInt(realHeightData * portraitScaleRatio, 10);
             }
-//            
-//            if ($component.hasClass('gridContainer')) {
-//                containerLandscapeHeight = 700;
-//                containerPortraitHeight = 560;
-//            }
+            
+            if ($component.hasClass('gridContainer')) {
+                containerLandscapeHeight = 0;
+                containerPortraitHeight = 0;
+            }
 
             if (device.orientation() === 'landscape') {
                 $component.css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});

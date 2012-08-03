@@ -1,5 +1,5 @@
 ﻿// ------------------------------------------
-// CHARTS MANAGER
+// CHARTS COMPONENTS
 // ------------------------------------------
 
 WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedModules: ['chartManager', 'localizationManager', 'pageElements'],
