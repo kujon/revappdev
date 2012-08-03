@@ -160,7 +160,7 @@ exports.portfolios = function (req, res) {
         };
 
     webApi.getPortfolios(oData, datatype, req.session.token || req.body.token, function (resource, datatype) {
-        var viewModel = resource.data || {};
+        var viewModel = resource || {};
 
         switch (datatype) {
             case 'json':
@@ -180,7 +180,7 @@ exports.portfolioAnalysis = function (req, res) {
         maxAttempts = 3; // TODO: We could use a const to set the maxAttempts.
 
     webApi.getPortfolioAnalysis(req.body.uri, maxAttempts, req.session.token || req.body.token, function (analysis) {
-        var viewModel = analysis.data || {};
+        var viewModel = analysis || {};
 
         switch (datatype) {
             case 'json':
@@ -200,7 +200,7 @@ exports.analysis = function (req, res) {
         maxAttempts = 3;
 
     webApi.getPortfolioAnalysis(req.body.uri, maxAttempts, req.session.token || req.body.token, function (analysis) {
-        var viewModel = analysis.data || {};
+        var viewModel = analysis || {};
 
         switch (datatype) {
             case 'json':

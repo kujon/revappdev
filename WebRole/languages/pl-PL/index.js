@@ -165,8 +165,14 @@ exports.client = {
     errors: {
         chartFailedText                     : 'Nie jestem w stanie otworzyć wykresu.',
         accountEmptyText                    : 'To konto nie zawiera żadnych portfeli.',
-        portfolioNotFoundText               : 'Wybrany portfel nie został znaleziony.',
-        analysisFailedText                  : 'Nie jestem w stanie załadować wybranego portfela.'
+        portfolioNotFoundText               : 'Wybrany portfel nie został znaleziony.',        
+        portfolioNotFoundReasonText         : 'The portfolio you selected either does not exist, has ' + 
+                                              'been deleted, or may have had sharing rights removed.',
+        analysisFailedText                  : 'Nie jestem w stanie załadować wybranego portfela.',
+        analysisFailedReasonText            : 'The analysis you selected may still be calculating, ' + 
+                                              'or may not have any results to display. Please also ' + 
+                                              'ensure that the account associated with this portfolio ' + 
+                                              'is active by logging on via the StatPro Revolution website.'
     },
 
     // ------------------------------------------------------------------ | S |

@@ -128,51 +128,35 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
                     chartId : 'fixedIncomeMaster_grid',
                     order   : 1
                 },{
-                    title: 'Bar Charts of Fixed Income Contributions:',
-                    chartId: '',
+                    chartId: 'fixedIncomeContribution_bar',
                     order   : 2
                 },{
-                    chartId: 'fixedIncomeContribution_bar',
+                    chartId: 'carryContribution_bar',
                     order   : 3
                 },{
-                    chartId: 'carryContribution_bar',
+                    chartId: 'yieldCurveContribution_bar',
                     order   : 4
                 },{
-                    chartId: 'yieldCurveContribution_bar',
+                    chartId: 'riskNumbers_bar',
                     order   : 5
                 },{
-                    chartId: 'riskNumbers_bar',
+                    chartId: 'interestRatesExposure_column',
                     order   : 6
                 },{
-                    title: 'Column Charts of Fixed Income Exposures:',
-                    chartId: '',
+                    chartId: 'creditSpreadsExposure_column',
                     order   : 7
                 },{
-                    chartId: 'interestRatesExposure_column',
+                    chartId: 'dv01Exposure_column',
                     order   : 8
                 },{
-                    chartId: 'creditSpreadsExposure_column',
+                    chartId: 'fixedIncome_grid',
                     order   : 9
                 },{
-                    chartId: 'dv01Exposure_column',
+                    chartId: 'fixedIncomeContribution_grid',
                     order   : 10
                 },{
-                    title: 'Grid of Risk Numbers:',
-                    chartId: '',
-                    order   : 11
-                },{
-                    chartId: 'fixedIncome_grid',
-                    order   : 12
-                },{
-                    chartId: 'fixedIncomeContribution_grid',
-                    order   : 13
-                },{
-                    title: 'Grid of FI Exposure',
-                    chartId: '',
-                    order   : 14
-                },{
                     chartId: 'fixedIncomeExposure_grid',
-                    order   : 15
+                    order   : 11
                 }]   
         },{
             name        : 'User Defined Test Page',

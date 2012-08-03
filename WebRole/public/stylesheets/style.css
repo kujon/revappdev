@@ -220,7 +220,7 @@ div .google-visualization-table-div-page img /* :first-child */
 .gaugeLegend {
     display: block;
     position: absolute;
-    z-index: 1000;
+    z-index: -100;
     right: 20%;
     top: 20%;
     height: 60%;   
@@ -261,14 +261,32 @@ div .google-visualization-table-div-page img /* :first-child */
 #yieldCurveContribution_bar,
 #riskNumbers_bar { display: inline-block; width: 50%; }
 
-.headerRow { font-family: HelveticaNeue-Bold !important; text-align: left !important; height: 50px !important;}
+table { border: none !important; }
+
+.headerRow { font-family: HelveticaNeue-Bold !important; text-align: left !important; height: 50px !important; background-color: #dddddd !important; }
 .tableRow, .oddTableRow, .selectedTableRow, .hoverTableRow { font-family: HelveticaNeue-Light !important; height: 50px !important;}
-.oddTableRow { background-color: #dddddd; }
-.tableRow td:first-child, .oddTableRow td:first-child
+.oddTableRow { background-color: #eeeeee; }
+.selectedTableRow { background-color: #dddddd !important; }
+
+.headerRow td, .tableRow td, .oddTableRow td, .selectedTableRow td {
+    padding: 15px !important; 
+    border-left: none;
+    border-right: 1px solid #cccccc !important;
+    border-bottom: 1px solid #cccccc !important;
+    border-top: none;
+}
+
+.headerRow td { border-top: 1px solid #cccccc !important; }
+
+.headerRow td:first-child, .tableRow td:first-child, .oddTableRow td:first-child, .selectedTableRow td:first-child
 {
+    font-family: HelveticaNeue-Bold !important;
+    border-left: 1px solid #cccccc !important;
     /*width: 20%;
     background-color: #ff0000;*/
 }
+
+
 
 /************************************************
  * WRAPPER
@@ -502,7 +520,6 @@ div .google-visualization-table-div-page img /* :first-child */
     text-align: center; 
     font-size: 12px; 
     font-family: HelveticaNeue-Light;
-    text-shadow: rgba(0, 0, 0, 0.3) 0px -1px 0;
 }
 
 #about_partial h2 {
@@ -511,8 +528,8 @@ div .google-visualization-table-div-page img /* :first-child */
     font-family: HelveticaNeue-Bold !important; 
     font-weight: normal !important; 
     text-shadow: none !important;
-    margin: 0;
-    padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 #about_partial p { margin: 0 0 20px 0; }
@@ -529,6 +546,25 @@ div .google-visualization-table-div-page img /* :first-child */
     padding: 0 !important; 
     margin: 0 !important; 
     border: 0 !important; 
+}
+
+/************************************************
+ * ERROR PAGE
+ ***********************************************/
+ 
+ #errorMessage .genericContainer {
+    font-size: 12px; 
+    font-family: HelveticaNeue-Light;
+}
+
+#errorMessage h2 {
+    color: #000000 !important;
+    font-size: 24px !important;
+    font-family: HelveticaNeue-Bold !important; 
+    font-weight: normal !important; 
+    text-shadow: none !important;
+    margin: 0 0 15px 0 !important;
+    padding: 0 !important;
 }
 
 .testBox

@@ -41,8 +41,9 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
 
     function loadPortfolio(portfolioCode, callback) {
         var defaultPortfolioCode,
-            portfolio = {
+            portfolio = {                
                 code: '',
+                name: '',
                 type: '',
                 analysisLink: '',
                 currency: '',
@@ -82,19 +83,24 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
                 oData.top = 1;
             }
 
-            ajaxManager.post(settings.siteUrls.portfolios, { oData: oData, datatype: 'json' }, function (data) {
-                
+            ajaxManager.post(settings.siteUrls.portfolios, { oData: oData, datatype: 'json' }, function (response) {
+
                 // If no portfolio data was returned for our query...
-                if (!data || !data.items || data.items.length < 1) {
-                    // ...raise a failure event and return.
-                    eventManager.raiseEvent('onFailed', lang.errors.portfolioNotFoundText);
+                if (!response || !response.data || !response.data.items || response.data.items.length < 1) {
+
+                    // ...clear out the portfolio and links...
+                    portfolio.code = '';
+                    defaultAnalysisLink = null;
+
+                    // ...and raise a failure event and return.
+                    eventManager.raiseEvent('onFailed', lang.errors.portfolioNotFoundText, lang.errors.portfolioNotFoundReasonText);
                     return;
                 }
 
                 // Persist the portfolio code and the link to its default analysis.
-                portfolio.code = data.items[0].code;
-                defaultAnalysisLink = data.items[0].links.defaultAnalysis.href;
-                
+                portfolio.code = response.data.items[0].code;
+                defaultAnalysisLink = response.data.items[0].links.defaultAnalysis.href;
+
                 // Call the callback.
                 callback({ defaultAnalysisLink: defaultAnalysisLink });
 
@@ -109,25 +115,26 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
         }
 
         function loadPortfolioAnalysis(defaultAnalysisLink, callback) {
-            ajaxManager.post(settings.siteUrls.portfolioAnalysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (data) {
+            ajaxManager.post(settings.siteUrls.portfolioAnalysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (response) {
 
-                // If no analysis data was returned for the given portfolio...
-                if (!data || !data.analysis) {
+                // If no analysis data was returned for the given 
+                // portfolio, or an explicit error was raised...
+                if (!response || !response.data || !response.data.analysis || response.error) {
                     // ...raise a failure event and return.
-                    eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText);
+                    eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText, lang.errors.analysisFailedReasonText);
                     return;
                 }
 
                 // Persist the basic portfolio information.
-                portfolio.name = data.name || '';
-                portfolio.type = data.type || '';
-                portfolio.currency = data.analysis.currency || '';
-                portfolio.version = data.analysis.version || '';
+                portfolio.name = response.data.name || '';
+                portfolio.type = response.data.type || '';
+                portfolio.currency = response.data.analysis.currency || '';
+                portfolio.version = response.data.analysis.version || '';
 
                 // If we have results, persist their basic details also.
-                if (data.analysis.results) {
-                    portfolio.timeStamp = data.analysis.results.timeStamp || '';
-                    portfolio.timePeriods = data.analysis.results.timePeriods || [];
+                if (response.data.analysis.results) {
+                    portfolio.timeStamp = response.data.analysis.results.timeStamp || '';
+                    portfolio.timePeriods = response.data.analysis.results.timePeriods || [];
                 }
 
                 // Call the callback.
@@ -137,7 +144,7 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
         }
 
         function onLoadPortfolioAnalysisCompleted() {
-            
+
             // Persist the currently selected portfolio.
             portfolioDataObj.setData(portfolio);
             lastPortfolioUsed = portfolio;
@@ -153,17 +160,18 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
 
     // Public
     function getAnalysis(uri, callback) {
-        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (data) {
+        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (response) {
 
-            // If no analysis HTML template data was returned for the given portfolio...
-            if (!data) {
+            // If no analysis HTML template data was returned for 
+            // the given portfolio, or an error was raised...
+            if (!response || !response.data || response.error) {
                 // ...raise a failure event and return.
-                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText);
+                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText, lang.errors.analysisFailedReasonText);
                 return;
             }
 
             // Raise notification events.
-            eventManager.raiseEvent('onAnalysisLoaded', data);
+            eventManager.raiseEvent('onAnalysisLoaded', response.data);
 
             // Call the callback.
             callback();
