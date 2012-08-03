@@ -235,15 +235,32 @@ html, body
 #yieldCurveContribution_bar,
 #riskNumbers_bar { display: inline-block; width: 50%; }
 
-.headerRow { font-family: HelveticaNeue-Bold !important; text-align: left !important; height: 60px !important;}
-.tableRow, .oddTableRow, .selectedTableRow, .hoverTableRow { font-family: HelveticaNeue-Light !important; height: 60px !important;}
+table { border: none !important; }
+
+.headerRow { font-family: HelveticaNeue-Bold !important; text-align: left !important; height: 50px !important; background-color: #dddddd !important; }
+.tableRow, .oddTableRow, .selectedTableRow, .hoverTableRow { font-family: HelveticaNeue-Light !important; height: 50px !important;}
 .oddTableRow { background-color: #eeeeee; }
 .selectedTableRow { background-color: #dddddd !important; }
-.tableRow td:first-child, .oddTableRow td:first-child
+
+.headerRow td, .tableRow td, .oddTableRow td, .selectedTableRow td {
+    padding: 15px !important; 
+    border-left: none;
+    border-right: 1px solid #cccccc !important;
+    border-bottom: 1px solid #cccccc !important;
+    border-top: none;
+}
+
+.headerRow td { border-top: 1px solid #cccccc !important; }
+
+.headerRow td:first-child, .tableRow td:first-child, .oddTableRow td:first-child, .selectedTableRow td:first-child
 {
+    font-family: HelveticaNeue-Bold !important;
+    border-left: 1px solid #cccccc !important;
     /*width: 20%;
     background-color: #ff0000;*/
 }
+
+
 
 /************************************************
  * WRAPPER
