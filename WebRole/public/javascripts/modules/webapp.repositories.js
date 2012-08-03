@@ -30,9 +30,9 @@ WebAppLoader.addModule({ name: 'repositories', sharedModules: ['settings', 'loca
 
         function loadData(callback) {
             var slotItems = {};
-            ajaxManager.post(settings.siteUrls.portfolios, { datatype: 'json' }, function (data) {
-                if (data) {
-                    $.each(data.items, function (i, val) {
+            ajaxManager.post(settings.siteUrls.portfolios, { datatype: 'json' }, function (response) {
+                if (response.data) {
+                    $.each(response.data.items, function (i, val) {
                         slotItems[val.code] = val.name;
                     });
                 } else {

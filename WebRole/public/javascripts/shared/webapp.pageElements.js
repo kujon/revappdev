@@ -47,6 +47,7 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         timePeriodStartDateText             : '#timePeriodStartDateText',
         timePeriodEndDateText               : '#timePeriodEndDateText',
         errorMessageText                    : '#errorMessageText',
+        errorReasonText                     : '#errorReasonText',
         stayLoggedCheckbox                  : '#stayLoggedCheckbox',
         userEmailLabel                      : '#userEmailLabel',
         summaryTitleName                    : '#summaryTitleName',

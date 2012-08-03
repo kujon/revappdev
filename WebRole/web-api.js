@@ -324,7 +324,7 @@ exports.initService = function (email, token, uri, language, callback) {
 
     // Attempt to get the service's entry point resource.
     getResource('service', options, function (resource) {
-
+        
         if (!resource.error && resource.data) {
             // Populate the resources object.
             setResourceLink(token, 'eula', resource.data.eula.links.self.href);
@@ -347,18 +347,27 @@ exports.initService = function (email, token, uri, language, callback) {
 //                (indicating that the request was successful), a boolean true, or a 
 //                complete error object (both indicating that the request failed).
 exports.getPortfolios = function (oData, datatype, token, callback) {
-    var options, portfoliosQuery;
+    var uri, options, portfoliosQuery;
 
-    // Format a portfolio querystring based on the oData and the portfolio resource link.
-    portfoliosQuery = applyODataToURI(oData, getResourceLink(token, 'portfolios'));
+    // Determine which URI to send our resource request to.
+    uri = getResourceLink(token, 'portfolios') || null;
 
-    // Generate the request configuration based on the portfolio query.
-    options = getRequestOptions(portfoliosQuery, token);
+    if (uri) {
 
-    // Attempt to get a list of the user's portfolios, filtered by the query.
-    getResource('portfolios', options, function (resource) {
-        callback(resource, datatype);
-    });
+        // Format a portfolio querystring based on the oData and the portfolio resource link.
+        portfoliosQuery = applyODataToURI(oData, uri);
+
+        // Generate the request configuration based on the portfolio query.
+        options = getRequestOptions(portfoliosQuery, token);
+
+        // Attempt to get a list of the user's portfolios, filtered by the query.
+        getResource('portfolios', options, function (resource) {
+            callback(resource, datatype);
+        });
+
+    } else {
+        console.log('getPortfolios - no URI');
+    }
 };
 
 // Attempts to retrieve the default analysis for the requested portfolio.
@@ -377,14 +386,14 @@ exports.getPortfolioAnalysis = function (uri, attempts, token, callback) {
 
     // Generate the request configuration.
     options = getRequestOptions(uri, token);
-    
+
     attempts = (attempts > MAX_ATTEMPTS)
         ? MAX_ATTEMPTS
         : attempts;
 
     // Attempt to get the portfolio analysis for the requested portfolio.
     getResource('portfolioAnalysis', options, function (resource) {
-        var status;
+        var status, dictionary;
 
         if (!resource.error && resource.data) {
 
@@ -393,16 +402,25 @@ exports.getPortfolioAnalysis = function (uri, attempts, token, callback) {
 
             // If the current analysis is still calculating or there were errors...
             if (status === 'InProgress' || status === 'FailedWithErrors') {
+                
                 if (attempts === 0) {
+                    
+                    // Add an error to the resource.
                     resource.error = true;
+
+                    // Return early with the error resource.
                     callback(resource);
                     return;
                 }
+
                 attempts -= 1;
+                
                 // ...attempt to get the last successful analysis.
                 uri = uri.replace('lastSuccessful=false', 'lastSuccessful=true');
+                
                 // Use the modified URI with this function.
                 exports.getPortfolioAnalysis(uri, attempts, token, callback);
+                
                 return;
             }
 
@@ -413,6 +431,12 @@ exports.getPortfolioAnalysis = function (uri, attempts, token, callback) {
             // Persist the current analysis' currency and stats frequency for other API calls.
             setCurrentAnalysis(token, 'currency', resource.data.analysis.currency);
             setCurrentAnalysis(token, 'statisticsFrequency', resource.data.analysis.statisticsFrequency);
+
+        } else { 
+                    
+            // Add an error to the resource.
+            resource.error = true;
+
         }
 
         callback(resource);
@@ -432,7 +456,9 @@ exports.getPortfolioAnalysis = function (uri, attempts, token, callback) {
 exports.getSegmentsTreeNode = function (oData, params, token, callback) {
     var options, filterQuery, segmentsTreeNodeQuery, uri;
 
+    // Determine which URI to send our resource request to.
     uri = params.url || getResourceLink(token, 'segmentsTreeNode') || null;
+
     if (uri) {
 
         // Format a segments tree node querystring based on the oData and the tree node resource link.
@@ -448,8 +474,8 @@ exports.getSegmentsTreeNode = function (oData, params, token, callback) {
         getResource('segmentsTreeNode', options, function (resource) {
             callback(resource, getCurrentAnalysis(token), getCurrentLanguage());
         });
-    } else {
 
+    } else {
         console.log('getSegmentsTreeNode - no URI');
     }
 };
@@ -464,18 +490,27 @@ exports.getSegmentsTreeNode = function (oData, params, token, callback) {
 //                (indicating that the request was successful), a boolean true, or a 
 //                complete error object (both indicating that the request failed).
 exports.getTimeSeries = function (params, token, callback) {
-    var options, timeSeriesQuery;
+    var uri, options, timeSeriesQuery;
 
-    // Format the querystring with filters applied to add further parameters.
-    timeSeriesQuery = applySegmentParamsToURI(params, params.url || getResourceLink(token, 'timeSeries'));
+    // Determine which URI to send our resource request to.
+    uri = params.url || getResourceLink(token, 'timeSeries') || null;
 
-    // Generate the request configuration based on the time series query.
-    options = getRequestOptions(timeSeriesQuery, token);
+    if (uri) {
 
-    // Attempt to get the specified time series.
-    getResource('timeSeries', options, function (resource) {
-        callback(resource, getCurrentAnalysis(token), getCurrentLanguage());
-    });
+        // Format the querystring with filters applied to add further parameters.
+        timeSeriesQuery = applySegmentParamsToURI(params, uri);
+
+        // Generate the request configuration based on the time series query.
+        options = getRequestOptions(timeSeriesQuery, token);
+
+        // Attempt to get the specified time series.
+        getResource('timeSeries', options, function (resource) {
+            callback(resource, getCurrentAnalysis(token), getCurrentLanguage());
+        });
+
+    } else {
+        console.log('getTimeSeries - no URI');
+    }
 };
 
 // Attempts to retrieve the End User Licence Agreement in the specified format.

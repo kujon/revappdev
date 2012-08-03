@@ -476,7 +476,6 @@ html, body
     text-align: center; 
     font-size: 12px; 
     font-family: HelveticaNeue-Light;
-    text-shadow: rgba(0, 0, 0, 0.3) 0px -1px 0;
 }
 
 #about_partial h2 {
@@ -485,8 +484,8 @@ html, body
     font-family: HelveticaNeue-Bold !important; 
     font-weight: normal !important; 
     text-shadow: none !important;
-    margin: 0;
-    padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 #about_partial p { margin: 0 0 20px 0; }
@@ -503,6 +502,25 @@ html, body
     padding: 0 !important; 
     margin: 0 !important; 
     border: 0 !important; 
+}
+
+/************************************************
+ * ERROR PAGE
+ ***********************************************/
+ 
+ #errorMessage .genericContainer {
+    font-size: 12px; 
+    font-family: HelveticaNeue-Light;
+}
+
+#errorMessage h2 {
+    color: #000000 !important;
+    font-size: 24px !important;
+    font-family: HelveticaNeue-Bold !important; 
+    font-weight: normal !important; 
+    text-shadow: none !important;
+    margin: 0 0 15px 0 !important;
+    padding: 0 !important;
 }
 
 .testBox

@@ -165,8 +165,14 @@ exports.client = {
     errors: {
         chartFailedText             : 'Das Diagramm konnte nicht geladen werden.',
         accountEmptyText            : 'Dieser Konto enthält keine Portfoliodaten.',
-        portfolioNotFoundText       : 'Das angeforderte Portfolio wurde nicht gefunden.',
-        analysisFailedText          : 'Die angeforderte Portfolio-Analyse wurde nicht abgerufen.'
+        portfolioNotFoundText       : 'Das angeforderte Portfolio wurde nicht gefunden.',        
+        portfolioNotFoundReasonText : 'The portfolio you selected either does not exist, has ' + 
+                                      'been deleted, or may have had sharing rights removed.',
+        analysisFailedText          : 'Die angeforderte Portfolio-Analyse wurde nicht abgerufen.',
+        analysisFailedReasonText    : 'The analysis you selected may still be calculating, ' + 
+                                      'or may not have any results to display. Please also ' + 
+                                      'ensure that the account associated with this portfolio ' + 
+                                      'is active by logging on via the StatPro Revolution website.'
     },
 
     // ------------------------------------------------------------------ | S |

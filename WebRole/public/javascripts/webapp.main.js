@@ -56,7 +56,7 @@ Zepto(function ($) {
     theApp.defaultLanguage = "en-US";
 
     theApp.isFullScreen = false;
-    
+
     /* ----------------------- ON/OFF ----------------------- /
        'Switch comments off changing /* in //* and viceversa'
     // ------------------------------------------------------ */
@@ -98,7 +98,7 @@ Zepto(function ($) {
 
     // Swipe Button Control
     theApp.swipeButton = loader.loadModule('swipeButton');
-    
+
     // Local Storage Manager
     theApp.localStorage = loader.loadModule('localStorageManager');
 
@@ -107,7 +107,7 @@ Zepto(function ($) {
 
     // Resizing Settings
     theApp.resizingSettings = loader.loadModule('chartDefaults').resizingSettings;
-    
+
     // iOS Log
     theApp.iOSLog = loader.loadModule('blackbird');
 
@@ -187,7 +187,7 @@ Zepto(function ($) {
                     theApp.tryToChangeLanguage(language);
                 }
             }
-            
+
             // With the language defined, set the CultureInfo property of the 
             // JavaScript Date object, so date.js can hook in for localization.
             Date.CultureInfo = lang.cultureInfo;
@@ -298,14 +298,15 @@ Zepto(function ($) {
                 analysisPageCharts    = null,
                 analysisPageTitle     = '',
                 presentationViewWidth = 0,
+                timePeriodFound       = false,
                 i;
-            
+
             analysisPagesData = theApp.analysisManager.getData('analysisPages');
 
             analysisPage = jLinq.from(analysisPagesData.items)
                 .equals('id', analysisDataObject.analysisId)
                 .select();
- 
+
             // If no analysis page has been found load the first one.            
             if (analysisPage[0] && analysisPage[0].charts) {
                 analysisPageCharts = analysisPage[0].charts;
@@ -330,21 +331,31 @@ Zepto(function ($) {
 
                 if (period.code === analysisDataObject.timePeriodId) {
 
+                    // Flag that we've found a time period.
+                    timePeriodFound = true;
+
                     // Add the currently requested time period to each of the chart config objects.
                     theApp.chartComponents.setTimePeriod(chartsToRender, period);
 
                     startDate = Date.parse(period.startDate);
                     endDate = Date.parse(period.endDate);
-                    
+
                     theApp.customChartTimePeriods.timePeriods = period.code;
                     theApp.customChartTimePeriods.startDate = period.startDate;
                     theApp.customChartTimePeriods.endDate = period.endDate;
 
                     $(el.timePeriodStartDateText).html(startDate.toString('MMM d, yyyy'));
                     $(el.timePeriodEndDateText).html(endDate.toString('MMM d, yyyy'));
+
                     return false;
                 }
             });
+
+            // If we didn't find a time period in the loop, clear out the text.
+            if (!timePeriodFound) { 
+                $(el.timePeriodStartDateText).html('-');
+                $(el.timePeriodEndDateText).html('-');
+            }
 
             // Set and save the last used analysis object.
             theApp.setLastAnalysisObjectUsed(analysisDataObject);
@@ -367,7 +378,7 @@ Zepto(function ($) {
             // Generic UI stuffs.
             $(el.analysisComponentFullScreenButton).on('tap', function (e, info) {
                 var data = {
-                    chartId:  $(this).attr('data-chartId'),
+                    chartId: $(this).attr('data-chartId'),
                     chartOrder: $(this).attr('data-order')
                 };
 
@@ -382,12 +393,12 @@ Zepto(function ($) {
         function onLoadPortfolioAnalysisCompleted(portfolio) {
             renderAnalysisPage(portfolio);
         }
-        
+
         // $(el.analysisPage + '_partial').animate({ opacity: 0 }, { duration: 250, easing: 'ease-out', complete: function () {}});
         // $(el.analysisPage + '_partial').html('');
         // $(el.analysisPage + '_partial').css({ opacity: 0 });
         // $(el.analysisPage + '_partial').css({ opacity: 1 });
-        
+
         // Remove all analysis content and scroll the page to top before rendering.
         $(el.analysisPage + '_partial').html('');
         theApp.scroll.scrollToPage(1);
@@ -418,14 +429,14 @@ Zepto(function ($) {
         var $chart      = $('#' + chartId),
             realHeight  = 0;
             chartHeight = 0;
-         
+
         // My last desperate attempt to resize table charts...       
         if ($chart.hasClass('gridContainer') && $chart.parent().data('realHeight') < 1) {
             realHeight = theApp.resizingSettings.calculateTableHeight(numRows);
             chartHeight = theApp.resizingSettings.rescaleTable(realHeight, device.orientation());
 
             $chart.height(chartHeight);
-            $chart.parent().data('realHeight',  realHeight);
+            $chart.parent().data('realHeight', realHeight);
             theApp.iOSLog.debug('rebuilt on onChartLoaded');
             theApp.scroll.saveScrollPosition();
             theApp.scroll.rebuild('analysis', { restorePosition: true });
@@ -446,19 +457,19 @@ Zepto(function ($) {
 
         // Save scroll position and rebuild a new one.
         // useTransform: true, zoom: true, zoomMax: 1.5 },
-        theApp.scroll.saveScrollPosition();        
+        theApp.scroll.saveScrollPosition();
         theApp.scroll.rebuild(
-            'fullScreenContainer', { 
-            iScrollOptions : {
-                // Scrolling options:
-                hScroll: true, vScroll: false, hScrollbar: true,
-                // Snap options:
-                snap: true, snapThreshold: 50, bounce: false, momentum: false
-                // Zoom options:
-                // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false
-            },
-            restorePosition: true
-        });
+            'fullScreenContainer', {
+                iScrollOptions: {
+                    // Scrolling options:
+                    hScroll: true, vScroll: false, hScrollbar: true,
+                    // Snap options:
+                    snap: true, snapThreshold: 50, bounce: false, momentum: false
+                    // Zoom options:
+                    // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false
+                },
+                restorePosition: true
+            });
 
         theApp.scroll.scrollToPage(data.chartOrder, 0, 0);
     });
@@ -653,9 +664,10 @@ Zepto(function ($) {
         theApp.tabbar.show();
     });
 
-    theApp.portfolioManager.on('onFailed', function (message) {
+    theApp.portfolioManager.on('onFailed', function (message, reason) {
         theApp.scroll.rebuild('error');
         $(el.errorMessageText).html(message);
+        $(el.errorReasonText).html(reason);
         theApp.nav.goToPage($(el.errorPage));
     });
 
@@ -726,7 +738,7 @@ Zepto(function ($) {
             theApp.removeFromFavourites();
         }
     });
-    
+
     // Test
     theApp.toolbar.on('onTestTap', function (isSelected) {
         theApp.onTestApp();
@@ -755,11 +767,11 @@ Zepto(function ($) {
         }
     });
 
-    theApp.iOSLog.on('show', function (){
+    theApp.iOSLog.on('show', function () {
         // theApp.toolbar.getButton('console').show();
     });
 
-    theApp.iOSLog.on('hide', function (){
+    theApp.iOSLog.on('hide', function () {
         // Deselect Console button.
         theApp.toolbar.getButton('console').deselect();
     });
@@ -1156,7 +1168,7 @@ Zepto(function ($) {
     theApp.portfoliosList.on('onDataReceived', function (data) {
         $(el.analysisPage + '_partial').html(data);
     });
-    
+
     // ------------------------------------------
     // TEARDOWN
     // ------------------------------------------
@@ -1206,7 +1218,7 @@ Zepto(function ($) {
             return;
         }
 
-        animationSpeed  = (theApp.settings.appSettings.animatedChartResizing)
+        animationSpeed = (theApp.settings.appSettings.animatedChartResizing)
             ? 500
             : 25;
 
@@ -1215,11 +1227,11 @@ Zepto(function ($) {
         if (restorePosition) {
             theApp.scroll.saveScrollPosition();
         }
-        
-        $('.analysisComponentContainer').each(function(){
-            var $component, $container, containerHeight, containerLandscapeHeight, 
+
+        $('.analysisComponentContainer').each(function () {
+            var $component, $container, containerHeight, containerLandscapeHeight,
             containerPortraitHeight, portraitScaleRatio, landscapeScaleRatio, realHeightData;
-            
+
             $container = $(this);
             $component = $container.children().filter('.resizableChart'); // $container.children().filter('.resizableChart'); // $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
             containerHeight = $component.height();
@@ -1231,7 +1243,7 @@ Zepto(function ($) {
                 landscapeScaleRatio = theApp.resizingSettings.chartLandscapeScaleRatio;
                 portraitScaleRatio = theApp.resizingSettings.chartPortraitScaleRatio;
             }
-            
+
             if (!$container.data("realHeight")) {
                 containerLandscapeHeight = parseInt(containerHeight * landscapeScaleRatio, 10);
                 containerPortraitHeight = parseInt(containerHeight * portraitScaleRatio, 10);
@@ -1241,32 +1253,32 @@ Zepto(function ($) {
                 containerLandscapeHeight = parseInt(realHeightData * landscapeScaleRatio, 10);
                 containerPortraitHeight = parseInt(realHeightData * portraitScaleRatio, 10);
             }
-            
+
             if (device.orientation() === 'landscape') {
-                $component.css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});
+                $component.css({ '-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top' });
                 $container.height(containerLandscapeHeight);
             } else {
-                $component.css({'-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top'});  
+                $component.css({ '-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top' });
                 $container.height(containerPortraitHeight);
-           }
+            }
         });
 
         if (theApp.settings.appSettings.automaticChartRepositioning) {
             theApp.synchronizeOrientation.pendingCount += 1;
-             
+
             // Rebuild the iScroll using a delay is necessary to ensure that the page height
             // is calculate correctly.
             setTimeout(function () {
                 if (theApp.synchronizeOrientation.pendingCount > 0) {
                     theApp.synchronizeOrientation.pendingCount -= 1;
                 }
-            
+
                 if (theApp.synchronizeOrientation.pendingCount === 0) {
                     theApp.scroll.rebuild('analysis');
                     if (theApp.synchronizeOrientation.chartToDisplay !== '') {
                         theApp.scroll.scrollToElement('#' + theApp.synchronizeOrientation.chartToDisplay, 75, 25);
                     }
-             
+
                     theApp.mask.hide('preventTap');
                 }
             }, animationSpeed + rebuildingDelay);
@@ -1278,14 +1290,14 @@ Zepto(function ($) {
             }, animationSpeed + rebuildingDelay);
         }
     };
-    
+
     // Memoization pattern.
     theApp.synchronizeOrientation.pendingCount = 0;
     theApp.synchronizeOrientation.chartToDisplay = '';
 
     theApp.getCurrentChartDisplayedInViewport = function () {
         var approximativeHeaderHeight   = 75,
-            horizon                     = 0, 
+            horizon                     = 0,
             charts                      = [],
             chart                       = {},
             positions                   = [],
@@ -1295,27 +1307,27 @@ Zepto(function ($) {
             ? (device.maxHeight()) / 2 + approximativeHeaderHeight
             : (device.maxWidth()) / 2 + approximativeHeaderHeight;
 
-        $('.snapper').each(function (){
+        $('.snapper').each(function () {
             var id, y;
             y = Math.abs($(this).offset().top - approximativeHeaderHeight);
             id = $(this).data('chartid');
             y = (y >= horizon)
                 ? y - horizon
                 : y;
-           
+
             positions.push(y);
-            charts.push({y: y, chartId: id});
+            charts.push({ y: y, chartId: id });
         });
-        
+
         // Reference: http://ejohn.org/blog/fast-javascript-maxmin/
         minY = Math.min.apply(Math, positions);
-        chart =  helper.getObjectFromArray(charts, 'y', minY);
+        chart = helper.getObjectFromArray(charts, 'y', minY);
 
         return chart.chartId;
     };
 
 
-    $('body').bind('turn', function(event, info){
+    $('body').bind('turn', function (event, info) {
         theApp.synchronizeOrientation.chartToDisplay = theApp.getCurrentChartDisplayedInViewport();
         theApp.synchronizeOrientation(true);
     });
@@ -1333,10 +1345,10 @@ Zepto(function ($) {
         theApp.experimentalPage.create();
     };
 
-    theApp.experimentalPage.on('onPreviewChart' , function (customChart) {
+    theApp.experimentalPage.on('onPreviewChart', function (customChart) {
         var charts = [];
         var chartComponentsData = theApp.chartComponents.getData('charts');
-        
+
         // Clear previous chart.
         $('#custom_chart_partial').html('');
 
@@ -1344,7 +1356,7 @@ Zepto(function ($) {
         customChart.timePeriods = theApp.customChartTimePeriods.timePeriods;
         customChart.startDate = theApp.customChartTimePeriods.startDate;
         customChart.endDate = theApp.customChartTimePeriods.endDate;
-        
+
         chartComponentsData[customChart.chartId] = customChart;
         charts.push({ chartId: customChart.chartId });
 
