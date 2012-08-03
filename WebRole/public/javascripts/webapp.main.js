@@ -15,7 +15,16 @@ var jQT = new $.jQTouch({
         'images/sw-alpha.png',
         'images/sw-button-cancel.png',
         'images/sw-button-done.png',
-        'images/sw-header.png'
+        'images/sw-header.png',
+        'images/btn_console_off.png',
+        'images/btn_console_on.png',
+        'images/btn_favourites_off.png',
+        'images/btn_favourites_on.png',
+        'images/btn_maximize.png',
+        'images/btn_minimize.png',
+        'images/mini_logo.png',
+        'themes/img/apple/on_off.png',
+        'themes/img/jqt/on_off.png'
     ]
 });
 
@@ -821,18 +830,10 @@ Zepto(function ($) {
     });
     
     theApp.tabbar.on('onSettingsTap', function (button) {
-        // theApp.settingsButton.setDisabled(true);
-        // theApp.settingsButton.preventTap(true);
         if (button.isHighlighted) {
-            theApp.nav.goToPageWithCallback($(el.settingsPage), null, function () {
-                // theApp.settingsButton.setDisabled(false);
-                // theApp.settingsButton.preventTap(false);
-            });
+            theApp.nav.goToPage($(el.settingsPage));
         } else {
-            theApp.nav.goToPageWithCallback($(el.analysisPage), null, function () {
-                // theApp.settingsButton.setDisabled(false);
-                //theApp.settingsButton.preventTap(false);
-            });
+            theApp.nav.goToPage($(el.analysisPage));
         }
     });
 
@@ -1286,7 +1287,12 @@ Zepto(function ($) {
                 containerLandscapeHeight = parseInt(realHeightData * landscapeScaleRatio, 10);
                 containerPortraitHeight = parseInt(realHeightData * portraitScaleRatio, 10);
             }
-            
+//            
+//            if ($component.hasClass('gridContainer')) {
+//                containerLandscapeHeight = 700;
+//                containerPortraitHeight = 560;
+//            }
+
             if (device.orientation() === 'landscape') {
                 $component.css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});
                 $container.height(containerLandscapeHeight);

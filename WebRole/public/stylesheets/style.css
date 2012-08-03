@@ -76,6 +76,26 @@ html, body
 {
     top: 105px !important;
  }
+ 
+.presentationWrapper
+{
+    top: 88px !important;
+    width: 100% !important; 
+	height: 680px !important;
+}
+
+div .google-visualization-table-div-page img:first-child 
+{
+    /*
+    background-image: url('../images/sw-button-done.png');    
+    position: absolute;
+    top: 10px;
+    width: 300px !important;	
+    -webkit-transform: scale(2);
+    */
+    -webkit-transform: scale(2.45);
+    margin: 10px !important;
+}
 
 #analysis_partial h2, #analysisSummary h2, #analysisSummary h3 {    
     font-family: HelveticaNeue-Bold !important;

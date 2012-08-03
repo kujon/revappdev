@@ -3054,86 +3054,98 @@ a.orientation=o;
 return a
 });
 WebAppLoader.addModule({name:"helper",isPlugin:true},function(){var j={};
-function a(p){return p.charAt(0).toUpperCase()+p.slice(1)
-}function n(q,p){return q.indexOf(p)===0
-}function c(p,q){return p.match(q+"$")==q
-}function d(){var t=arguments[0];
-for(var p=0;
-p<arguments.length-1;
-p++){var q=new RegExp("\\{"+p+"\\}","gm");
-t=t.replace(q,arguments[p+1])
-}return t
-}function o(){var s=[];
+function a(q){return q.charAt(0).toUpperCase()+q.slice(1)
+}function n(s,q){return s.indexOf(q)===0
+}function c(q,s){return q.match(s+"$")==s
+}function d(){var u=arguments[0];
+for(var q=0;
+q<arguments.length-1;
+q++){var t=new RegExp("\\{"+q+"\\}","gm");
+u=u.replace(t,arguments[q+1])
+}return u
+}function o(){var t=[];
 this.append=function(){string=d.apply(null,arguments);
-string=t(string);
-if(string.length>0){s[s.length]=string
+string=u(string);
+if(string.length>0){t[t.length]=string
 }};
 this.add=this.append;
-this.appendLine=function(u){u=t(u);
-if(this.isEmpty()){if(u.length>0){s[s.length]=u
+this.appendLine=function(v){v=u(v);
+if(this.isEmpty()){if(v.length>0){t[t.length]=v
 }else{return
-}}else{s[s.length]=u.length>0?"\r\n"+u:"\r\n"
+}}else{t[t.length]=v.length>0?"\r\n"+v:"\r\n"
 }};
-this.clear=function(){s=[]
+this.clear=function(){t=[]
 };
-this.isEmpty=function(){return s.length==0
+this.isEmpty=function(){return t.length==0
 };
-this.toString=function(){return s.join("")
+this.toString=function(){return t.join("")
 };
-var t=function(u){if(!p(u)){return""
-}if(q(u)!=q(new String())){return String(u)
-}return u
+var u=function(v){if(!q(v)){return""
+}if(s(v)!=s(new String())){return String(v)
+}return v
 };
-var p=function(u){return u!=null&&typeof(u)!="undefined"
+var q=function(v){return v!=null&&typeof(v)!="undefined"
 };
-var q=function(u){if(!p(u.constructor)){throw Error("Unexpected object type")
-}var v=String(u.constructor).match(/function\s+(\w+)/);
-return p(v)?v[1]:"undefined"
+var s=function(v){if(!q(v.constructor)){throw Error("Unexpected object type")
+}var w=String(v.constructor).match(/function\s+(\w+)/);
+return q(w)?w[1]:"undefined"
 }
-}function h(t,s){function p(v,w,u){return(typeof v===w)?v:u
-}function q(v,u){return(Array.isArray(v))?v:u
-}switch(s){case"boolean":return p(t,"boolean",false);
-case"b":return p(t,"boolean",false);
-case"string":return p(t,"string","");
-case"s":return p(t,"string","");
-case"number":return p(t,"number",0);
-case"n":return p(t,"number",0);
-case"object":return p(t,"object",{});
-case"o":return p(t,"object",{});
-case"array":return q(t,[]);
-case"a":return q(t,[]);
-default:return t
-}}function f(t){var s={"undefined":"undefined",number:"number","boolean":"boolean",string:"string","[object Function]":"function","[object RegExp]":"regexp","[object Array]":"array","[object Date]":"date","[object Error]":"error"},p=Object.prototype.toString;
-function q(u){return s[typeof u]||s[p.call(u)]||(u?"object":"null")
-}return q(t)
-}function i(p){return(p!=undefined&&p!=null)
-}function b(){return"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(p){var q=Math.random()*16|0,s=p=="x"?q:(q&3|8);
-return s.toString(16)
+}function h(u,t){function q(w,x,v){return(typeof w===x)?w:v
+}function s(w,v){return(Array.isArray(w))?w:v
+}switch(t){case"boolean":return q(u,"boolean",false);
+case"b":return q(u,"boolean",false);
+case"string":return q(u,"string","");
+case"s":return q(u,"string","");
+case"number":return q(u,"number",0);
+case"n":return q(u,"number",0);
+case"object":return q(u,"object",{});
+case"o":return q(u,"object",{});
+case"array":return s(u,[]);
+case"a":return s(u,[]);
+default:return u
+}}function f(u){var t={"undefined":"undefined",number:"number","boolean":"boolean",string:"string","[object Function]":"function","[object RegExp]":"regexp","[object Array]":"array","[object Date]":"date","[object Error]":"error"},q=Object.prototype.toString;
+function s(v){return t[typeof v]||t[q.call(v)]||(v?"object":"null")
+}return s(u)
+}function i(q){return(q!=undefined&&q!=null)
+}function b(){return"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(q){var s=Math.random()*16|0,t=q=="x"?s:(s&3|8);
+return t.toString(16)
 })
-}function l(p,s,u){var t=null;
-for(var q=p.length-1;
-q>=0;
-q--){if(p[q]&&p[q][s]===u){t=p.splice(q,1);
+}function l(q,t,v){var u=null;
+for(var s=q.length-1;
+s>=0;
+s--){if(q[s]&&q[s][t]===v){u=q.splice(s,1);
+break
+}}return u
+}function e(q,u,v){var t=null;
+for(var s=q.length-1;
+s>=0;
+s--){if(q[s]&&q[s][u]===v){t=q[s];
 break
 }}return t
-}function e(p,t,u){var s=null;
-for(var q=p.length-1;
-q>=0;
-q--){if(p[q]&&p[q][t]===u){s=p[q];
-break
-}}return s
-}function g(p){var q=decodeURIComponent((location.search.match(RegExp("[?|&]"+p+"=(.+?)(&|$)"))||[,null])[1]);
-return(q==="null")?null:q
-}function k(q){var p=document.createElement("div");
-p.innerHTML=q;
-return p.childNodes[0].nodeValue
-}function m(s){var t={},q,p=[];
-for(q in s){if(s.hasOwnProperty(q)){p.push(q)
-}}p.sort();
-for(q=0;
-q<p.length;
-q++){t[p[q]]=s[p[q]]
-}return t
+}function g(q){var s=decodeURIComponent((location.search.match(RegExp("[?|&]"+q+"=(.+?)(&|$)"))||[,null])[1]);
+return(s==="null")?null:s
+}function k(s){var q=document.createElement("div");
+q.innerHTML=s;
+return q.childNodes[0].nodeValue
+}function m(t){var u={},s,q=[];
+for(s in t){if(t.hasOwnProperty(s)){q.push(s)
+}}q.sort();
+for(s=0;
+s<q.length;
+s++){u[q[s]]=t[q[s]]
+}return u
+}function p(s){var q=document.getElementById(s);
+var u=0;
+var t=0;
+document.getElementById(s).addEventListener("touchstart",function(v){u=this.scrollTop+v.touches[0].pageY;
+t=this.scrollLeft+v.touches[0].pageX;
+v.preventDefault()
+},false);
+document.getElementById(s).addEventListener("touchmove",function(v){if((this.scrollTop<this.scrollHeight-this.offsetHeight&&this.scrollTop+v.touches[0].pageY<u-5)||(this.scrollTop!=0&&this.scrollTop+v.touches[0].pageY>u+5)){v.preventDefault()
+}if((this.scrollLeft<this.scrollWidth-this.offsetWidth&&this.scrollLeft+v.touches[0].pageX<t-5)||(this.scrollLeft!=0&&this.scrollLeft+v.touches[0].pageX>t+5)){v.preventDefault()
+}this.scrollTop=u-v.touches[0].pageY;
+this.scrollLeft=t-v.touches[0].pageX
+},false)
 }j.capitaliseFirstLetter=a;
 j.getValueAs=h;
 j.startsWith=n;
@@ -3148,6 +3160,7 @@ j.getURLParameter=g;
 j.getObjectFromArray=e;
 j.htmlDecode=k;
 j.sortObject=m;
+j.touchScroll=p;
 return j
 });
 WebAppLoader.addModule({name:"storage",plugins:["helper"],isPlugin:true},function(){var m={},h=this.getConsole(),f=this.getPlugin("helper"),j="Revolution";
@@ -3432,202 +3445,6 @@ d+=1
 m.getButton=i;
 return m
 });
-WebAppLoader.addModule({name:"ajaxManager",plugins:["helper"],hasEvents:true,isShared:true},function(){var a={},f=this.getConsole(),b=this.getEventManager(),e=this.getPlugin("helper"),i="";
-function d(){return i
-}function h(j){i=j||null
-}function g(q,m,k,o){var p="",l={},n=o,j=k||null;
-p=q;
-if(typeof m!=="function"){l=m||{};
-if(i&&!l.token){l.token=i
-}}else{j=m;
-n=k
-}$.post(p,l,j,n)
-}function c(){}a.post=g;
-a.getToken=d;
-a.setToken=h;
-a.get=c;
-return a
-});
-WebAppLoader.addModule({name:"blackbird",plugins:["helper"],hasEvents:true,isShared:true},function(){var blackbird={},output=this.getConsole(),eventManager=this.getEventManager(),helper=this.getPlugin("helper"),initialized=false;
-var NAMESPACE="iosLog";
-var IE6_POSITION_FIXED=true;
-var bbird;
-var outputList;
-var cache=[];
-var state=getState();
-var classes={};
-var profiler={};
-var IDs={blackbird:"blackbird",checkbox:"bbVis",filters:"bbFilters",controls:"bbControls",size:"bbSize"};
-var messageTypes={debug:true,info:true,warn:true,error:true,profile:true};
-var isHidden=true;
-function generateMarkup(){var spans=[];
-for(type in messageTypes){spans.push(['<span class="',type,'" type="',type,'"></span>'].join(""))
-}var newNode=document.createElement("DIV");
-newNode.id=IDs.blackbird;
-newNode.style.display="none";
-newNode.style.marginTop="48px";
-newNode.innerHTML=['<div class="header">','<div class="left">','<div id="',IDs.filters,'" class="filters" title="click to filter by message type">',spans.join(""),"</div>","</div>",'<div class="right">','<div id="',IDs.controls,'" class="controls">','<span id="',IDs.size,'" title="contract" op="resize"></span>','<span class="clear" title="clear" op="clear"></span>','<span class="close" title="close" op="close"></span>',"</div>","</div>","</div>",'<div class="main">','<div class="left"></div><div class="mainBody">','<ol id="scrollMe">',cache.join(""),"</ol>",'</div><div class="right"></div>',"</div>",'<div class="footer">','<div class="left"><label for="',IDs.checkbox,'"><input type="checkbox" id="',IDs.checkbox,'" />Visible on page load</label></div>','<div class="right"></div>',"</div>"].join("");
-return newNode
-}function backgroundImage(){var bodyTag=document.getElementsByTagName("BODY")[0];
-if(bodyTag.currentStyle&&IE6_POSITION_FIXED){if(bodyTag.currentStyle.backgroundImage=="none"){bodyTag.style.backgroundImage="url(about:blank)"
-}if(bodyTag.currentStyle.backgroundAttachment=="scroll"){bodyTag.style.backgroundAttachment="fixed"
-}}}function addMessage(type,content){content=(content.constructor==Array)?content.join(""):content;
-if(outputList){var newMsg=document.createElement("LI");
-newMsg.className=type;
-newMsg.innerHTML=['<span class="icon"></span>',content].join("");
-outputList.appendChild(newMsg);
-scrollToBottom()
-}else{cache.push(['<li class="',type,'"><span class="icon"></span>',content,"</li>"].join(""))
-}}function clear(){outputList.innerHTML=""
-}function clickControl(evt){if(!evt){evt=window.event
-}var el=(evt.target)?evt.target:evt.srcElement;
-if(el.tagName=="SPAN"){switch(el.getAttributeNode("op").nodeValue){case"resize":resize();
-break;
-case"clear":clear();
-break;
-case"close":hide();
-break
-}}}function clickFilter(evt){if(!evt){evt=window.event
-}var span=(evt.target)?evt.target:evt.srcElement;
-if(span&&span.tagName=="SPAN"){var type=span.getAttributeNode("type").nodeValue;
-if(evt.altKey){var filters=document.getElementById(IDs.filters).getElementsByTagName("SPAN");
-var active=0;
-for(entry in messageTypes){if(messageTypes[entry]){active++
-}}var oneActiveFilter=(active==1&&messageTypes[type]);
-for(var i=0;
-filters[i];
-i++){var spanType=filters[i].getAttributeNode("type").nodeValue;
-filters[i].className=(oneActiveFilter||(spanType==type))?spanType:spanType+"Disabled";
-messageTypes[spanType]=oneActiveFilter||(spanType==type)
-}}else{messageTypes[type]=!messageTypes[type];
-span.className=(messageTypes[type])?type:type+"Disabled"
-}var disabledTypes=[];
-for(type in messageTypes){if(!messageTypes[type]){disabledTypes.push(type)
-}}disabledTypes.push("");
-outputList.className=disabledTypes.join("Hidden ");
-scrollToBottom()
-}}function clickVis(evt){if(!evt){evt=window.event
-}var el=(evt.target)?evt.target:evt.srcElement;
-state.load=el.checked;
-setState()
-}function scrollToBottom(){outputList.scrollTop=outputList.scrollHeight
-}function isVisible(){return(bbird.style.display=="block")
-}function hide(){bbird.style.display="none";
-isHidden=true;
-eventManager.raiseEvent("hide")
-}function show(){var body=document.getElementsByTagName("BODY")[0];
-body.removeChild(bbird);
-body.appendChild(bbird);
-bbird.style.display="block";
-isHidden=false;
-eventManager.raiseEvent("show")
-}function reposition(position){if(position===undefined||position==null){position=(state&&state.pos===null)?1:(state.pos+1)%4
-}switch(position){case 0:classes[0]="bbTopLeft";
-break;
-case 1:classes[0]="bbTopRight";
-break;
-case 2:classes[0]="bbBottomLeft";
-break;
-case 3:classes[0]="bbBottomRight";
-break
-}state.pos=position;
-setState()
-}function resize(size){if(size===undefined||size===null){size=(state&&state.size==null)?0:(state.size+1)%2
-}classes[1]=(size===0)?"bbSmall":"bbLarge";
-var span=document.getElementById(IDs.size);
-span.title=(size===1)?"small":"large";
-span.className=span.title;
-state.size=size;
-setState();
-scrollToBottom()
-}function setState(){var props=[];
-for(entry in state){var value=(state[entry]&&state[entry].constructor===String)?'"'+state[entry]+'"':state[entry];
-props.push(entry+":"+value)
-}props=props.join(",");
-var expiration=new Date();
-expiration.setDate(expiration.getDate()+14);
-document.cookie=["blackbird={",props,"}; expires=",expiration.toUTCString(),";"].join("");
-var newClass=[];
-for(word in classes){newClass.push(classes[word])
-}bbird.className=newClass.join(" ")
-}function getState(){var re=new RegExp(/blackbird=({[^;]+})(;|\b|$)/);
-var match=re.exec(document.cookie);
-return(match&&match[1])?eval("("+match[1]+")"):{pos:null,size:null,load:null}
-}function readKey(evt){if(!evt){evt=window.event
-}var code=113;
-if(evt&&evt.keyCode==code){var visible=isVisible();
-if(visible&&evt.shiftKey&&evt.altKey){clear()
-}else{if(visible&&evt.shiftKey){reposition()
-}else{if(!evt.shiftKey&&!evt.altKey){(visible)?hide():show()
-}}}}}function addEvent(obj,type,fn){var obj=(obj.constructor===String)?document.getElementById(obj):obj;
-if(obj.attachEvent){obj["e"+type+fn]=fn;
-obj[type+fn]=function(){obj["e"+type+fn](window.event)
-};
-obj.attachEvent("on"+type,obj[type+fn])
-}else{obj.addEventListener(type,fn,false)
-}}function removeEvent(obj,type,fn){var obj=(obj.constructor===String)?document.getElementById(obj):obj;
-if(obj.detachEvent){obj.detachEvent("on"+type,obj[type+fn]);
-obj[type+fn]=null
-}else{obj.removeEventListener(type,fn,false)
-}}blackbird={toggle:function(){(isVisible())?hide():show()
-},isVisible:function(){return !isHidden
-},show:function(){show()
-},hide:function(){hide()
-},resize:function(){resize()
-},clear:function(){clear()
-},move:function(){reposition()
-},debug:function(msg){addMessage("debug",msg)
-},warn:function(msg){addMessage("warn",msg)
-},info:function(msg){addMessage("info",msg)
-},error:function(msg){addMessage("error",msg)
-},profile:function(label){var currentTime=new Date();
-if(label==undefined||label==""){addMessage("error","<b>ERROR:</b> Please specify a label for your profile statement")
-}else{if(profiler[label]){addMessage("profile",[label,": ",currentTime-profiler[label],"ms"].join(""));
-delete profiler[label]
-}else{profiler[label]=currentTime;
-addMessage("profile",label)
-}}return currentTime
-}};
-function init(){if(initialized){return
-}var body=document.getElementsByTagName("BODY")[0];
-bbird=body.appendChild(generateMarkup());
-outputList=bbird.getElementsByTagName("OL")[0];
-backgroundImage();
-addEvent(IDs.checkbox,"click",clickVis);
-addEvent(IDs.filters,"click",clickFilter);
-addEvent(IDs.controls,"click",clickControl);
-addEvent(document,"keyup",readKey);
-resize(state.size);
-reposition(state.pos);
-if(state.load){show();
-document.getElementById(IDs.checkbox).checked=true
-}scrollToBottom();
-initialized=true;
-addEvent(window,"unload",function(){removeEvent(IDs.checkbox,"click",clickVis);
-removeEvent(IDs.filters,"click",clickFilter);
-removeEvent(IDs.controls,"click",clickControl);
-removeEvent(document,"keyup",readKey)
-})
-}function isTouchDevice(){if((navigator.userAgent.match(/android 3/i))||(navigator.userAgent.match(/honeycomb/i))){return false
-}try{document.createEvent("TouchEvent");
-return true
-}catch(e){return true
-}}function touchScroll(id){if(isTouchDevice()){var el=document.getElementById(id);
-var scrollStartPosY=0;
-var scrollStartPosX=0;
-document.getElementById(id).addEventListener("touchstart",function(event){scrollStartPosY=this.scrollTop+event.touches[0].pageY;
-scrollStartPosX=this.scrollLeft+event.touches[0].pageX;
-event.preventDefault()
-},false);
-document.getElementById(id).addEventListener("touchmove",function(event){if((this.scrollTop<this.scrollHeight-this.offsetHeight&&this.scrollTop+event.touches[0].pageY<scrollStartPosY-5)||(this.scrollTop!=0&&this.scrollTop+event.touches[0].pageY>scrollStartPosY+5)){event.preventDefault()
-}if((this.scrollLeft<this.scrollWidth-this.offsetWidth&&this.scrollLeft+event.touches[0].pageX<scrollStartPosX-5)||(this.scrollLeft!=0&&this.scrollLeft+event.touches[0].pageX>scrollStartPosX+5)){event.preventDefault()
-}this.scrollTop=scrollStartPosY-event.touches[0].pageY;
-this.scrollLeft=scrollStartPosX-event.touches[0].pageX
-},false)
-}}init();
-touchScroll("scrollMe");
-return blackbird
-});
 WebAppLoader.addModule({name:"chartComponents",plugins:["helper"],sharedModules:["chartManager","localizationManager","pageElements"],dataObjects:["charts"],hasEvents:true,isShared:true},function(){var a={},k=this.getConsole(),g=this.getEventManager(),h=this.getPlugin("helper"),b=this.getSharedModule("chartManager"),i=this.getSharedModule("localizationManager").getLanguage()||{},f=this.getSharedModule("pageElements"),d=this.getDataObject("charts"),e={},c=null;
 d.define({performance_bar:{chartId:"performance_bar",title:i.chart.performanceBarTitle,chartType:"BarChart",include:"childSegments",measures:["rp"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"Return"}}},risk_bar:{chartId:"risk_bar",title:i.chart.riskBarTitle,chartType:"BarChart",include:"childSegments",measures:["wp","contributionvar"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"Return"}}},allocation_bar:{chartId:"allocation_bar",title:i.chart.allocationbarTitle,chartType:"BarChart",include:"childSegments",measures:["wover"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"Excess Weight %"}}},contribution_bar:{chartId:"contribution_bar",title:i.chart.contributionBarTitle,chartType:"BarChart",include:"securities",measures:["ctp"],includeMeasuresFor:["securities"],options:{hAxis:{title:"Contribution"}}},attribution_bar:{chartId:"attribution_bar",title:i.chart.attributionBarTitle,chartType:"BarChart",include:"childSegments",measures:["wendover","etotal"],includeMeasuresFor:["childSegments"]},fixedIncomeContribution_bar:{chartId:"fixedIncomeContribution_bar",title:i.chart.fixedIncomeContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpyc","ctpspread","ctpcur"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#FF6600","#CC0000","#FFCC00"]}},carryContribution_bar:{chartId:"carryContribution_bar",title:i.chart.carryContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpsystcarry","ctpspeccarry"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#336600","#990000"]}},yieldCurveContribution_bar:{chartId:"yieldCurveContribution_bar",title:i.chart.yieldCurveContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpshift","ctptwist","ctpbutterfly","ctprolldown"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#CD66CD","#339900","#FF9900","#660000"]}},riskNumbers_bar:{chartId:"riskNumbers_bar",title:i.chart.riskNumbersBarTitle,chartType:"BarChart",include:"none",measures:["ytmpend","mdpend"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#336699","#530066"]}},performance_bubble:{chartId:"performance_bubble",title:i.chart.performanceBubbleTitle,chartType:"BubbleChart",include:"childSegments",measures:["stddevann","returnannifgtyr","wpabsolute"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"Annualized Volatility"},vAxis:{title:"Annualized Return"}}},risk_bubble:{chartId:"risk_bubble",title:i.chart.riskBubbleTitle,chartType:"BubbleChart",include:"childSegments",measures:["valueatriskpercent","rp","wpabsolute"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"% Value at Risk"},vAxis:{title:"Return"}}},contribution_column:{chartId:"contribution_column",title:i.chart.contributionColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["ctp","ctb"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Return %"}}},interestRatesExposure_column:{chartId:"interestRatesExposure_column",title:i.chart.interestRatesExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["interestratesdown100percent","interestratesdown50percent","interestratesup50percent","interestratesup100percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#CC0000","#CD66CD","#FFCC00","#3399CC"]}},creditSpreadsExposure_column:{chartId:"creditSpreadsExposure_column",title:i.chart.creditSpreadsExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["creditspreadsdown100percent","creditspreadsdown50percent","creditspreadsup50percent","creditspreadsup100percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#CC0000","#CD66CD","#FFCC00","#3399CC"]}},dv01Exposure_column:{chartId:"dv01Exposure_column",title:i.chart.dv01ExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["interestratesdv01percent","creditspreadsdv01percent","inflationratesdv01percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#3399CC","#336699","#003366"]}},attribution_column:{chartId:"attribution_column",title:i.chart.attributionColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["etotal","ealloc","eselecinter"],includeMeasuresFor:["childSegments"],options:{colors:["#003366","#FF6600","#990066"]}},allocation_pie:{chartId:"allocation_pie",title:i.chart.allocationPieTitle,chartType:"PieChart",include:"childSegments",measures:["wpabsoluteend"],includeMeasuresFor:["childSegments"]},contribution_pie:{chartId:"contribution_pie",title:i.chart.contributionPieTitle,chartType:"PieChart",include:"childSegments",isHeatMap:true,isGradientReversed:false,measures:["wpabsoluteend","ctp"],includeMeasuresFor:["childSegments"]},risk_pie:{chartId:"risk_pie",title:i.chart.riskPietitle,chartType:"PieChart",include:"childSegments",isHeatMap:true,isGradientReversed:true,measures:["wpabsoluteend","contributionvar"],includeMeasuresFor:["childSegments"]},performanceMaster_grid:{chartId:"performanceMaster_grid",title:i.chart.performanceMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","rp","rb","relr","ctp"],includeMeasuresFor:["segment","childSegments"]},contributionMaster_grid:{chartId:"contributionMaster_grid",title:i.chart.contributionMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","ctp","wb","ctb"],includeMeasuresFor:["segment","childSegments"]},attributionMaster_grid:{chartId:"attributionMaster_grid",title:i.chart.attributionMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","wb","ealloc","eselecinter","eallocc","etotal"],includeMeasuresFor:["segment","childSegments"]},fixedIncomeMaster_grid:{chartId:"fixedIncomeMaster_grid",title:i.chart.fixedIncomeMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","rp","rpyc","rpspread","ctp"],includeMeasuresFor:["segment","childSegments"]},allocationMaster_grid:{chartId:"allocationMaster_grid",title:i.chart.allocationMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","wpgross","shortexposureend","longexposureend","mvend"],includeMeasuresFor:["segment","childSegments"]},riskMaster_grid:{chartId:"riskMaster_grid",title:i.chart.riskMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","valueatrisk","valueatriskpercent","contributionvar","expectedvolatilitypercent"],includeMeasuresFor:["segment","childSegments"]},performance_grid:{chartId:"performance_grid",title:i.chart.performanceGridTitle,chartType:"Table",include:"none",measures:["rp","returnann","stddevann","relr","periodaverage","oneperiodhigh","oneperiodlow","maxloss","percentpositiveperiods","correlation","alpha","beta","rsquared","sharperatio","treynorratio","inforatioxs"],includeMeasuresFor:["segment"]},attribution_grid:{chartId:"attribution_grid",title:i.chart.attributionGridTitle,chartType:"Table",include:"childSegments",measures:["ctp","ctb","ealloclocal","eselecinterlocal","etotalc","etotalmca"],includeMeasuresFor:["segment","childSegments"]},fixedIncome_grid:{chartId:"fixedIncome_grid",title:i.chart.fixedIncomeGridTitle,chartType:"Table",include:"childSegments",measures:["ttmpend","ytmpend","mdpend","durwpend","spreadpend"],includeMeasuresFor:["segment","childSegments"]},fixedIncomeContribution_grid:{chartId:"fixedIncomeContribution_grid",title:i.chart.fixedIncomeContributionGridTitle,chartType:"Table",include:"childSegments",measures:["ctp","ctpyc","ctpcarry","ctpspread","ctpcur","ctpother","ctpresidual"],includeMeasuresFor:["segment","childSegments"]},fixedIncomeExposure_grid:{chartId:"fixedIncomeExposure_grid",title:i.chart.fixedIncomeExposureGridTitle,chartType:"Table",include:"childSegments",measures:["wpend","interestratesdv01percent","creditspreadsdv01percent","inflationratesdv01percent"],includeMeasuresFor:["segment","childSegments"]},performanceTopTen_grid:{chartId:"performanceTopTen_grid",title:i.chart.performanceTopTenGridTitle,chartType:"Table",include:"securities",measures:["wpend","rp","ctp"],oData:{orderby:"wpend-Earliest desc",top:10},includeMeasuresFor:["securities"]},contributionTopTen_grid:{chartId:"contributionTopTen_grid",title:i.chart.contributionTopTenGridTitle,chartType:"Table",include:"securities",measures:["wpend","rp","ctp"],oData:{orderby:"ctp-Earliest desc",top:10},includeMeasuresFor:["securities"]},riskTopTen_grid:{chartId:"riskTopTen_grid",title:i.chart.riskTopTenGridTitle,chartType:"Table",include:"securities",measures:["wpend","expectedshortfallpercent","valueatriskpercent","expectedvolatilitypercent"],oData:{orderby:"valueatriskpercent-Earliest desc",top:10},includeMeasuresFor:["securities"]},performance_treemap:{chartId:"performance_treemap",title:i.chart.performanceTreemapTitle,chartType:"TreeMap",include:"securities",measures:["wpabsoluteend","rp"],includeMeasuresFor:["segment","securities"]},risk_treemap:{chartId:"risk_treemap",title:i.chart.riskTreemapTitle,chartType:"TreeMap",include:"childSegments",measures:["wpabsoluteend","contributionvar"],includeMeasuresFor:["segment","childSegments"]},performance_line:{chartId:"performance_line",title:i.chart.performanceLineTitle,chartType:"LineChart",measures:["rp","rb"],seriesType:"cumulativeIndexed"},fi_contribution_group:{chartId:"fi_contribution_group",title:i.chart.fixedIncomeContributionsGroupTitle,chartType:"Group",charts:[{chartId:"fixedIncomeContribution_bar",width:"50%",height:"100%"},{chartId:"carryContribution_bar",width:"50%",height:"100%"},{chartId:"yieldCurveContribution_bar",width:"50%",height:"100%"},{chartId:"riskNumbers_bar",width:"50%",height:"100%"}]},fi_exposures_group:{chartId:"fi_exposures_group",title:i.chart.fixedIncomeExposuresGroupTitle,chartType:"Group",charts:[{chartId:"interestRatesExposure_column",width:"50%",height:"100%"},{chartId:"creditSpreadsExposure_column",width:"50%",height:"100%"},{chartId:"dv01Exposure_column",width:"50%",height:"100%"}]},fi_gridRiskNumber_group:{chartId:"fi_gridRiskNumber_group",title:i.chart.fixedIncomeRiskNumbersGroupTitle,chartType:"Group",charts:[{chartId:"fixedIncome_grid",width:"100%",height:"100%"},{chartId:"fixedIncomeContribution_grid",width:"100%",height:"100%"}]}});
 c=d.getData();
@@ -3653,7 +3470,7 @@ t+=1;
 q(C,D)
 }function q(C,D){var F=new h.StringBuilder(),E="presentation-"+C;
 F.append('<div class="presentationContainer"><h2>{0}</h2>',D);
-F.append('<div id="{0}" data-title="{2}">{1}</div>',E,C,D);
+F.append('<div id="{0}" data-title="{1}">{1}</div>',E,D);
 F.append("</div>");
 $(f.presentationChartsContainer).append(F.toString())
 }function n(C,D){y+='        <div id="'+C.chartId+'" class="'+D+'"></div>'
@@ -3698,40 +3515,6 @@ a.load=j;
 a.render=l;
 a.setTimePeriod=m;
 return a
-});
-WebAppLoader.addModule({name:"chartDefaults",isShared:true},function(){var d={},f={},a={},b={},e={},g={},h={},i={},k={},m={},l={},j=this.getConsole();
-f={forceIFrame:false,labelFontName:"HelveticaNeue-Light",labelFontSize:12,titleFontName:"HelveticaNeue-Bold",titleFontSize:25};
-b={chartArea:{left:80,top:35,width:"70%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,hAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}},sizeAxis:{maxSize:100,maxValue:100,minSize:1,minValue:1},vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
-a={chartArea:{left:"20%",width:"60%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
-e={chartArea:{left:"10%",width:"70%",height:"75%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
-g={forceIFrame:f.forceIFrame,height:250,greenFrom:0,greenTo:4,yellowFrom:4,yellowTo:6,redFrom:6,redTo:20,max:20,minorTicks:5};
-h={allowHtml:true,alternatingRowStyle:true,cssClassNames:{headerRow:"headerRow",tableRow:"tableRow",oddTableRow:"oddTableRow",selectedTableRow:"selectedTableRow",hoverTableRow:"hoverTableRow"}};
-i={chartArea:{left:80,top:35,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame};
-k={chartArea:{left:80,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label",pieSliceTextStyle:{color:"#000000"}};
-m={fontFamily:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,headerHeight:25,minColor:"#cc0000",midColor:"#ffffff",maxColor:"#6699cc",maxDepth:3};
-l={chartWidth:960,tableWidth:980,chartLandscapeScaleRatio:1,chartPortraitScaleRatio:0.8,tableLandscapeScaleRatio:1,tablePortraitScaleRatio:0.8,rowHeight:60,headerHeight:60,fixedHeight:60,calculateTableHeight:function(n){return parseInt(n*this.rowHeight+this.headerHeight+this.fixedHeight,10)
-},rescaleChart:function(p,o){var n;
-if(o==="landscape"){n=parseInt(p*this.chartLandscapeScaleRatio,10)
-}else{n=parseInt(p*this.chartPortraitScaleRatio,10)
-}return n
-},rescaleTable:function(o,n){var p;
-if(n==="landscape"){p=parseInt(o*this.tableLandscapeScaleRatio,10)
-}else{p=parseInt(o*this.tablePortraitScaleRatio,10)
-}return p
-}};
-function c(n,o){f[n]=o;
-j.log("change setting")
-}d.BarChart=a;
-d.BubbleChart=b;
-d.ColumnChart=e;
-d.Gauge=g;
-d.LineChart=i;
-d.PieChart=k;
-d.Table=h;
-d.TreeMap=m;
-d.resizingSettings=l;
-d.set=c;
-return d
 });
 WebAppLoader.addModule({name:"chartManager",sharedModules:["settings","chartDefaults","colorManager","localizationManager","ajaxManager"],isShared:true,hasEvents:true},function(){var b={},e=[],i=this.getEventManager(),d=this.getSharedModule("chartDefaults"),p=this.getSharedModule("settings").siteUrls,g=this.getSharedModule("colorManager"),k=this.getSharedModule("localizationManager").getLanguage()||{},a=this.getSharedModule("ajaxManager"),n=this.getConsole(),c=0,f=0,j=false;
 function o(){c=0;
@@ -3797,8 +3580,8 @@ E<C.getNumberOfColumns();
 E++){if(C.getColumnType(E)==="number"){u.format(C,E)
 }}google.visualization.events.addListener(t,"ready",function(){m({chartId:t.getContainerId(),numRows:C.getNumberOfRows()})
 });
-if(y==="Table"){S="96% !important;";
-R=d.resizingSettings.calculateTableHeight(C.getNumberOfRows())+"px !important";
+if(y==="Table"){S="980px !important;";
+R=(C.getNumberOfRows()>10)?d.resizingSettings.calculateTableHeight(10)+"px !important":d.resizingSettings.calculateTableHeight(C.getNumberOfRows())+"px !important";
 t.setOption("height",R);
 t.setOption("width",S)
 }if(y==="PieChart"&&t.isHeatMap){C.sort([{column:2}]);
@@ -3844,137 +3627,15 @@ t.draw();
 var O=t.clone();
 P="presentation-"+t.getContainerId();
 O.setContainerId(P);
-if(y!=="Table"){O.setOption("height",680);
+if(y!=="Table"){O.setOption("height",660);
 O.setOption("width",1024)
-}else{O.setOption("width","96% !important")
+}else{O.setOption("width","96% !important");
+O.setOption("height","660px !important")
 }O.draw()
 }a.post(z,x,w,"text")
 }b.create=h;
 b.load=l;
 return b
-});
-WebAppLoader.addModule({name:"colorManager",isShared:true},function(){var a={},i=this.getConsole();
-function b(l){return(l.charAt(0)=="#")?l.substring(1,7):l
-}function k(m){var l="0123456789ABCDEF";
-m=parseInt(m,10);
-if(isNaN(m)){return"00"
-}m=Math.max(0,Math.min(m,255));
-return l.charAt((m-m%16)/16)+l.charAt(m%16)
-}function j(n,m,l){return"#"+k(n)+k(m)+k(l)
-}function g(l){return parseInt((b(l)).substring(0,2),16)
-}function f(l){return parseInt((b(l)).substring(2,4),16)
-}function e(l){return parseInt((b(l)).substring(4,6),16)
-}function c(l){return parseInt(l,10)&255
-}function h(m,l,n){return c(c(m)*(1-n)+c(l)*n)
-}function d(A,t,s,y){var m=[],x="#cc0000",B="#ffff00",n="#339900",q,l,w,v,z,o,u;
-if(A<t){return x
-}if(A>s){return n
-}if(y){if(A>0){m.push([0,B]);
-m.push([s,x])
-}else{m.push([t,n]);
-m.push([0,B])
-}}else{if(A>0){m.push([s,n]);
-m.push([0,B])
-}else{m.push([t,x]);
-m.push([0,B])
-}}z=[0,B];
-for(o=0;
-o<m.length;
-o++){q=m[o][0];
-if(q>=A){l=m[o][1];
-w=z[0];
-v=z[1];
-u=((A-w)/(q-w));
-if(!isNaN(u)){return j(h(g(v),g(l),u),h(f(v),f(l),u),h(e(v),e(l),u))
-}}z=m[o]
-}return B
-}a.getColorInRange=d;
-return a
-});
-WebAppLoader.addModule({name:"loadingMaskManager",sharedModules:["pageElements"],plugins:["helper"],hasEvents:true,isShared:true},function(){var e={},h=this.getConsole(),b=this.getEventManager(),a=this.getSharedModule("pageElements"),c=this.getPlugin("helper"),f=null,g={};
-f=$(a.loadingText);
-g.ajax={name:"ajax",enabled:true,el:a.ajaxLoadingMask};
-g.analysis={name:"analysis",enabled:true,el:a.chartLoadingMask};
-g.preventTap={name:"preventTap",enabled:true,el:a.preventTapMask};
-g["default"]=g.ajax;
-$(a.ajaxLoadingMask).click(function(){d("ajax")
-});
-$(a.chartLoadingMask).click(function(){d("analysis")
-});
-function i(l){var k=g[l||"default"]||null;
-if(k&&k.enabled){$(k.el).hide();
-$(k.el).show()
-}}function d(l){var k=g[l||"default"]||null;
-if(k){$(k.el).css("display","none")
-}}function j(k){f.html(k)
-}e.show=i;
-e.hide=d;
-e.updateAnalysisText=j;
-return e
-});
-WebAppLoader.addModule({name:"localizationManager",isShared:true},function(a){var e={},f=this.getConsole(),d=require("express.language");
-e.sayHello=function(){f.log(d.hello)
-};
-function b(h){var g=d[h]||"";
-return g
-}function c(){return d
-}e.get=b;
-e.getLanguage=c;
-return e
-});
-WebAppLoader.addModule({name:"localStorageManager",sharedModules:[],plugins:["helper"],hasEvents:true,isShared:true},function(){var i={},j=this.getConsole(),d=this.getEventManager(),g=this.getPlugin("helper"),l="Revolution";
-function f(o,p){var q=null;
-if(o&&(typeof o==="string")){q=(p||l)+g.capitaliseFirstLetter(o)
-}return q
-}function n(o,p){localStorage.setItem(o,p);
-j.log("Local Storage Manager - setItem:",o,p)
-}function e(o){return localStorage.getItem(o)
-}function h(p,s){var q=f(p,s),t=e(q),u=null;
-if(t){if(g.startsWith(t,'{"')){try{u=JSON.parse(t)
-}catch(o){j.log("Local Storage Manager - failed to parse stored item:",key,u)
-}}else{u=t
-}}return u
-}function m(o,p,s){var q=f(o,s),t="";
-if(q&&g.hasValue(p)){t=(typeof p==="object")?JSON.stringify(p):p;
-n(q,t)
-}else{j.log("Local Storage Manager - cannot save item.",o,p)
-}}function k(o,q){var p=f(o,q);
-if(p){localStorage.removeItem(p);
-j.log("Local Storage Manager - removed item.",p)
-}}function c(){j.log("count()",localStorage.length)
-}function a(){localStorage.clear();
-j.log("clearAll()")
-}function b(p){for(var o in localStorage){if(g.startsWith(o,p)){localStorage.removeItem(o)
-}}}i.load=h;
-i.save=m;
-i.remove=k;
-i.count=c;
-i.clearAll=a;
-i.clearUserSettings=b;
-return i
-});
-WebAppLoader.addModule({name:"pageElements",isShared:true},function(){var a={};
-a={blankPage:"#blank_page",dashboardPage:"#dashboard",homePage:"#home",portfoliosPage:"#portfolios",portfolioAnalysisPage:"#portfolioAnalysis",analysisPage:"#analysis",eulaPage:"#eula",settingsPage:"#settings",loginPage:"#login",startupPage:"#startup",chartSettingsPage:"#chartSettings",themesPage:"#themes",languageSettingsPages:"#languageSettings",errorPage:"#error",fullScreenPage:"#fullScreenPage",portfolioAnalysisLink:".defaultAnalysisLink",toolbar:".toolbar",loginButton:"#loginButton",loginErrorText:"#loginErrorText",ajaxLoadingMask:"#ajaxLoadingMask",chartLoadingMask:"#chartLoadingMask",preventTapMask:"#preventTapMask",userNameTextbox:"#userNameTextbox",passwordTextbox:"#passwordTextbox",tabbar:"nav#tabbar",listAnalysisSettingsDefaultPages:"#listAnalysisSettingsDefaultPages",listAnalysisSettingsUserPages:"#listAnalysisSettingsUserPages",chartsSelectbox:"#chartsSelectbox",analysisPageNameTextbox:"#analysisPageNameTextbox",saveChartSettings:"#saveChartSettings",addNewAnalysisPage:"#addNewAnalysisPage",analysisTitle:"#analysisTitle",loadingText:"#loadingText",listLanguagesPages:"#listLanguagesPages",timePeriodStartDateText:"#timePeriodStartDateText",timePeriodEndDateText:"#timePeriodEndDateText",errorMessageText:"#errorMessageText",stayLoggedCheckbox:"#stayLoggedCheckbox",userEmailLabel:"#userEmailLabel",summaryTitleName:"#summaryTitleName",summaryTitleBenchmarkName:"#summaryTitleBenchmarkName",resetCurrentSettingsButton:"#resetCurrentSettingsButton",resetAllSettingsButton:"#resetAllSettingsButton",reloadAppButton:"#reloadAppButton",analysisComponentFullScreenButton:".analysisComponentFullScreenButton",fullScreenContainer:"#fullScreenContainer",minimizeButton:"#minimizeButton",fullScreenMask:"#fullScreenMask",turnIcon:"#turnIcon",presentationTitle:"#presentationTitle",presentationChartsContainer:"#presentationChartsContainer",presentationTimePeriodStartDateText:"#presentationTimePeriodStartDateText",presentationTimePeriodEndDateText:"#presentationTimePeriodEndDateText",presentationSummaryTitleName:"#presentationSummaryTitleName",presentationSummaryTitleBenchmarkName:"#presentationSummaryTitleBenchmarkName"};
-return a
-});
-WebAppLoader.addModule({name:"settings",dataObjects:["appSettings","userSettings"],isShared:true},function(){var h={},a={},i={},f=[],g=this.getConsole(),j=this.getDataObject("userSettings"),b=this.getDataObject("appSettings");
-j.define({automaticLogin:false,username:"",password:"",language:"en-US",lastUsedLanguage:"none"});
-b.define({lastLoggedOnUser:""});
-a={loadPortfoliosSlotDataOnce:true,automaticLanguageDetection:true,animatedChartResizing:true,automaticChartRepositioning:false};
-i={portfolios:"/portfolios",authenticate:"/authenticate",index:"/index",portfolioAnalysis:"/portfolioAnalysis",analysis:"/analysis",segmentsTreeNode:"/segmentsTreeNode",timeSeries:"/timeSeries",eula:"/eula"};
-f=[{id:"de-DE",value:"de-DE",name:"Deutsch"},{id:"en-US",value:"en-US",name:"English"},{id:"es-ES",value:"es-ES",name:"Español"},{id:"it-IT",value:"it-IT",name:"Italiano"},{id:"pl-PL",value:"pl-PL",name:"Polski"}];
-function c(k,l){a[k]=l;
-g.log("change setting")
-}function d(k){return a[k]
-}function e(){return"1.0"
-}h.changeSetting=c;
-h.set=c;
-h.get=d;
-h.getVersion=e;
-h.appSettings=a;
-h.siteUrls=i;
-h.languages=f;
-return h
 });
 WebAppLoader.addModule({name:"analysisManager",plugins:["helper"],sharedModules:[],dataObjects:["analysisPages"],hasEvents:true},function(){var a={},i=this.getConsole(),f=this.getEventManager(),g=this.getPlugin("helper"),c=this.getDataObject("analysisPages"),e=[],b={};
 c.define({items:[{name:"Performance",id:"performance",order:1,userDefined:false,charts:[{chartId:"performanceMaster_grid",order:1},{chartId:"performance_line",order:2},{chartId:"performance_grid",order:3},{chartId:"performance_bubble",order:4},{chartId:"performance_bar",order:5},{chartId:"performance_treemap",order:6},{chartId:"performanceTopTen_grid",order:7}]},{name:"Risk",id:"risk",order:2,userDefined:false,charts:[{chartId:"riskMaster_grid",order:1},{chartId:"risk_treemap",order:2},{chartId:"risk_bar",order:3},{chartId:"risk_bubble",order:4},{chartId:"risk_pie",order:5},{chartId:"riskTopTen_grid",order:6}]},{name:"Asset Allocation",id:"assetAllocation",order:3,userDefined:false,charts:[{chartId:"allocationMaster_grid",order:1},{chartId:"allocation_pie",order:2},{chartId:"allocation_bar",order:3}]},{name:"Contribution",id:"contribution",order:4,userDefined:false,charts:[{chartId:"contributionMaster_grid",order:1},{chartId:"contribution_pie",order:2},{chartId:"contribution_column",order:3},{chartId:"contribution_bar",order:4},{chartId:"contributionTopTen_grid",order:5}]},{name:"Attribution",id:"attribution",order:5,userDefined:false,charts:[{chartId:"attributionMaster_grid",order:1},{chartId:"attribution_column",order:2},{chartId:"attribution_bar",order:3},{chartId:"attribution_grid",order:4}]},{name:"Fixed Income",id:"fixedIncome",order:6,userDefined:false,charts:[{chartId:"fixedIncomeMaster_grid",order:1},{title:"Bar Charts of Fixed Income Contributions:",chartId:"",order:2},{chartId:"fixedIncomeContribution_bar",order:3},{chartId:"carryContribution_bar",order:4},{chartId:"yieldCurveContribution_bar",order:5},{chartId:"riskNumbers_bar",order:6},{title:"Column Charts of Fixed Income Exposures:",chartId:"",order:7},{chartId:"interestRatesExposure_column",order:8},{chartId:"creditSpreadsExposure_column",order:9},{chartId:"dv01Exposure_column",order:10},{title:"Grid of Risk Numbers:",chartId:"",order:11},{chartId:"fixedIncome_grid",order:12},{chartId:"fixedIncomeContribution_grid",order:13},{title:"Grid of FI Exposure",chartId:"",order:14},{chartId:"fixedIncomeExposure_grid",order:15}]},{name:"User Defined Test Page",id:"test1",order:100,userDefined:true,charts:[{chartId:"fi_contribution_group",order:1}]}]});
@@ -4251,6 +3912,551 @@ if(typeof k==="object"&&k.name){j=k.name
 }i.switchStyle=g;
 return i
 });
+WebAppLoader.addModule({name:"ajaxManager",plugins:["helper"],hasEvents:true,isShared:true},function(){var a={},f=this.getConsole(),b=this.getEventManager(),e=this.getPlugin("helper"),i="";
+function d(){return i
+}function h(j){i=j||null
+}function g(q,m,k,o){var p="",l={},n=o,j=k||null;
+p=q;
+if(typeof m!=="function"){l=m||{};
+if(i&&!l.token){l.token=i
+}}else{j=m;
+n=k
+}$.post(p,l,j,n)
+}function c(){}a.post=g;
+a.getToken=d;
+a.setToken=h;
+a.get=c;
+return a
+});
+WebAppLoader.addModule({name:"blackbird",plugins:["helper"],hasEvents:true,isShared:true},function(){var blackbird={},output=this.getConsole(),eventManager=this.getEventManager(),helper=this.getPlugin("helper"),initialized=false;
+var NAMESPACE="iosLog";
+var IE6_POSITION_FIXED=true;
+var bbird;
+var outputList;
+var cache=[];
+var state=getState();
+var classes={};
+var profiler={};
+var IDs={blackbird:"blackbird",checkbox:"bbVis",filters:"bbFilters",controls:"bbControls",size:"bbSize"};
+var messageTypes={debug:true,info:true,warn:true,error:true,profile:true};
+var isHidden=true;
+function generateMarkup(){var spans=[];
+for(type in messageTypes){spans.push(['<span class="',type,'" type="',type,'"></span>'].join(""))
+}var newNode=document.createElement("DIV");
+newNode.id=IDs.blackbird;
+newNode.style.display="none";
+newNode.style.marginTop="48px";
+newNode.innerHTML=['<div class="header">','<div class="left">','<div id="',IDs.filters,'" class="filters" title="click to filter by message type">',spans.join(""),"</div>","</div>",'<div class="right">','<div id="',IDs.controls,'" class="controls">','<span id="',IDs.size,'" title="contract" op="resize"></span>','<span class="clear" title="clear" op="clear"></span>','<span class="close" title="close" op="close"></span>',"</div>","</div>","</div>",'<div class="main">','<div class="left"></div><div class="mainBody">','<ol id="scrollMe">',cache.join(""),"</ol>",'</div><div class="right"></div>',"</div>",'<div class="footer">','<div class="left"><label for="',IDs.checkbox,'"><input type="checkbox" id="',IDs.checkbox,'" />Visible on page load</label></div>','<div class="right"></div>',"</div>"].join("");
+return newNode
+}function backgroundImage(){var bodyTag=document.getElementsByTagName("BODY")[0];
+if(bodyTag.currentStyle&&IE6_POSITION_FIXED){if(bodyTag.currentStyle.backgroundImage=="none"){bodyTag.style.backgroundImage="url(about:blank)"
+}if(bodyTag.currentStyle.backgroundAttachment=="scroll"){bodyTag.style.backgroundAttachment="fixed"
+}}}function addMessage(type,content){content=(content.constructor==Array)?content.join(""):content;
+if(outputList){var newMsg=document.createElement("LI");
+newMsg.className=type;
+newMsg.innerHTML=['<span class="icon"></span>',content].join("");
+outputList.appendChild(newMsg);
+scrollToBottom()
+}else{cache.push(['<li class="',type,'"><span class="icon"></span>',content,"</li>"].join(""))
+}}function clear(){outputList.innerHTML=""
+}function clickControl(evt){if(!evt){evt=window.event
+}var el=(evt.target)?evt.target:evt.srcElement;
+if(el.tagName=="SPAN"){switch(el.getAttributeNode("op").nodeValue){case"resize":resize();
+break;
+case"clear":clear();
+break;
+case"close":hide();
+break
+}}}function clickFilter(evt){if(!evt){evt=window.event
+}var span=(evt.target)?evt.target:evt.srcElement;
+if(span&&span.tagName=="SPAN"){var type=span.getAttributeNode("type").nodeValue;
+if(evt.altKey){var filters=document.getElementById(IDs.filters).getElementsByTagName("SPAN");
+var active=0;
+for(entry in messageTypes){if(messageTypes[entry]){active++
+}}var oneActiveFilter=(active==1&&messageTypes[type]);
+for(var i=0;
+filters[i];
+i++){var spanType=filters[i].getAttributeNode("type").nodeValue;
+filters[i].className=(oneActiveFilter||(spanType==type))?spanType:spanType+"Disabled";
+messageTypes[spanType]=oneActiveFilter||(spanType==type)
+}}else{messageTypes[type]=!messageTypes[type];
+span.className=(messageTypes[type])?type:type+"Disabled"
+}var disabledTypes=[];
+for(type in messageTypes){if(!messageTypes[type]){disabledTypes.push(type)
+}}disabledTypes.push("");
+outputList.className=disabledTypes.join("Hidden ");
+scrollToBottom()
+}}function clickVis(evt){if(!evt){evt=window.event
+}var el=(evt.target)?evt.target:evt.srcElement;
+state.load=el.checked;
+setState()
+}function scrollToBottom(){outputList.scrollTop=outputList.scrollHeight
+}function isVisible(){return(bbird.style.display=="block")
+}function hide(){bbird.style.display="none";
+isHidden=true;
+eventManager.raiseEvent("hide")
+}function show(){var body=document.getElementsByTagName("BODY")[0];
+body.removeChild(bbird);
+body.appendChild(bbird);
+bbird.style.display="block";
+isHidden=false;
+eventManager.raiseEvent("show")
+}function reposition(position){if(position===undefined||position==null){position=(state&&state.pos===null)?1:(state.pos+1)%4
+}switch(position){case 0:classes[0]="bbTopLeft";
+break;
+case 1:classes[0]="bbTopRight";
+break;
+case 2:classes[0]="bbBottomLeft";
+break;
+case 3:classes[0]="bbBottomRight";
+break
+}state.pos=position;
+setState()
+}function resize(size){if(size===undefined||size===null){size=(state&&state.size==null)?0:(state.size+1)%2
+}classes[1]=(size===0)?"bbSmall":"bbLarge";
+var span=document.getElementById(IDs.size);
+span.title=(size===1)?"small":"large";
+span.className=span.title;
+state.size=size;
+setState();
+scrollToBottom()
+}function setState(){var props=[];
+for(entry in state){var value=(state[entry]&&state[entry].constructor===String)?'"'+state[entry]+'"':state[entry];
+props.push(entry+":"+value)
+}props=props.join(",");
+var expiration=new Date();
+expiration.setDate(expiration.getDate()+14);
+document.cookie=["blackbird={",props,"}; expires=",expiration.toUTCString(),";"].join("");
+var newClass=[];
+for(word in classes){newClass.push(classes[word])
+}bbird.className=newClass.join(" ")
+}function getState(){var re=new RegExp(/blackbird=({[^;]+})(;|\b|$)/);
+var match=re.exec(document.cookie);
+return(match&&match[1])?eval("("+match[1]+")"):{pos:null,size:null,load:null}
+}function readKey(evt){if(!evt){evt=window.event
+}var code=113;
+if(evt&&evt.keyCode==code){var visible=isVisible();
+if(visible&&evt.shiftKey&&evt.altKey){clear()
+}else{if(visible&&evt.shiftKey){reposition()
+}else{if(!evt.shiftKey&&!evt.altKey){(visible)?hide():show()
+}}}}}function addEvent(obj,type,fn){var obj=(obj.constructor===String)?document.getElementById(obj):obj;
+if(obj.attachEvent){obj["e"+type+fn]=fn;
+obj[type+fn]=function(){obj["e"+type+fn](window.event)
+};
+obj.attachEvent("on"+type,obj[type+fn])
+}else{obj.addEventListener(type,fn,false)
+}}function removeEvent(obj,type,fn){var obj=(obj.constructor===String)?document.getElementById(obj):obj;
+if(obj.detachEvent){obj.detachEvent("on"+type,obj[type+fn]);
+obj[type+fn]=null
+}else{obj.removeEventListener(type,fn,false)
+}}blackbird={toggle:function(){(isVisible())?hide():show()
+},isVisible:function(){return !isHidden
+},show:function(){show()
+},hide:function(){hide()
+},resize:function(){resize()
+},clear:function(){clear()
+},move:function(){reposition()
+},debug:function(msg){addMessage("debug",msg)
+},warn:function(msg){addMessage("warn",msg)
+},info:function(msg){addMessage("info",msg)
+},error:function(msg){addMessage("error",msg)
+},profile:function(label){var currentTime=new Date();
+if(label==undefined||label==""){addMessage("error","<b>ERROR:</b> Please specify a label for your profile statement")
+}else{if(profiler[label]){addMessage("profile",[label,": ",currentTime-profiler[label],"ms"].join(""));
+delete profiler[label]
+}else{profiler[label]=currentTime;
+addMessage("profile",label)
+}}return currentTime
+}};
+function init(){if(initialized){return
+}var body=document.getElementsByTagName("BODY")[0];
+bbird=body.appendChild(generateMarkup());
+outputList=bbird.getElementsByTagName("OL")[0];
+backgroundImage();
+addEvent(IDs.checkbox,"click",clickVis);
+addEvent(IDs.filters,"click",clickFilter);
+addEvent(IDs.controls,"click",clickControl);
+addEvent(document,"keyup",readKey);
+resize(state.size);
+reposition(state.pos);
+if(state.load){show();
+document.getElementById(IDs.checkbox).checked=true
+}scrollToBottom();
+initialized=true;
+addEvent(window,"unload",function(){removeEvent(IDs.checkbox,"click",clickVis);
+removeEvent(IDs.filters,"click",clickFilter);
+removeEvent(IDs.controls,"click",clickControl);
+removeEvent(document,"keyup",readKey)
+})
+}function isTouchDevice(){if((navigator.userAgent.match(/android 3/i))||(navigator.userAgent.match(/honeycomb/i))){return false
+}try{document.createEvent("TouchEvent");
+return true
+}catch(e){return true
+}}function touchScroll(id){if(isTouchDevice()){var el=document.getElementById(id);
+var scrollStartPosY=0;
+var scrollStartPosX=0;
+document.getElementById(id).addEventListener("touchstart",function(event){scrollStartPosY=this.scrollTop+event.touches[0].pageY;
+scrollStartPosX=this.scrollLeft+event.touches[0].pageX;
+event.preventDefault()
+},false);
+document.getElementById(id).addEventListener("touchmove",function(event){if((this.scrollTop<this.scrollHeight-this.offsetHeight&&this.scrollTop+event.touches[0].pageY<scrollStartPosY-5)||(this.scrollTop!=0&&this.scrollTop+event.touches[0].pageY>scrollStartPosY+5)){event.preventDefault()
+}if((this.scrollLeft<this.scrollWidth-this.offsetWidth&&this.scrollLeft+event.touches[0].pageX<scrollStartPosX-5)||(this.scrollLeft!=0&&this.scrollLeft+event.touches[0].pageX>scrollStartPosX+5)){event.preventDefault()
+}this.scrollTop=scrollStartPosY-event.touches[0].pageY;
+this.scrollLeft=scrollStartPosX-event.touches[0].pageX
+},false)
+}}init();
+touchScroll("scrollMe");
+return blackbird
+});
+WebAppLoader.addModule({name:"chartComponents",plugins:["helper"],sharedModules:["chartManager","localizationManager","pageElements"],dataObjects:["charts"],hasEvents:true,isShared:true},function(){var a={},k=this.getConsole(),g=this.getEventManager(),h=this.getPlugin("helper"),b=this.getSharedModule("chartManager"),i=this.getSharedModule("localizationManager").getLanguage()||{},f=this.getSharedModule("pageElements"),d=this.getDataObject("charts"),e={},c=null;
+d.define({performance_bar:{chartId:"performance_bar",title:i.chart.performanceBarTitle,chartType:"BarChart",include:"childSegments",measures:["rp"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"Return"}}},risk_bar:{chartId:"risk_bar",title:i.chart.riskBarTitle,chartType:"BarChart",include:"childSegments",measures:["wp","contributionvar"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"Return"}}},allocation_bar:{chartId:"allocation_bar",title:i.chart.allocationbarTitle,chartType:"BarChart",include:"childSegments",measures:["wover"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"Excess Weight %"}}},contribution_bar:{chartId:"contribution_bar",title:i.chart.contributionBarTitle,chartType:"BarChart",include:"securities",measures:["ctp"],includeMeasuresFor:["securities"],options:{hAxis:{title:"Contribution"}}},attribution_bar:{chartId:"attribution_bar",title:i.chart.attributionBarTitle,chartType:"BarChart",include:"childSegments",measures:["wendover","etotal"],includeMeasuresFor:["childSegments"]},fixedIncomeContribution_bar:{chartId:"fixedIncomeContribution_bar",title:i.chart.fixedIncomeContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpyc","ctpspread","ctpcur"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#FF6600","#CC0000","#FFCC00"]}},carryContribution_bar:{chartId:"carryContribution_bar",title:i.chart.carryContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpsystcarry","ctpspeccarry"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#336600","#990000"]}},yieldCurveContribution_bar:{chartId:"yieldCurveContribution_bar",title:i.chart.yieldCurveContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpshift","ctptwist","ctpbutterfly","ctprolldown"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#CD66CD","#339900","#FF9900","#660000"]}},riskNumbers_bar:{chartId:"riskNumbers_bar",title:i.chart.riskNumbersBarTitle,chartType:"BarChart",include:"none",measures:["ytmpend","mdpend"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#336699","#530066"]}},performance_bubble:{chartId:"performance_bubble",title:i.chart.performanceBubbleTitle,chartType:"BubbleChart",include:"childSegments",measures:["stddevann","returnannifgtyr","wpabsolute"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"Annualized Volatility"},vAxis:{title:"Annualized Return"}}},risk_bubble:{chartId:"risk_bubble",title:i.chart.riskBubbleTitle,chartType:"BubbleChart",include:"childSegments",measures:["valueatriskpercent","rp","wpabsolute"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"% Value at Risk"},vAxis:{title:"Return"}}},contribution_column:{chartId:"contribution_column",title:i.chart.contributionColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["ctp","ctb"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Return %"}}},interestRatesExposure_column:{chartId:"interestRatesExposure_column",title:i.chart.interestRatesExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["interestratesdown100percent","interestratesdown50percent","interestratesup50percent","interestratesup100percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#CC0000","#CD66CD","#FFCC00","#3399CC"]}},creditSpreadsExposure_column:{chartId:"creditSpreadsExposure_column",title:i.chart.creditSpreadsExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["creditspreadsdown100percent","creditspreadsdown50percent","creditspreadsup50percent","creditspreadsup100percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#CC0000","#CD66CD","#FFCC00","#3399CC"]}},dv01Exposure_column:{chartId:"dv01Exposure_column",title:i.chart.dv01ExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["interestratesdv01percent","creditspreadsdv01percent","inflationratesdv01percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#3399CC","#336699","#003366"]}},attribution_column:{chartId:"attribution_column",title:i.chart.attributionColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["etotal","ealloc","eselecinter"],includeMeasuresFor:["childSegments"],options:{colors:["#003366","#FF6600","#990066"]}},allocation_pie:{chartId:"allocation_pie",title:i.chart.allocationPieTitle,chartType:"PieChart",include:"childSegments",measures:["wpabsoluteend"],includeMeasuresFor:["childSegments"]},contribution_pie:{chartId:"contribution_pie",title:i.chart.contributionPieTitle,chartType:"PieChart",include:"childSegments",isHeatMap:true,isGradientReversed:false,measures:["wpabsoluteend","ctp"],includeMeasuresFor:["childSegments"]},risk_pie:{chartId:"risk_pie",title:i.chart.riskPietitle,chartType:"PieChart",include:"childSegments",isHeatMap:true,isGradientReversed:true,measures:["wpabsoluteend","contributionvar"],includeMeasuresFor:["childSegments"]},performanceMaster_grid:{chartId:"performanceMaster_grid",title:i.chart.performanceMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","rp","rb","relr","ctp"],includeMeasuresFor:["segment","childSegments"]},contributionMaster_grid:{chartId:"contributionMaster_grid",title:i.chart.contributionMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","ctp","wb","ctb"],includeMeasuresFor:["segment","childSegments"]},attributionMaster_grid:{chartId:"attributionMaster_grid",title:i.chart.attributionMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","wb","ealloc","eselecinter","eallocc","etotal"],includeMeasuresFor:["segment","childSegments"]},fixedIncomeMaster_grid:{chartId:"fixedIncomeMaster_grid",title:i.chart.fixedIncomeMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","rp","rpyc","rpspread","ctp"],includeMeasuresFor:["segment","childSegments"]},allocationMaster_grid:{chartId:"allocationMaster_grid",title:i.chart.allocationMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","wpgross","shortexposureend","longexposureend","mvend"],includeMeasuresFor:["segment","childSegments"]},riskMaster_grid:{chartId:"riskMaster_grid",title:i.chart.riskMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","valueatrisk","valueatriskpercent","contributionvar","expectedvolatilitypercent"],includeMeasuresFor:["segment","childSegments"]},performance_grid:{chartId:"performance_grid",title:i.chart.performanceGridTitle,chartType:"Table",include:"none",measures:["rp","returnann","stddevann","relr","periodaverage","oneperiodhigh","oneperiodlow","maxloss","percentpositiveperiods","correlation","alpha","beta","rsquared","sharperatio","treynorratio","inforatioxs"],includeMeasuresFor:["segment"]},attribution_grid:{chartId:"attribution_grid",title:i.chart.attributionGridTitle,chartType:"Table",include:"childSegments",measures:["ctp","ctb","ealloclocal","eselecinterlocal","etotalc","etotalmca"],includeMeasuresFor:["segment","childSegments"]},fixedIncome_grid:{chartId:"fixedIncome_grid",title:i.chart.fixedIncomeGridTitle,chartType:"Table",include:"childSegments",measures:["ttmpend","ytmpend","mdpend","durwpend","spreadpend"],includeMeasuresFor:["segment","childSegments"]},fixedIncomeContribution_grid:{chartId:"fixedIncomeContribution_grid",title:i.chart.fixedIncomeContributionGridTitle,chartType:"Table",include:"childSegments",measures:["ctp","ctpyc","ctpcarry","ctpspread","ctpcur","ctpother","ctpresidual"],includeMeasuresFor:["segment","childSegments"]},fixedIncomeExposure_grid:{chartId:"fixedIncomeExposure_grid",title:i.chart.fixedIncomeExposureGridTitle,chartType:"Table",include:"childSegments",measures:["wpend","interestratesdv01percent","creditspreadsdv01percent","inflationratesdv01percent"],includeMeasuresFor:["segment","childSegments"]},performanceTopTen_grid:{chartId:"performanceTopTen_grid",title:i.chart.performanceTopTenGridTitle,chartType:"Table",include:"securities",measures:["wpend","rp","ctp"],oData:{orderby:"wpend-Earliest desc",top:10},includeMeasuresFor:["securities"]},contributionTopTen_grid:{chartId:"contributionTopTen_grid",title:i.chart.contributionTopTenGridTitle,chartType:"Table",include:"securities",measures:["wpend","rp","ctp"],oData:{orderby:"ctp-Earliest desc",top:10},includeMeasuresFor:["securities"]},riskTopTen_grid:{chartId:"riskTopTen_grid",title:i.chart.riskTopTenGridTitle,chartType:"Table",include:"securities",measures:["wpend","expectedshortfallpercent","valueatriskpercent","expectedvolatilitypercent"],oData:{orderby:"valueatriskpercent-Earliest desc",top:10},includeMeasuresFor:["securities"]},performance_treemap:{chartId:"performance_treemap",title:i.chart.performanceTreemapTitle,chartType:"TreeMap",include:"securities",measures:["wpabsoluteend","rp"],includeMeasuresFor:["segment","securities"]},risk_treemap:{chartId:"risk_treemap",title:i.chart.riskTreemapTitle,chartType:"TreeMap",include:"childSegments",measures:["wpabsoluteend","contributionvar"],includeMeasuresFor:["segment","childSegments"]},performance_line:{chartId:"performance_line",title:i.chart.performanceLineTitle,chartType:"LineChart",measures:["rp","rb"],seriesType:"cumulativeIndexed"},fi_contribution_group:{chartId:"fi_contribution_group",title:i.chart.fixedIncomeContributionsGroupTitle,chartType:"Group",charts:[{chartId:"fixedIncomeContribution_bar",width:"50%",height:"100%"},{chartId:"carryContribution_bar",width:"50%",height:"100%"},{chartId:"yieldCurveContribution_bar",width:"50%",height:"100%"},{chartId:"riskNumbers_bar",width:"50%",height:"100%"}]},fi_exposures_group:{chartId:"fi_exposures_group",title:i.chart.fixedIncomeExposuresGroupTitle,chartType:"Group",charts:[{chartId:"interestRatesExposure_column",width:"50%",height:"100%"},{chartId:"creditSpreadsExposure_column",width:"50%",height:"100%"},{chartId:"dv01Exposure_column",width:"50%",height:"100%"}]},fi_gridRiskNumber_group:{chartId:"fi_gridRiskNumber_group",title:i.chart.fixedIncomeRiskNumbersGroupTitle,chartType:"Group",charts:[{chartId:"fixedIncome_grid",width:"100%",height:"100%"},{chartId:"fixedIncomeContribution_grid",width:"100%",height:"100%"}]}});
+c=d.getData();
+function j(o){var p,n,s=true;
+for(var q=0;
+q<o.length;
+q++){n=o[q].chartId;
+if(e[n]){p=e[n]
+}else{p=b.create(c[n]);
+e[n]=p
+}b.load(p,s);
+if(p){s=false
+}}}function m(n,o){$.each(n,function(s,p){var q;
+q=e[p.chartId]||c[p.chartId];
+q.timePeriods=o.code;
+q.startDate=o.startDate;
+q.endDate=o.endDate
+})
+}function l(u,B){var v=[],y="",w="",t=0;
+function A(C,D){y="";
+y+='<hr class = "snapper" style="visibility: hidden;" data-chartId="'+C+'" /><div class="analysisSummarySection">    <div class="analysisComponentContainer">       <div class="analysisComponentHeader">           <h2>'+D+'</h2>           <div class="analysisComponentFullScreenButton" data-order="'+t+'" data-chartId="'+C+'"></div>       </div>';
+t+=1;
+q(C,D)
+}function q(C,D){var F=new h.StringBuilder(),E="presentation-"+C;
+F.append('<div class="presentationContainer"><h2>{0}</h2>',D);
+F.append('<div id="{0}" data-title="{1}">{1}</div>',E,D);
+F.append("</div>");
+$(f.presentationChartsContainer).append(F.toString())
+}function n(C,D){y+='        <div id="'+C.chartId+'" class="'+D+'"></div>'
+}function p(C){y+='        <div id="'+C.chartId+'" class="halfSizeChart" style="width: '+C.width+";height: "+C.height+';"></div>'
+}function x(){y+='        <div style="clear: both;"></div>    </div></div>'
+}function s(){$(B).append($(y))
+}function o(D){var C=[],G=false,E;
+if(!D){k.log("addChartToChartsToRender: Skipped empty chart");
+return
+}if(D.chartType==="Group"){C=D.charts;
+G=true
+}else{C.push(D)
+}if(G){A(D.chartId,D.title)
+}E=(D.chartType==="Table")?"gridContainer resizableChart":"chartContainer resizableChart";
+for(var F=0;
+F<C.length;
+F++){chart=c[C[F].chartId]||null;
+v.push(chart);
+if(chart){if(G){p(C[F])
+}else{A(chart.chartId,chart.title);
+n(C[F],E);
+x();
+s()
+}}}if(G){x();
+s()
+}}for(var z=0;
+z<u.length;
+z++){w=c[u[z].chartId]||null;
+o(w)
+}j(v)
+}b.on("onAnalysisLoaded",function(){g.raiseEvent("onAllChartsLoaded")
+});
+b.on("onAnalysisLoading",function(n,o){g.raiseEvent("onChartsLoading",n,o)
+});
+b.on("showMask",function(n){$("#"+n).parent().addClass("genericLoadingMask")
+});
+b.on("hideMask",function(n,o){$("#"+n).parent().removeClass("genericLoadingMask");
+g.raiseEvent("onChartLoaded",n,o)
+});
+b.on("chartReady",function(n){});
+a.load=j;
+a.render=l;
+a.setTimePeriod=m;
+return a
+});
+WebAppLoader.addModule({name:"chartDefaults",isShared:true},function(){var d={},f={},a={},b={},e={},g={},h={},i={},k={},m={},l={},j=this.getConsole();
+f={forceIFrame:false,labelFontName:"HelveticaNeue-Light",labelFontSize:12,titleFontName:"HelveticaNeue-Bold",titleFontSize:25};
+b={chartArea:{left:80,top:35,width:"70%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,hAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}},sizeAxis:{maxSize:100,maxValue:100,minSize:1,minValue:1},vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
+a={chartArea:{left:"20%",width:"60%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
+e={chartArea:{left:"10%",width:"70%",height:"75%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
+g={forceIFrame:f.forceIFrame,height:250,greenFrom:0,greenTo:4,yellowFrom:4,yellowTo:6,redFrom:6,redTo:20,max:20,minorTicks:5};
+h={allowHtml:true,alternatingRowStyle:true,page:"enable",pageSize:10,cssClassNames:{headerRow:"headerRow",tableRow:"tableRow",oddTableRow:"oddTableRow",selectedTableRow:"selectedTableRow",hoverTableRow:"hoverTableRow"}};
+i={chartArea:{left:80,top:35,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame};
+k={chartArea:{left:80,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label",pieSliceTextStyle:{color:"#000000"}};
+m={fontFamily:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,headerHeight:25,minColor:"#cc0000",midColor:"#ffffff",maxColor:"#6699cc",maxDepth:3};
+l={chartWidth:960,tableWidth:980,chartLandscapeScaleRatio:1,chartPortraitScaleRatio:0.8,tableLandscapeScaleRatio:1,tablePortraitScaleRatio:0.8,rowHeight:60,headerHeight:60,fixedHeight:60,calculateTableHeight:function(n){return parseInt(n*this.rowHeight+this.headerHeight+this.fixedHeight,10)
+},rescaleChart:function(p,o){var n;
+if(o==="landscape"){n=parseInt(p*this.chartLandscapeScaleRatio,10)
+}else{n=parseInt(p*this.chartPortraitScaleRatio,10)
+}return n
+},rescaleTable:function(o,n){var p;
+if(n==="landscape"){p=parseInt(o*this.tableLandscapeScaleRatio,10)
+}else{p=parseInt(o*this.tablePortraitScaleRatio,10)
+}return p
+}};
+function c(n,o){f[n]=o;
+j.log("change setting")
+}d.BarChart=a;
+d.BubbleChart=b;
+d.ColumnChart=e;
+d.Gauge=g;
+d.LineChart=i;
+d.PieChart=k;
+d.Table=h;
+d.TreeMap=m;
+d.resizingSettings=l;
+d.set=c;
+return d
+});
+WebAppLoader.addModule({name:"chartManager",sharedModules:["settings","chartDefaults","colorManager","localizationManager","ajaxManager"],isShared:true,hasEvents:true},function(){var b={},e=[],i=this.getEventManager(),d=this.getSharedModule("chartDefaults"),p=this.getSharedModule("settings").siteUrls,g=this.getSharedModule("colorManager"),k=this.getSharedModule("localizationManager").getLanguage()||{},a=this.getSharedModule("ajaxManager"),n=this.getConsole(),c=0,f=0,j=false;
+function o(){c=0;
+f=0;
+j=false
+}function q(){o();
+j=true
+}function s(){o()
+}function m(u){var t;
+if(j){c+=1;
+i.raiseEvent("onAnalysisLoading",c,f);
+if(c===f){s();
+i.raiseEvent("onAnalysisLoaded")
+}}if(u&&u.chartId){i.raiseEvent("hideMask",u.chartId,u.numRows)
+}if(u&&u.errorObj&&u.errorObj.id){t=google.visualization.errors.getContainer(u.errorObj.id);
+$("#"+t.id).html(k.errors.chartFailedText)
+}}function h(u){if(!u){n.log("Config is not specified.");
+return
+}var w=u.chartId||null,y=u.chartType||null,x=u.options||{},v={},t=null;
+if(!w||!y){n.log("Chart ID or type is not specified.");
+return
+}v=(d&&d[y])?d[y]:{};
+x=$.extend({},v,x);
+x.backgroundColor={fill:"transparent"};
+t=new google.visualization.ChartWrapper({chartType:y,options:x,containerId:w});
+i.raiseEvent("chartReady",t);
+i.raiseEvent("showMask",u.chartId);
+t.endDate=u.endDate;
+t.include=u.include;
+t.includeMeasuresFor=u.includeMeasuresFor;
+t.isGradientReversed=u.isGradientReversed;
+t.isHeatMap=u.isHeatMap;
+t.measures=u.measures;
+t.oData=u.oData;
+t.seriesType=u.seriesType;
+t.startDate=u.startDate;
+t.timePeriods=u.timePeriods;
+google.visualization.events.addListener(t,"error",function(z){m({errorObj:z})
+});
+return t
+}function l(t,v){var y,x,z,u;
+if(!t){return
+}if(v){q()
+}f++;
+y=t.getChartType();
+u=new google.visualization.NumberFormat({decimalSymbol:k.shared.decimalSymbol,fractionDigits:3,groupingSymbol:k.shared.groupingSymbol,negativeColor:"#cc0000",negativeParens:false});
+x={type:y};
+if(t.endDate){x.endDate=t.endDate
+}if(t.include){x.include=t.include
+}if(t.includeMeasuresFor){x.includeMeasuresFor=t.includeMeasuresFor
+}if(t.measures){x.measures=t.measures
+}if(t.oData){x.oData=t.oData
+}if(t.startDate){x.startDate=t.startDate
+}if(t.seriesType){x.seriesType=t.seriesType
+}if(t.timePeriods){x.timePeriods=t.timePeriods
+}z=(y==="LineChart")?p.timeSeries:p.segmentsTreeNode;
+i.raiseEvent("showMask",t.getContainerId());
+function w(B){var C,E,L,G,N,I,H,M,J,K,T=[],Q=[],F,A,D,P,S,R;
+n.log(B);
+C=new google.visualization.DataTable(B);
+for(E=0;
+E<C.getNumberOfColumns();
+E++){if(C.getColumnType(E)==="number"){u.format(C,E)
+}}google.visualization.events.addListener(t,"ready",function(){m({chartId:t.getContainerId(),numRows:C.getNumberOfRows()})
+});
+if(y==="Table"){S="980px !important;";
+R="660px !important";
+t.setOption("height",R);
+t.setOption("width",S)
+}if(y==="PieChart"&&t.isHeatMap){C.sort([{column:2}]);
+for(E=0;
+E<C.getNumberOfRows();
+E++){T.push(C.getValue(E,2))
+}L=Math.min.apply(Math,T);
+G=Math.max.apply(Math,T);
+if($.inArray(L,T)!==-1){N=C.getFormattedValue($.inArray(L,T),2)
+}else{N="0"
+}if($.inArray(G,T)!==-1){I=C.getFormattedValue($.inArray(G,T),2)
+}else{I="0"
+}M=g.getColorInRange(L,L,G,t.isGradientReversed);
+J=g.getColorInRange(0,L,G,t.isGradientReversed);
+H=g.getColorInRange(G,L,G,t.isGradientReversed);
+F=(L>=0&&G>=0)||(L<=0&&G<=0);
+if(!F){K=100-(100*((0-L)/(G-L)))
+}for(E=0;
+E<T.length;
+E++){Q.push({color:g.getColorInRange(T[E],L,G,t.isGradientReversed)})
+}t.setOption("slices",Q);
+A=t.getContainerId();
+D=A+"-gaugeLegend";
+google.visualization.events.addListener(t,"ready",function(){var W,V,U;
+$("#"+D).remove();
+$("#"+A).append('<div id="'+D+'" class="gaugeLegend">    <span class="gaugeLegendMaxValue">'+I+'</span>    <span class="gaugeLegendSelectedValue"></span>    <span class="gaugeLegendMinValue">'+N+"</span></div>");
+U=$("#"+D);
+W=F?"linear-gradient(bottom, "+H+" 0%, "+M+" 100%)":"linear-gradient(bottom, "+H+" 0%, "+J+" "+K+"%, "+M+" 100%)";
+V=F?"gradient(linear, left bottom, left top, color-stop(0, "+H+"), color-stop(1, "+M+"))":"gradient(linear, left bottom, left top, color-stop(0, "+H+"), color-stop("+(K/100)+", "+J+"), color-stop(1, "+M+"))";
+U.css({"background-image":W,"background-image":"-webkit-"+W,"background-image":"-webkit-"+V});
+google.visualization.events.addListener(t.getChart(),"onmouseover",function(Y){var ab,Z,aa,X;
+ab=C.getValue(Y.row,2);
+Z=C.getFormattedValue(Y.row,2);
+aa=100*((ab-L)/(G-L));
+X={display:"block",top:(aa-2.5)+"%"};
+U.find("span.gaugeLegendSelectedValue").html(Z).css(X)
+});
+google.visualization.events.addListener(t.getChart(),"onmouseout",function(X){U.find("span.gaugeLegendSelectedValue").css("display","none")
+})
+})
+}t.setDataTable(C);
+t.draw();
+var O=t.clone();
+P="presentation-"+t.getContainerId();
+O.setContainerId(P);
+if(y!=="Table"){O.setOption("height",660);
+O.setOption("width",1024)
+}else{O.setOption("width","96% !important");
+O.setOption("height","660px !important")
+}O.draw()
+}a.post(z,x,w,"text")
+}b.create=h;
+b.load=l;
+return b
+});
+WebAppLoader.addModule({name:"colorManager",isShared:true},function(){var a={},i=this.getConsole();
+function b(l){return(l.charAt(0)=="#")?l.substring(1,7):l
+}function k(m){var l="0123456789ABCDEF";
+m=parseInt(m,10);
+if(isNaN(m)){return"00"
+}m=Math.max(0,Math.min(m,255));
+return l.charAt((m-m%16)/16)+l.charAt(m%16)
+}function j(n,m,l){return"#"+k(n)+k(m)+k(l)
+}function g(l){return parseInt((b(l)).substring(0,2),16)
+}function f(l){return parseInt((b(l)).substring(2,4),16)
+}function e(l){return parseInt((b(l)).substring(4,6),16)
+}function c(l){return parseInt(l,10)&255
+}function h(m,l,n){return c(c(m)*(1-n)+c(l)*n)
+}function d(A,t,s,y){var m=[],x="#cc0000",B="#ffff00",n="#339900",q,l,w,v,z,o,u;
+if(A<t){return x
+}if(A>s){return n
+}if(y){if(A>0){m.push([0,B]);
+m.push([s,x])
+}else{m.push([t,n]);
+m.push([0,B])
+}}else{if(A>0){m.push([s,n]);
+m.push([0,B])
+}else{m.push([t,x]);
+m.push([0,B])
+}}z=[0,B];
+for(o=0;
+o<m.length;
+o++){q=m[o][0];
+if(q>=A){l=m[o][1];
+w=z[0];
+v=z[1];
+u=((A-w)/(q-w));
+if(!isNaN(u)){return j(h(g(v),g(l),u),h(f(v),f(l),u),h(e(v),e(l),u))
+}}z=m[o]
+}return B
+}a.getColorInRange=d;
+return a
+});
+WebAppLoader.addModule({name:"loadingMaskManager",sharedModules:["pageElements"],plugins:["helper"],hasEvents:true,isShared:true},function(){var e={},h=this.getConsole(),b=this.getEventManager(),a=this.getSharedModule("pageElements"),c=this.getPlugin("helper"),f=null,g={};
+f=$(a.loadingText);
+g.ajax={name:"ajax",enabled:true,el:a.ajaxLoadingMask};
+g.analysis={name:"analysis",enabled:true,el:a.chartLoadingMask};
+g.preventTap={name:"preventTap",enabled:true,el:a.preventTapMask};
+g["default"]=g.ajax;
+$(a.ajaxLoadingMask).click(function(){d("ajax")
+});
+$(a.chartLoadingMask).click(function(){d("analysis")
+});
+function i(l){var k=g[l||"default"]||null;
+if(k&&k.enabled){$(k.el).hide();
+$(k.el).show()
+}}function d(l){var k=g[l||"default"]||null;
+if(k){$(k.el).css("display","none")
+}}function j(k){f.html(k)
+}e.show=i;
+e.hide=d;
+e.updateAnalysisText=j;
+return e
+});
+WebAppLoader.addModule({name:"localizationManager",isShared:true},function(a){var e={},f=this.getConsole(),d=require("express.language");
+e.sayHello=function(){f.log(d.hello)
+};
+function b(h){var g=d[h]||"";
+return g
+}function c(){return d
+}e.get=b;
+e.getLanguage=c;
+return e
+});
+WebAppLoader.addModule({name:"localStorageManager",sharedModules:[],plugins:["helper"],hasEvents:true,isShared:true},function(){var i={},j=this.getConsole(),d=this.getEventManager(),g=this.getPlugin("helper"),l="Revolution";
+function f(o,p){var q=null;
+if(o&&(typeof o==="string")){q=(p||l)+g.capitaliseFirstLetter(o)
+}return q
+}function n(o,p){localStorage.setItem(o,p);
+j.log("Local Storage Manager - setItem:",o,p)
+}function e(o){return localStorage.getItem(o)
+}function h(p,s){var q=f(p,s),t=e(q),u=null;
+if(t){if(g.startsWith(t,'{"')){try{u=JSON.parse(t)
+}catch(o){j.log("Local Storage Manager - failed to parse stored item:",key,u)
+}}else{u=t
+}}return u
+}function m(o,p,s){var q=f(o,s),t="";
+if(q&&g.hasValue(p)){t=(typeof p==="object")?JSON.stringify(p):p;
+n(q,t)
+}else{j.log("Local Storage Manager - cannot save item.",o,p)
+}}function k(o,q){var p=f(o,q);
+if(p){localStorage.removeItem(p);
+j.log("Local Storage Manager - removed item.",p)
+}}function c(){j.log("count()",localStorage.length)
+}function a(){localStorage.clear();
+j.log("clearAll()")
+}function b(p){for(var o in localStorage){if(g.startsWith(o,p)){localStorage.removeItem(o)
+}}}i.load=h;
+i.save=m;
+i.remove=k;
+i.count=c;
+i.clearAll=a;
+i.clearUserSettings=b;
+return i
+});
+WebAppLoader.addModule({name:"pageElements",isShared:true},function(){var a={};
+a={blankPage:"#blank_page",dashboardPage:"#dashboard",homePage:"#home",portfoliosPage:"#portfolios",portfolioAnalysisPage:"#portfolioAnalysis",analysisPage:"#analysis",eulaPage:"#eula",settingsPage:"#settings",loginPage:"#login",startupPage:"#startup",chartSettingsPage:"#chartSettings",themesPage:"#themes",languageSettingsPages:"#languageSettings",errorPage:"#error",fullScreenPage:"#fullScreenPage",portfolioAnalysisLink:".defaultAnalysisLink",toolbar:".toolbar",loginButton:"#loginButton",loginErrorText:"#loginErrorText",ajaxLoadingMask:"#ajaxLoadingMask",chartLoadingMask:"#chartLoadingMask",preventTapMask:"#preventTapMask",userNameTextbox:"#userNameTextbox",passwordTextbox:"#passwordTextbox",tabbar:"nav#tabbar",listAnalysisSettingsDefaultPages:"#listAnalysisSettingsDefaultPages",listAnalysisSettingsUserPages:"#listAnalysisSettingsUserPages",chartsSelectbox:"#chartsSelectbox",analysisPageNameTextbox:"#analysisPageNameTextbox",saveChartSettings:"#saveChartSettings",addNewAnalysisPage:"#addNewAnalysisPage",analysisTitle:"#analysisTitle",loadingText:"#loadingText",listLanguagesPages:"#listLanguagesPages",timePeriodStartDateText:"#timePeriodStartDateText",timePeriodEndDateText:"#timePeriodEndDateText",errorMessageText:"#errorMessageText",stayLoggedCheckbox:"#stayLoggedCheckbox",userEmailLabel:"#userEmailLabel",summaryTitleName:"#summaryTitleName",summaryTitleBenchmarkName:"#summaryTitleBenchmarkName",resetCurrentSettingsButton:"#resetCurrentSettingsButton",resetAllSettingsButton:"#resetAllSettingsButton",reloadAppButton:"#reloadAppButton",analysisComponentFullScreenButton:".analysisComponentFullScreenButton",fullScreenContainer:"#fullScreenContainer",minimizeButton:"#minimizeButton",fullScreenMask:"#fullScreenMask",turnIcon:"#turnIcon",presentationTitle:"#presentationTitle",presentationChartsContainer:"#presentationChartsContainer",presentationTimePeriodStartDateText:"#presentationTimePeriodStartDateText",presentationTimePeriodEndDateText:"#presentationTimePeriodEndDateText",presentationSummaryTitleName:"#presentationSummaryTitleName",presentationSummaryTitleBenchmarkName:"#presentationSummaryTitleBenchmarkName"};
+return a
+});
+WebAppLoader.addModule({name:"settings",dataObjects:["appSettings","userSettings"],isShared:true},function(){var h={},a={},i={},f=[],g=this.getConsole(),j=this.getDataObject("userSettings"),b=this.getDataObject("appSettings");
+j.define({automaticLogin:false,username:"",password:"",language:"en-US",lastUsedLanguage:"none"});
+b.define({lastLoggedOnUser:""});
+a={loadPortfoliosSlotDataOnce:true,automaticLanguageDetection:true,animatedChartResizing:true,automaticChartRepositioning:false};
+i={portfolios:"/portfolios",authenticate:"/authenticate",index:"/index",portfolioAnalysis:"/portfolioAnalysis",analysis:"/analysis",segmentsTreeNode:"/segmentsTreeNode",timeSeries:"/timeSeries",eula:"/eula"};
+f=[{id:"de-DE",value:"de-DE",name:"Deutsch"},{id:"en-US",value:"en-US",name:"English"},{id:"es-ES",value:"es-ES",name:"Español"},{id:"it-IT",value:"it-IT",name:"Italiano"},{id:"pl-PL",value:"pl-PL",name:"Polski"}];
+function c(k,l){a[k]=l;
+g.log("change setting")
+}function d(k){return a[k]
+}function e(){return"1.0"
+}h.changeSetting=c;
+h.set=c;
+h.get=d;
+h.getVersion=e;
+h.appSettings=a;
+h.siteUrls=i;
+h.languages=f;
+return h
+});
 WebAppLoader.addModule({name:"analysisSettingsPage",plugins:["helper"],sharedModules:["settings","pageElements","localizationManager"],hasEvents:true},function(){var a={},i=this.getConsole(),d=this.getEventManager(),e=this.getPlugin("helper"),j=this.getSharedModule("settings"),f=this.getSharedModule("localizationManager").getLanguage()||{},c=this.getSharedModule("pageElements");
 function g(){var k=$(this).data("link");
 if(k){d.raiseEvent("onClick",k)
@@ -4352,7 +4558,7 @@ j++){$(b.listLanguagesPages).append($("<li>").append($("<a>").attr({href:"#","da
 }}g.create=a;
 return g
 });
-var jQT=new $.jQTouch({addGlossToIcon:true,themeSelectionSelector:"#jqt #themes ul",useFastTouch:true,statusBar:"default",hoverDelay:10,pressDelay:2,preloadImages:["images/sw-slot-border.png","images/sw-alpha.png","images/sw-button-cancel.png","images/sw-button-done.png","images/sw-header.png"]});
+var jQT=new $.jQTouch({addGlossToIcon:true,themeSelectionSelector:"#jqt #themes ul",useFastTouch:true,statusBar:"default",hoverDelay:10,pressDelay:2,preloadImages:["images/sw-slot-border.png","images/sw-alpha.png","images/sw-button-cancel.png","images/sw-button-done.png","images/sw-header.png","images/btn_console_off.png","images/btn_console_on.png","images/btn_favourites_off.png","images/btn_favourites_on.png","images/btn_maximize.png","images/btn_minimize.png","images/mini_logo.png","themes/img/apple/on_off.png","themes/img/jqt/on_off.png"]});
 Zepto(function(a){var n={},g=WebAppLoader,h=g.getConsole(),d=g.getEventManager(),e=g.loadModule("helper"),b=g.loadModule("device"),k=g.getSharedModule("settings").siteUrls,c=g.getSharedModule("pageElements"),f=g.getSharedModule("localizationManager").getLanguage()||{};
 h.log("Hello from Dan & Asa!");
 n.lastUsernameUsed="";
@@ -4629,8 +4835,8 @@ n.tabbar.on("onTimePeriodsTap",function(){n.spinningWheel.getSlot("timePeriods")
 });
 n.tabbar.on("onTimePeriodsTap",function(){n.spinningWheel.getSlot("timePeriods").show(n.getLastAnalysisObjectUsed().timePeriodId)
 });
-n.tabbar.on("onSettingsTap",function(p){if(p.isHighlighted){n.nav.goToPageWithCallback(a(c.settingsPage),null,function(){})
-}else{n.nav.goToPageWithCallback(a(c.analysisPage),null,function(){})
+n.tabbar.on("onSettingsTap",function(p){if(p.isHighlighted){n.nav.goToPage(a(c.settingsPage))
+}else{n.nav.goToPage(a(c.analysisPage))
 }});
 var l={items:[{id:"favourites",repository:n.repositories.favouritesSlot},{id:"portfolios",repository:n.repositories.portfoliosSlot},{id:"analysis",repository:n.repositories.analysisSlot},{id:"timePeriods",repository:n.repositories.timePeriodsSlot}]};
 n.spinningWheel=g.loadModule("spinningWheel");
