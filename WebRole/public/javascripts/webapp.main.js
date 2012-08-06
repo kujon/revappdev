@@ -48,6 +48,8 @@ Zepto(function ($) {
     theApp.lastPasswordUsed = '';
     theApp.lastFavouriteSelected = '';
 
+    theApp.lastDeviceOrientation = '';
+
     // Default settings.
     theApp.lastAnalysisObjectUsed = {
         portfolioId: '',
@@ -435,7 +437,7 @@ Zepto(function ($) {
         output.log('onChartsLoading', chartCount, chartTotal);
     });
 
-    theApp.chartComponents.on('onChartLoaded', function (chartId, numRows) {
+    theApp.chartComponents.on('onChartLoaded', function (chart) { // chartId, numRows) {
 //        var $chart      = $('#' + chartId),
 //            realHeight  = 0;
 //            chartHeight = 0;
@@ -1260,12 +1262,15 @@ Zepto(function ($) {
         var animationSpeed  = 25,
             rebuildingDelay = 1000,
             el              = null,
-            restorePosition = helper.getValueAs(restorePosition, 'boolean');
+            restorePosition = helper.getValueAs(restorePosition, 'boolean'),
+            deviceOrientation = device.orientation();
 
         // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
-        if (theApp.isFullScreen) {
+        if (theApp.isFullScreen  || deviceOrientation === theApp.lastDeviceOrientation) {
             return;
         }
+        
+        theApp.lastDeviceOrientation = deviceOrientation;
 
         animationSpeed = (theApp.settings.appSettings.animatedChartResizing)
             ? 500
@@ -1305,11 +1310,11 @@ Zepto(function ($) {
             }
 
             if ($component.hasClass('gridContainer')) {
-                containerLandscapeHeight = 610;
-                containerPortraitHeight = 460;
+                containerLandscapeHeight = 640;
+                containerPortraitHeight = 480;
             }
 
-            if (device.orientation() === 'landscape') {
+            if (deviceOrientation === 'landscape') {
                 $component.css({ '-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top' });
                 $container.height(containerLandscapeHeight);
             } else {

@@ -26,6 +26,8 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
             eventManager.raiseEvent('onEnter', data);
         }});
+
+        $('.google-visualization-table-table').width(1000);
                 
     }
 

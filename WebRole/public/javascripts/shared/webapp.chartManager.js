@@ -284,10 +284,10 @@ WebAppLoader.addModule({ name: 'chartManager',
             presentationChart.setContainerId(presentationContainerId);
 
             if (type === 'Table') {
-                chart.setOption('height', '600px'); // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
+                chart.setOption('height', '620px'); // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
                 chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
-                presentationChart.setOption('width', '1000px');
-                presentationChart.setOption('height', '720px');
+                presentationChart.setOption('height', '560px !important;'); // presentationChart.setOption('height', '600px !important');
+                presentationChart.setOption('width', 1000); //  chartDefaults.resizingSettings.tableWidth); //'1024 !important; min-width: 1000px !important;');
             } else { 
                 presentationChart.setOption('height', 680);
                 presentationChart.setOption('width', 1024);

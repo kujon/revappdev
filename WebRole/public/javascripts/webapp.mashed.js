@@ -8628,7 +8628,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
                 containerId = "presentation-" + chartId;
 
             sb.append('<div class="presentationContainer"><h2>{0}</h2>', chartTitle);
-            // sb.append('<div id="{0}" style="width: 1024px; height: 300px; overflow: hidden;">', 'scroll-' + containerId);
+            // sb.append('<div id="{0}" style="width: 1024px; overflow: hidden;">', 'scroll-' + containerId);
             sb.append('<div id="{0}" data-title="{1}">{1}</div>', containerId, chartTitle);
             // sb.append('</div>');
             sb.append('</div>');
@@ -8736,11 +8736,12 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
 
     chartManager.on('hideMask', function (chartId, numRows) {
         $('#' + chartId).parent().removeClass('genericLoadingMask');
-        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
+       // eventManager.raiseEvent('onChartLoaded', chartId, numRows);
     });
 
     chartManager.on('chartReady', function (chart) {
         // Add code here...
+        eventManager.raiseEvent('onChartLoaded', chart);
         // helper.touchScroll(chart.getContainerId());
     });
 
@@ -8909,8 +8910,8 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
         tableLandscapeScaleRatio: 1,
         tablePortraitScaleRatio: 0.80,
 
-        rowHeight: 60, // Same value of .tableRow and .oddTableRow
-        headerHeight: 60, // Same value of .headerRow
+        rowHeight: 50, // Same value of .tableRow and .oddTableRow
+        headerHeight: 50, // Same value of .headerRow
         fixedHeight: 10,
         
         calculateTableHeight: function (numRows) {
@@ -9248,10 +9249,10 @@ WebAppLoader.addModule({ name: 'chartManager',
             presentationChart.setContainerId(presentationContainerId);
 
             if (type === 'Table') {
-                chart.setOption('height', '600px'); // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
+                chart.setOption('height', '620px'); // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
                 chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
-                presentationChart.setOption('width', '1000px');
-                presentationChart.setOption('height', '720px');
+                presentationChart.setOption('height', '560px !important;'); // presentationChart.setOption('height', '600px !important');
+                presentationChart.setOption('width', 1000); //  chartDefaults.resizingSettings.tableWidth); //'1024 !important; min-width: 1000px !important;');
             } else { 
                 presentationChart.setOption('height', 680);
                 presentationChart.setOption('width', 1024);
@@ -10534,6 +10535,8 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
         $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
             eventManager.raiseEvent('onEnter', data);
         }});
+
+        $('.google-visualization-table-table').width(1000);
                 
     }
 
@@ -11513,6 +11516,8 @@ Zepto(function ($) {
     theApp.lastPasswordUsed = '';
     theApp.lastFavouriteSelected = '';
 
+    theApp.lastDeviceOrientation = '';
+
     // Default settings.
     theApp.lastAnalysisObjectUsed = {
         portfolioId: '',
@@ -11900,7 +11905,7 @@ Zepto(function ($) {
         output.log('onChartsLoading', chartCount, chartTotal);
     });
 
-    theApp.chartComponents.on('onChartLoaded', function (chartId, numRows) {
+    theApp.chartComponents.on('onChartLoaded', function (chart) { // chartId, numRows) {
 //        var $chart      = $('#' + chartId),
 //            realHeight  = 0;
 //            chartHeight = 0;
@@ -12725,12 +12730,15 @@ Zepto(function ($) {
         var animationSpeed  = 25,
             rebuildingDelay = 1000,
             el              = null,
-            restorePosition = helper.getValueAs(restorePosition, 'boolean');
+            restorePosition = helper.getValueAs(restorePosition, 'boolean'),
+            deviceOrientation = device.orientation();
 
         // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
-        if (theApp.isFullScreen) {
+        if (theApp.isFullScreen  || deviceOrientation === theApp.lastDeviceOrientation) {
             return;
         }
+        
+        theApp.lastDeviceOrientation = deviceOrientation;
 
         animationSpeed = (theApp.settings.appSettings.animatedChartResizing)
             ? 500
@@ -12770,11 +12778,11 @@ Zepto(function ($) {
             }
 
             if ($component.hasClass('gridContainer')) {
-                containerLandscapeHeight = 610;
-                containerPortraitHeight = 460;
+                containerLandscapeHeight = 640;
+                containerPortraitHeight = 480;
             }
 
-            if (device.orientation() === 'landscape') {
+            if (deviceOrientation === 'landscape') {
                 $component.css({ '-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top' });
                 $container.height(containerLandscapeHeight);
             } else {

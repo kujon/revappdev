@@ -551,7 +551,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
                 containerId = "presentation-" + chartId;
 
             sb.append('<div class="presentationContainer"><h2>{0}</h2>', chartTitle);
-            // sb.append('<div id="{0}" style="width: 1024px; height: 300px; overflow: hidden;">', 'scroll-' + containerId);
+            // sb.append('<div id="{0}" style="width: 1024px; overflow: hidden;">', 'scroll-' + containerId);
             sb.append('<div id="{0}" data-title="{1}">{1}</div>', containerId, chartTitle);
             // sb.append('</div>');
             sb.append('</div>');
@@ -659,11 +659,12 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
 
     chartManager.on('hideMask', function (chartId, numRows) {
         $('#' + chartId).parent().removeClass('genericLoadingMask');
-        eventManager.raiseEvent('onChartLoaded', chartId, numRows);
+       // eventManager.raiseEvent('onChartLoaded', chartId, numRows);
     });
 
     chartManager.on('chartReady', function (chart) {
         // Add code here...
+        eventManager.raiseEvent('onChartLoaded', chart);
         // helper.touchScroll(chart.getContainerId());
     });
 
