@@ -1305,8 +1305,8 @@ Zepto(function ($) {
             }
 
             if ($component.hasClass('gridContainer')) {
-                containerLandscapeHeight = 0;
-                containerPortraitHeight = 0;
+                containerLandscapeHeight = 610;
+                containerPortraitHeight = 460;
             }
 
             if (device.orientation() === 'landscape') {

@@ -3720,9 +3720,9 @@ e={chartArea:{left:"10%",width:"70%",height:"75%"},fontName:f.labelFontName,font
 g={forceIFrame:f.forceIFrame,height:250,greenFrom:0,greenTo:4,yellowFrom:4,yellowTo:6,redFrom:6,redTo:20,max:20,minorTicks:5};
 h={allowHtml:true,alternatingRowStyle:true,page:"enable",pageSize:10,cssClassNames:{headerRow:"headerRow",tableRow:"tableRow",oddTableRow:"oddTableRow",selectedTableRow:"selectedTableRow",hoverTableRow:"hoverTableRow"}};
 i={chartArea:{left:80,top:35,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame};
-k={chartArea:{left:80,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label",pieSliceTextStyle:{color:"#000000"}};
+k={chartArea:{left:0,width:"85%",height:"90%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label",pieSliceTextStyle:{color:"#000000"}};
 m={fontFamily:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,headerHeight:25,minColor:"#cc0000",midColor:"#ffffff",maxColor:"#6699cc",maxDepth:3};
-l={chartWidth:960,tableWidth:980,chartLandscapeScaleRatio:1,chartPortraitScaleRatio:0.8,tableLandscapeScaleRatio:1,tablePortraitScaleRatio:0.8,rowHeight:50,headerHeight:50,fixedHeight:10,calculateTableHeight:function(n){return parseInt(n*this.rowHeight+this.headerHeight+this.fixedHeight,10)
+l={chartWidth:960,tableWidth:980,chartLandscapeScaleRatio:1,chartPortraitScaleRatio:0.8,tableLandscapeScaleRatio:1,tablePortraitScaleRatio:0.8,rowHeight:60,headerHeight:60,fixedHeight:10,calculateTableHeight:function(n){return parseInt(n*this.rowHeight+this.headerHeight+this.fixedHeight,10)
 },rescaleChart:function(p,o){var n;
 if(o==="landscape"){n=parseInt(p*this.chartLandscapeScaleRatio,10)
 }else{n=parseInt(p*this.chartPortraitScaleRatio,10)
@@ -3746,121 +3746,128 @@ d.resizingSettings=l;
 d.set=c;
 return d
 });
-WebAppLoader.addModule({name:"chartManager",sharedModules:["settings","chartDefaults","colorManager","localizationManager","ajaxManager"],isShared:true,hasEvents:true},function(){var b={},e=[],i=this.getEventManager(),d=this.getSharedModule("chartDefaults"),p=this.getSharedModule("settings").siteUrls,g=this.getSharedModule("colorManager"),k=this.getSharedModule("localizationManager").getLanguage()||{},a=this.getSharedModule("ajaxManager"),n=this.getConsole(),c=0,f=0,j=false;
-function o(){c=0;
+WebAppLoader.addModule({name:"chartManager",sharedModules:["settings","chartDefaults","colorManager","localizationManager","ajaxManager"],isShared:true,hasEvents:true},function(){var b={},e=[],i=this.getEventManager(),d=this.getSharedModule("chartDefaults"),q=this.getSharedModule("settings").siteUrls,g=this.getSharedModule("colorManager"),k=this.getSharedModule("localizationManager").getLanguage()||{},a=this.getSharedModule("ajaxManager"),n=this.getConsole(),c=0,f=0,j=false;
+function p(){c=0;
 f=0;
 j=false
-}function q(){o();
+}function s(){p();
 j=true
-}function s(){o()
-}function m(u){var t;
+}function t(){p()
+}function m(v){var u;
 if(j){c+=1;
 i.raiseEvent("onAnalysisLoading",c,f);
-if(c===f){s();
+if(c===f){t();
 i.raiseEvent("onAnalysisLoaded")
-}}if(u&&u.chartId){i.raiseEvent("hideMask",u.chartId,u.numRows)
-}if(u&&u.errorObj&&u.errorObj.id){t=google.visualization.errors.getContainer(u.errorObj.id);
-$("#"+t.id).html(k.errors.chartFailedText)
-}}function h(u){if(!u){n.log("Config is not specified.");
-return
-}var w=u.chartId||null,y=u.chartType||null,x=u.options||{},v={},t=null;
-if(!w||!y){n.log("Chart ID or type is not specified.");
-return
-}v=(d&&d[y])?d[y]:{};
-x=$.extend({},v,x);
-x.backgroundColor={fill:"transparent"};
-t=new google.visualization.ChartWrapper({chartType:y,options:x,containerId:w});
-i.raiseEvent("chartReady",t);
-i.raiseEvent("showMask",u.chartId);
-t.endDate=u.endDate;
-t.include=u.include;
-t.includeMeasuresFor=u.includeMeasuresFor;
-t.isGradientReversed=u.isGradientReversed;
-t.isHeatMap=u.isHeatMap;
-t.measures=u.measures;
-t.oData=u.oData;
-t.seriesType=u.seriesType;
-t.startDate=u.startDate;
-t.timePeriods=u.timePeriods;
-google.visualization.events.addListener(t,"error",function(z){m({errorObj:z})
+}}if(v&&v.chartId){i.raiseEvent("hideMask",v.chartId,v.numRows)
+}if(v&&v.errorObj&&v.errorObj.id){u=google.visualization.errors.getContainer(v.errorObj.id);
+$("#"+u.id).html(k.errors.chartFailedText)
+}}function o(u,v){var w,z,B,A,y,x;
+w=u.getContainerId();
+z=w+"-gaugeLegend";
+$("#"+z).remove();
+$("#"+w).append('<div id="'+z+'" class="gaugeLegend">    <span class="gaugeLegendMaxValue">'+v.maxDisplay+'</span>    <span class="gaugeLegendSelectedValue"></span>    <span class="gaugeLegendMinValue">'+v.minDisplay+"</span></div>");
+y=$("#"+z);
+B=(v.midGradientPosition===null)?"linear-gradient(bottom, "+v.maxColor+" 0%, "+v.minColor+" 100%)":"linear-gradient(bottom, "+v.maxColor+" 0%, "+v.midColor+" "+v.midGradientPosition+"%, "+v.minColor+" 100%)";
+A=(v.midGradientPosition===null)?"gradient(linear, left bottom, left top, color-stop(0, "+v.maxColor+"), color-stop(1, "+v.minColor+"))":"gradient(linear, left bottom, left top, color-stop(0, "+v.maxColor+"), color-stop("+(v.midGradientPosition/100)+", "+v.midColor+"), color-stop(1, "+v.minColor+"))";
+y.css({"background-image":B,"background-image":"-webkit-"+B,"background-image":"-webkit-"+A});
+x=u.getDataTable();
+google.visualization.events.addListener(u.getChart(),"onmouseover",function(D){var G,E,F,C;
+G=x.getValue(D.row,2);
+E=x.getFormattedValue(D.row,2);
+F=100*((G-v.min)/(v.max-v.min));
+C={display:"block",top:(F-2.5)+"%"};
+y.find("span.gaugeLegendSelectedValue").html(E).css(C)
 });
-return t
-}function l(t,v){var y,x,z,u;
-if(!t){return
-}if(v){q()
+google.visualization.events.addListener(u.getChart(),"onmouseout",function(C){y.find("span.gaugeLegendSelectedValue").css("display","none")
+})
+}function h(v){if(!v){n.log("Config is not specified.");
+return
+}var x=v.chartId||null,z=v.chartType||null,y=v.options||{},w={},u=null;
+if(!x||!z){n.log("Chart ID or type is not specified.");
+return
+}w=(d&&d[z])?d[z]:{};
+y=$.extend({},w,y);
+y.backgroundColor={fill:"transparent"};
+u=new google.visualization.ChartWrapper({chartType:z,options:y,containerId:x});
+i.raiseEvent("chartReady",u);
+i.raiseEvent("showMask",v.chartId);
+u.endDate=v.endDate;
+u.include=v.include;
+u.includeMeasuresFor=v.includeMeasuresFor;
+u.isGradientReversed=v.isGradientReversed;
+u.isHeatMap=v.isHeatMap;
+u.measures=v.measures;
+u.oData=v.oData;
+u.seriesType=v.seriesType;
+u.startDate=v.startDate;
+u.timePeriods=v.timePeriods;
+google.visualization.events.addListener(u,"error",function(A){m({errorObj:A})
+});
+return u
+}function l(u,w){var z,y,A,v;
+if(!u){return
+}if(w){s()
 }f++;
-y=t.getChartType();
-u=new google.visualization.NumberFormat({decimalSymbol:k.shared.decimalSymbol,fractionDigits:3,groupingSymbol:k.shared.groupingSymbol,negativeColor:"#cc0000",negativeParens:false});
-x={type:y};
-if(t.endDate){x.endDate=t.endDate
-}if(t.include){x.include=t.include
-}if(t.includeMeasuresFor){x.includeMeasuresFor=t.includeMeasuresFor
-}if(t.measures){x.measures=t.measures
-}if(t.oData){x.oData=t.oData
-}if(t.startDate){x.startDate=t.startDate
-}if(t.seriesType){x.seriesType=t.seriesType
-}if(t.timePeriods){x.timePeriods=t.timePeriods
-}z=(y==="LineChart")?p.timeSeries:p.segmentsTreeNode;
-i.raiseEvent("showMask",t.getContainerId());
-function w(B){var C,E,L,G,N,I,H,M,J,K,T=[],Q=[],F,A,D,P,S,R;
+z=u.getChartType();
+v=new google.visualization.NumberFormat({decimalSymbol:k.shared.decimalSymbol,fractionDigits:3,groupingSymbol:k.shared.groupingSymbol,negativeColor:"#cc0000",negativeParens:false});
+y={type:z};
+if(u.endDate){y.endDate=u.endDate
+}if(u.include){y.include=u.include
+}if(u.includeMeasuresFor){y.includeMeasuresFor=u.includeMeasuresFor
+}if(u.measures){y.measures=u.measures
+}if(u.oData){y.oData=u.oData
+}if(u.startDate){y.startDate=u.startDate
+}if(u.seriesType){y.seriesType=u.seriesType
+}if(u.timePeriods){y.timePeriods=u.timePeriods
+}A=(z==="LineChart")?q.timeSeries:q.segmentsTreeNode;
+i.raiseEvent("showMask",u.getContainerId());
+function x(B){var C,E,H,G,D,L=[],K=[],F,I,J;
 n.log(B);
 C=new google.visualization.DataTable(B);
 for(E=0;
 E<C.getNumberOfColumns();
-E++){if(C.getColumnType(E)==="number"){u.format(C,E)
-}}google.visualization.events.addListener(t,"ready",function(){m({chartId:t.getContainerId(),numRows:C.getNumberOfRows()})
+E++){if(C.getColumnType(E)==="number"){v.format(C,E)
+}}google.visualization.events.addListener(u,"ready",function(){m({chartId:u.getContainerId(),numRows:C.getNumberOfRows()})
 });
-if(y==="Table"){S="980px !important;";
-t.setOption("width",S)
-}if(y==="PieChart"&&t.isHeatMap){C.sort([{column:2}]);
+I=u.clone();
+J="presentation-"+u.getContainerId();
+I.setContainerId(J);
+if(z==="Table"){u.setOption("height","600px");
+u.setOption("width",d.resizingSettings.tableWidth);
+I.setOption("width","1000px");
+I.setOption("height","720px")
+}else{I.setOption("height",680);
+I.setOption("width",1024)
+}if(z==="PieChart"&&u.isHeatMap){C.sort([{column:2}]);
 for(E=0;
 E<C.getNumberOfRows();
-E++){T.push(C.getValue(E,2))
-}L=Math.min.apply(Math,T);
-G=Math.max.apply(Math,T);
-if($.inArray(L,T)!==-1){N=C.getFormattedValue($.inArray(L,T),2)
-}else{N="0"
-}if($.inArray(G,T)!==-1){I=C.getFormattedValue($.inArray(G,T),2)
-}else{I="0"
-}M=g.getColorInRange(L,L,G,t.isGradientReversed);
-J=g.getColorInRange(0,L,G,t.isGradientReversed);
-H=g.getColorInRange(G,L,G,t.isGradientReversed);
-F=(L>=0&&G>=0)||(L<=0&&G<=0);
-if(!F){K=100-(100*((0-L)/(G-L)))
+E++){L.push(C.getValue(E,2))
+}H=Math.min.apply(Math,L);
+G=Math.max.apply(Math,L);
+D={min:H,max:G,midGradientPosition:null};
+if($.inArray(H,L)!==-1){D.minDisplay=C.getFormattedValue($.inArray(H,L),2)
+}else{D.minDisplay="0"
+}if($.inArray(G,L)!==-1){D.maxDisplay=C.getFormattedValue($.inArray(G,L),2)
+}else{D.maxDisplay="0"
+}D.minColor=g.getColorInRange(H,H,G,u.isGradientReversed);
+D.midColor=g.getColorInRange(0,H,G,u.isGradientReversed);
+D.maxColor=g.getColorInRange(G,H,G,u.isGradientReversed);
+F=(H>=0&&G>=0)||(H<=0&&G<=0);
+if(!F){D.midGradientPosition=100-(100*((0-H)/(G-H)))
 }for(E=0;
-E<T.length;
-E++){Q.push({color:g.getColorInRange(T[E],L,G,t.isGradientReversed)})
-}t.setOption("slices",Q);
-A=t.getContainerId();
-D=A+"-gaugeLegend";
-google.visualization.events.addListener(t,"ready",function(){var W,V,U;
-$("#"+D).remove();
-$("#"+A).append('<div id="'+D+'" class="gaugeLegend">    <span class="gaugeLegendMaxValue">'+I+'</span>    <span class="gaugeLegendSelectedValue"></span>    <span class="gaugeLegendMinValue">'+N+"</span></div>");
-U=$("#"+D);
-W=F?"linear-gradient(bottom, "+H+" 0%, "+M+" 100%)":"linear-gradient(bottom, "+H+" 0%, "+J+" "+K+"%, "+M+" 100%)";
-V=F?"gradient(linear, left bottom, left top, color-stop(0, "+H+"), color-stop(1, "+M+"))":"gradient(linear, left bottom, left top, color-stop(0, "+H+"), color-stop("+(K/100)+", "+J+"), color-stop(1, "+M+"))";
-U.css({"background-image":W,"background-image":"-webkit-"+W,"background-image":"-webkit-"+V});
-google.visualization.events.addListener(t.getChart(),"onmouseover",function(Y){var ab,Z,aa,X;
-ab=C.getValue(Y.row,2);
-Z=C.getFormattedValue(Y.row,2);
-aa=100*((ab-L)/(G-L));
-X={display:"block",top:(aa-2.5)+"%"};
-U.find("span.gaugeLegendSelectedValue").html(Z).css(X)
+E<L.length;
+E++){K.push({color:g.getColorInRange(L[E],H,G,u.isGradientReversed)})
+}u.setOption("slices",K);
+I.setOption("slices",K);
+google.visualization.events.addListener(u,"ready",function(){o(u,D)
 });
-google.visualization.events.addListener(t.getChart(),"onmouseout",function(X){U.find("span.gaugeLegendSelectedValue").css("display","none")
+google.visualization.events.addListener(I,"ready",function(){o(I,D)
 })
-})
-}t.setDataTable(C);
-t.draw();
-var O=t.clone();
-P="presentation-"+t.getContainerId();
-O.setContainerId(P);
-if(y!=="Table"){O.setOption("height",660);
-O.setOption("width",1024)
-}else{O.setOption("width","96% !important");
-O.setOption("height","660px !important")
-}O.draw()
-}a.post(z,x,w,"text")
+}u.setDataTable(C);
+I.setDataTable(C);
+u.draw();
+I.draw()
+}a.post(A,y,x,"text")
 }b.create=h;
 b.load=l;
 return b
@@ -3966,7 +3973,7 @@ i.clearUserSettings=b;
 return i
 });
 WebAppLoader.addModule({name:"pageElements",isShared:true},function(){var a={};
-a={blankPage:"#blank_page",dashboardPage:"#dashboard",homePage:"#home",portfoliosPage:"#portfolios",portfolioAnalysisPage:"#portfolioAnalysis",analysisPage:"#analysis",eulaPage:"#eula",settingsPage:"#settings",loginPage:"#login",startupPage:"#startup",chartSettingsPage:"#chartSettings",themesPage:"#themes",languageSettingsPages:"#languageSettings",errorPage:"#error",fullScreenPage:"#fullScreenPage",portfolioAnalysisLink:".defaultAnalysisLink",toolbar:".toolbar",loginButton:"#loginButton",loginErrorText:"#loginErrorText",ajaxLoadingMask:"#ajaxLoadingMask",chartLoadingMask:"#chartLoadingMask",preventTapMask:"#preventTapMask",userNameTextbox:"#userNameTextbox",passwordTextbox:"#passwordTextbox",tabbar:"nav#tabbar",listAnalysisSettingsDefaultPages:"#listAnalysisSettingsDefaultPages",listAnalysisSettingsUserPages:"#listAnalysisSettingsUserPages",chartsSelectbox:"#chartsSelectbox",analysisPageNameTextbox:"#analysisPageNameTextbox",saveChartSettings:"#saveChartSettings",addNewAnalysisPage:"#addNewAnalysisPage",analysisTitle:"#analysisTitle",loadingText:"#loadingText",listLanguagesPages:"#listLanguagesPages",timePeriodStartDateText:"#timePeriodStartDateText",timePeriodEndDateText:"#timePeriodEndDateText",errorMessageText:"#errorMessageText",stayLoggedCheckbox:"#stayLoggedCheckbox",userEmailLabel:"#userEmailLabel",summaryTitleName:"#summaryTitleName",summaryTitleBenchmarkName:"#summaryTitleBenchmarkName",resetCurrentSettingsButton:"#resetCurrentSettingsButton",resetAllSettingsButton:"#resetAllSettingsButton",reloadAppButton:"#reloadAppButton",analysisComponentFullScreenButton:".analysisComponentFullScreenButton",fullScreenContainer:"#fullScreenContainer",minimizeButton:"#minimizeButton",fullScreenMask:"#fullScreenMask",turnIcon:"#turnIcon",presentationTitle:"#presentationTitle",presentationChartsContainer:"#presentationChartsContainer",presentationTimePeriodStartDateText:"#presentationTimePeriodStartDateText",presentationTimePeriodEndDateText:"#presentationTimePeriodEndDateText",presentationSummaryTitleName:"#presentationSummaryTitleName",presentationSummaryTitleBenchmarkName:"#presentationSummaryTitleBenchmarkName"};
+a={blankPage:"#blank_page",dashboardPage:"#dashboard",homePage:"#home",portfoliosPage:"#portfolios",portfolioAnalysisPage:"#portfolioAnalysis",analysisPage:"#analysis",eulaPage:"#eula",settingsPage:"#settings",loginPage:"#login",startupPage:"#startup",chartSettingsPage:"#chartSettings",themesPage:"#themes",languageSettingsPages:"#languageSettings",errorPage:"#error",fullScreenPage:"#fullScreenPage",portfolioAnalysisLink:".defaultAnalysisLink",toolbar:".toolbar",loginButton:"#loginButton",loginErrorText:"#loginErrorText",ajaxLoadingMask:"#ajaxLoadingMask",chartLoadingMask:"#chartLoadingMask",preventTapMask:"#preventTapMask",userNameTextbox:"#userNameTextbox",passwordTextbox:"#passwordTextbox",tabbar:"nav#tabbar",listAnalysisSettingsDefaultPages:"#listAnalysisSettingsDefaultPages",listAnalysisSettingsUserPages:"#listAnalysisSettingsUserPages",chartsSelectbox:"#chartsSelectbox",analysisPageNameTextbox:"#analysisPageNameTextbox",saveChartSettings:"#saveChartSettings",addNewAnalysisPage:"#addNewAnalysisPage",analysisTitle:"#analysisTitle",loadingText:"#loadingText",listLanguagesPages:"#listLanguagesPages",timePeriodStartDateText:"#timePeriodStartDateText",timePeriodEndDateText:"#timePeriodEndDateText",errorMessageText:"#errorMessageText",errorReasonText:"#errorReasonText",stayLoggedCheckbox:"#stayLoggedCheckbox",userEmailLabel:"#userEmailLabel",summaryTitleName:"#summaryTitleName",summaryTitleBenchmarkName:"#summaryTitleBenchmarkName",resetCurrentSettingsButton:"#resetCurrentSettingsButton",resetAllSettingsButton:"#resetAllSettingsButton",reloadAppButton:"#reloadAppButton",analysisComponentFullScreenButton:".analysisComponentFullScreenButton",fullScreenContainer:"#fullScreenContainer",minimizeButton:"#minimizeButton",fullScreenMask:"#fullScreenMask",turnIcon:"#turnIcon",presentationTitle:"#presentationTitle",presentationChartsContainer:"#presentationChartsContainer",presentationTimePeriodStartDateText:"#presentationTimePeriodStartDateText",presentationTimePeriodEndDateText:"#presentationTimePeriodEndDateText",presentationSummaryTitleName:"#presentationSummaryTitleName",presentationSummaryTitleBenchmarkName:"#presentationSummaryTitleBenchmarkName"};
 return a
 });
 WebAppLoader.addModule({name:"settings",dataObjects:["appSettings","userSettings"],isShared:true},function(){var h={},a={},i={},f=[],g=this.getConsole(),j=this.getDataObject("userSettings"),b=this.getDataObject("appSettings");
@@ -3989,7 +3996,7 @@ h.languages=f;
 return h
 });
 WebAppLoader.addModule({name:"analysisManager",plugins:["helper"],sharedModules:[],dataObjects:["analysisPages"],hasEvents:true},function(){var a={},i=this.getConsole(),f=this.getEventManager(),g=this.getPlugin("helper"),c=this.getDataObject("analysisPages"),e=[],b={};
-c.define({items:[{name:"Performance",id:"performance",order:1,userDefined:false,charts:[{chartId:"performanceMaster_grid",order:1},{chartId:"performance_line",order:2},{chartId:"performance_grid",order:3},{chartId:"performance_bubble",order:4},{chartId:"performance_bar",order:5},{chartId:"performance_treemap",order:6},{chartId:"performanceTopTen_grid",order:7}]},{name:"Risk",id:"risk",order:2,userDefined:false,charts:[{chartId:"riskMaster_grid",order:1},{chartId:"risk_treemap",order:2},{chartId:"risk_bar",order:3},{chartId:"risk_bubble",order:4},{chartId:"risk_pie",order:5},{chartId:"riskTopTen_grid",order:6}]},{name:"Asset Allocation",id:"assetAllocation",order:3,userDefined:false,charts:[{chartId:"allocationMaster_grid",order:1},{chartId:"allocation_pie",order:2},{chartId:"allocation_bar",order:3}]},{name:"Contribution",id:"contribution",order:4,userDefined:false,charts:[{chartId:"contributionMaster_grid",order:1},{chartId:"contribution_pie",order:2},{chartId:"contribution_column",order:3},{chartId:"contribution_bar",order:4},{chartId:"contributionTopTen_grid",order:5}]},{name:"Attribution",id:"attribution",order:5,userDefined:false,charts:[{chartId:"attributionMaster_grid",order:1},{chartId:"attribution_column",order:2},{chartId:"attribution_bar",order:3},{chartId:"attribution_grid",order:4}]},{name:"Fixed Income",id:"fixedIncome",order:6,userDefined:false,charts:[{chartId:"fixedIncomeMaster_grid",order:1},{title:"Bar Charts of Fixed Income Contributions:",chartId:"",order:2},{chartId:"fixedIncomeContribution_bar",order:3},{chartId:"carryContribution_bar",order:4},{chartId:"yieldCurveContribution_bar",order:5},{chartId:"riskNumbers_bar",order:6},{title:"Column Charts of Fixed Income Exposures:",chartId:"",order:7},{chartId:"interestRatesExposure_column",order:8},{chartId:"creditSpreadsExposure_column",order:9},{chartId:"dv01Exposure_column",order:10},{title:"Grid of Risk Numbers:",chartId:"",order:11},{chartId:"fixedIncome_grid",order:12},{chartId:"fixedIncomeContribution_grid",order:13},{title:"Grid of FI Exposure",chartId:"",order:14},{chartId:"fixedIncomeExposure_grid",order:15}]},{name:"User Defined Test Page",id:"test1",order:100,userDefined:true,charts:[{chartId:"fi_contribution_group",order:1}]}]});
+c.define({items:[{name:"Performance",id:"performance",order:1,userDefined:false,charts:[{chartId:"performanceMaster_grid",order:1},{chartId:"performance_line",order:2},{chartId:"performance_grid",order:3},{chartId:"performance_bubble",order:4},{chartId:"performance_bar",order:5},{chartId:"performance_treemap",order:6},{chartId:"performanceTopTen_grid",order:7}]},{name:"Risk",id:"risk",order:2,userDefined:false,charts:[{chartId:"riskMaster_grid",order:1},{chartId:"risk_treemap",order:2},{chartId:"risk_bar",order:3},{chartId:"risk_bubble",order:4},{chartId:"risk_pie",order:5},{chartId:"riskTopTen_grid",order:6}]},{name:"Asset Allocation",id:"assetAllocation",order:3,userDefined:false,charts:[{chartId:"allocationMaster_grid",order:1},{chartId:"allocation_pie",order:2},{chartId:"allocation_bar",order:3}]},{name:"Contribution",id:"contribution",order:4,userDefined:false,charts:[{chartId:"contributionMaster_grid",order:1},{chartId:"contribution_pie",order:2},{chartId:"contribution_column",order:3},{chartId:"contribution_bar",order:4},{chartId:"contributionTopTen_grid",order:5}]},{name:"Attribution",id:"attribution",order:5,userDefined:false,charts:[{chartId:"attributionMaster_grid",order:1},{chartId:"attribution_column",order:2},{chartId:"attribution_bar",order:3},{chartId:"attribution_grid",order:4}]},{name:"Fixed Income",id:"fixedIncome",order:6,userDefined:false,charts:[{chartId:"fixedIncomeMaster_grid",order:1},{chartId:"fixedIncomeContribution_bar",order:2},{chartId:"carryContribution_bar",order:3},{chartId:"yieldCurveContribution_bar",order:4},{chartId:"riskNumbers_bar",order:5},{chartId:"interestRatesExposure_column",order:6},{chartId:"creditSpreadsExposure_column",order:7},{chartId:"dv01Exposure_column",order:8},{chartId:"fixedIncome_grid",order:9},{chartId:"fixedIncomeContribution_grid",order:10},{chartId:"fixedIncomeExposure_grid",order:11}]},{name:"User Defined Test Page",id:"test1",order:100,userDefined:true,charts:[{chartId:"fi_contribution_group",order:1}]}]});
 function j(){b=c.getData()
 }function d(){f.raiseEvent("onUpdated",c.getData())
 }function h(k){var l;
@@ -4093,7 +4100,7 @@ j.define({code:"",name:"",type:"",analysisLink:"",currency:"",version:"",timeSta
 function h(p,m){function n(){m(f)
 }function o(q){c(q,n)
 }g(p,o)
-}function g(v,m){var n,u={code:"",type:"",analysisLink:"",currency:"",version:"",timeStamp:"",timePeriods:[]};
+}function g(v,m){var n,u={code:"",name:"",type:"",analysisLink:"",currency:"",version:"",timeStamp:"",timePeriods:[]};
 function o(){if(v){return v
 }else{return""
 }}e=u.code=o();
@@ -4102,22 +4109,24 @@ function q(w){var y={},x=null;
 if(u.code){y.filter="Code eq '"+u.code+"'"
 }else{y.start=0;
 y.top=1
-}a.post(l.siteUrls.portfolios,{oData:y,datatype:"json"},function(z){if(!z||!z.items||z.items.length<1){b.raiseEvent("onFailed",d.errors.portfolioNotFoundText);
+}a.post(l.siteUrls.portfolios,{oData:y,datatype:"json"},function(z){if(!z||!z.data||!z.data.items||z.data.items.length<1){u.code="";
+x=null;
+b.raiseEvent("onFailed",d.errors.portfolioNotFoundText,d.errors.portfolioNotFoundReasonText);
 return
-}u.code=z.items[0].code;
-x=z.items[0].links.defaultAnalysis.href;
+}u.code=z.data.items[0].code;
+x=z.data.items[0].links.defaultAnalysis.href;
 w({defaultAnalysisLink:x})
 },"json")
 }function t(w){if(w.defaultAnalysisLink){u.analysisLink=w.defaultAnalysisLink;
 p(w.defaultAnalysisLink,s)
-}}function p(x,w){a.post(l.siteUrls.portfolioAnalysis,{uri:x,datatype:"json"},function(y){if(!y||!y.analysis){b.raiseEvent("onFailed",d.errors.analysisFailedText);
+}}function p(x,w){a.post(l.siteUrls.portfolioAnalysis,{uri:x,datatype:"json"},function(y){if(!y||!y.data||!y.data.analysis||y.error){b.raiseEvent("onFailed",d.errors.analysisFailedText,d.errors.analysisFailedReasonText);
 return
-}u.name=y.name||"";
-u.type=y.type||"";
-u.currency=y.analysis.currency||"";
-u.version=y.analysis.version||"";
-if(y.analysis.results){u.timeStamp=y.analysis.results.timeStamp||"";
-u.timePeriods=y.analysis.results.timePeriods||[]
+}u.name=y.data.name||"";
+u.type=y.data.type||"";
+u.currency=y.data.analysis.currency||"";
+u.version=y.data.analysis.version||"";
+if(y.data.analysis.results){u.timeStamp=y.data.analysis.results.timeStamp||"";
+u.timePeriods=y.data.analysis.results.timePeriods||[]
 }w()
 },"json")
 }function s(){j.setData(u);
@@ -4125,9 +4134,9 @@ f=u;
 b.raiseEvent("onPortfolioLoaded",u);
 b.raiseEvent("onTimePeriodsLoaded",u.timePeriods);
 m(u.analysisLink)
-}}function c(n,m){a.post(l.siteUrls.analysis,{uri:n,datatype:"json"},function(o){if(!o){b.raiseEvent("onFailed",d.errors.analysisFailedText);
+}}function c(n,m){a.post(l.siteUrls.analysis,{uri:n,datatype:"json"},function(o){if(!o||!o.data||o.error){b.raiseEvent("onFailed",d.errors.analysisFailedText,d.errors.analysisFailedReasonText);
 return
-}b.raiseEvent("onAnalysisLoaded",o);
+}b.raiseEvent("onAnalysisLoaded",o.data);
 m()
 },"json")
 }k.loadPortfolio=g;
@@ -4187,7 +4196,7 @@ function h(){return j
 }function l(m){j=m;
 k.raiseEvent("onItemsChanged",m)
 }function i(m){var n={};
-a.post(f.siteUrls.portfolios,{datatype:"json"},function(o){if(o){$.each(o.items,function(p,q){n[q.code]=q.name
+a.post(f.siteUrls.portfolios,{datatype:"json"},function(o){if(o.data){$.each(o.data.items,function(p,q){n[q.code]=q.name
 })
 }else{n.err=c.spinningWheel.noPortfolioSlotAvailable
 }l(n);
@@ -4456,7 +4465,7 @@ n.updateAnalysisPage(t)
 n.updateAnalysisPage=function(q){var p=q||n.getLastAnalysisObjectUsed();
 n.settingsButton.setHighlight(false);
 n.nav.goToPage(a(c.analysisPage),"dissolve");
-function t(A){var y=[],w={},u={},B=A.code,C=A.name,v=null,x="",D=0,z;
+function t(A){var y=[],w={},u={},B=A.code,C=A.name,v=null,x="",D=0,E=false,z;
 w=n.analysisManager.getData("analysisPages");
 u=jLinq.from(w.items).equals("id",p.analysisId).select();
 if(u[0]&&u[0].charts){v=u[0].charts;
@@ -4465,18 +4474,21 @@ x=u[0].name
 x=w.items[0].name
 }y=jLinq.from(v).sort("order").select();
 a(c.analysisTitle).html(x);
-a.each(A.timePeriods,function(F,G){var H,E;
-if(G.code===p.timePeriodId){n.chartComponents.setTimePeriod(y,G);
-H=Date.parse(G.startDate);
-E=Date.parse(G.endDate);
-n.customChartTimePeriods.timePeriods=G.code;
-n.customChartTimePeriods.startDate=G.startDate;
-n.customChartTimePeriods.endDate=G.endDate;
-a(c.timePeriodStartDateText).html(H.toString("MMM d, yyyy"));
-a(c.timePeriodEndDateText).html(E.toString("MMM d, yyyy"));
+a.each(A.timePeriods,function(G,H){var I,F;
+if(H.code===p.timePeriodId){E=true;
+n.chartComponents.setTimePeriod(y,H);
+I=Date.parse(H.startDate);
+F=Date.parse(H.endDate);
+n.customChartTimePeriods.timePeriods=H.code;
+n.customChartTimePeriods.startDate=H.startDate;
+n.customChartTimePeriods.endDate=H.endDate;
+a(c.timePeriodStartDateText).html(I.toString("MMM d, yyyy"));
+a(c.timePeriodEndDateText).html(F.toString("MMM d, yyyy"));
 return false
 }});
-n.setLastAnalysisObjectUsed(p);
+if(!E){a(c.timePeriodStartDateText).html("-");
+a(c.timePeriodEndDateText).html("-")
+}n.setLastAnalysisObjectUsed(p);
 n.setLastAnalysisObjectUsed({portfolioId:B,portfolioName:C});
 n.saveLastAnalysisObjectUsed();
 n.settingsButton.setHighlight(false);
@@ -4484,8 +4496,8 @@ n.synchronizeFavouriteButton();
 n.synchronizeConsoleButton();
 n.chartComponents.render(y,c.analysisPage+"_partial");
 n.synchronizeOrientation(false);
-a(c.analysisComponentFullScreenButton).on("click",function(F,G){var E={chartId:a(this).attr("data-chartId"),chartOrder:a(this).attr("data-order")};
-n.presentationManager.enterPresentationMode(E)
+a(c.analysisComponentFullScreenButton).on("click",function(G,H){var F={chartId:a(this).attr("data-chartId"),chartOrder:a(this).attr("data-order")};
+n.presentationManager.enterPresentationMode(F)
 });
 D=parseInt((y.length||1)*b.maxWidth(),10);
 a(c.presentationChartsContainer).width(D)
@@ -4584,8 +4596,9 @@ h.log("Loaded portfolio:",p)
 n.portfolioManager.on("onAnalysisLoaded",function(p){n.updateAnalysisInfo(p);
 n.tabbar.show()
 });
-n.portfolioManager.on("onFailed",function(p){n.scroll.rebuild("error");
+n.portfolioManager.on("onFailed",function(p,q){n.scroll.rebuild("error");
 a(c.errorMessageText).html(p);
+a(c.errorReasonText).html(q);
 n.nav.goToPage(a(c.errorPage))
 });
 n.updateAnalysisInfo=function(s){var t,q,p;
@@ -4838,8 +4851,8 @@ v.data("realHeight",w)
 }else{B=v.data("realHeight");
 x=parseInt(B*z,10);
 y=parseInt(B*A,10)
-}if(u.hasClass("gridContainer")){x=0;
-y=0
+}if(u.hasClass("gridContainer")){x=610;
+y=460
 }if(b.orientation()==="landscape"){u.css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"});
 v.height(x)
 }else{u.css({"-webkit-transform":"scale(.69)","-webkit-transform-origin":"left top"});

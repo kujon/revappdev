@@ -8873,7 +8873,7 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
 
     // PIE CHART
     pieChart = {
-        chartArea: { left: 80, width: '75%', height: '80%' },
+        chartArea: { left: 0, width: '85%', height: '90%' },
         fontName: commonSettings.labelFontName,
         fontSize: commonSettings.labelFontSize,
         forceIFrame: commonSettings.forceIFrame,
@@ -8909,8 +8909,8 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
         tableLandscapeScaleRatio: 1,
         tablePortraitScaleRatio: 0.80,
 
-        rowHeight: 50, // Same value of .tableRow and .oddTableRow
-        headerHeight: 50, // Same value of .headerRow
+        rowHeight: 60, // Same value of .tableRow and .oddTableRow
+        headerHeight: 60, // Same value of .headerRow
         fixedHeight: 10,
         
         calculateTableHeight: function (numRows) {
@@ -9032,6 +9032,78 @@ WebAppLoader.addModule({ name: 'chartManager',
         }
     }
 
+    // Function to build and render the heatmap gauge into the relevant chart's container.
+    // 'chart'  - The Google ChartWrapper representing the chart object to be displayed with a gauge.
+    // 'config' - An object containing configuration properties for the gauge to be created.
+    function renderHeatMapGauge(chart, config) {
+        var containerId, gaugeLegendId, linearGradientCss, gradientCss, gaugeLegend, dataTable;
+
+        // Get the chart's container and generate a unique ID for this chart's gauge.
+        containerId = chart.getContainerId();
+        gaugeLegendId = containerId + '-gaugeLegend';
+
+        // Remove any trace of an existing gauge.
+        $('#' + gaugeLegendId).remove();
+
+        // Add an element we can style to the chart's container.
+        $('#' + containerId).append(
+            '<div id="' + gaugeLegendId + '" class="gaugeLegend">' +
+            '    <span class="gaugeLegendMaxValue">' + config.maxDisplay + '</span>' +
+            '    <span class="gaugeLegendSelectedValue"></span>' +
+            '    <span class="gaugeLegendMinValue">' + config.minDisplay + '</span>' +
+            '</div>'
+        );
+
+        // Now we've recreated the gauge, store a reference to it.
+        gaugeLegend = $('#' + gaugeLegendId);
+
+        // If the values are all positive or all negative, we'll just need to create a CSS gradient 
+        // from the max to min colours. If not, we'll need to go through the mid colour on the way.
+        linearGradientCss = (config.midGradientPosition === null) ?
+            'linear-gradient(bottom, ' + config.maxColor + ' 0%, ' + config.minColor + ' 100%)' :
+            'linear-gradient(bottom, ' + config.maxColor + ' 0%, ' + config.midColor + ' ' + config.midGradientPosition + '%, ' + config.minColor + ' 100%)';
+
+        gradientCss = (config.midGradientPosition === null) ?
+            'gradient(linear, left bottom, left top, color-stop(0, ' + config.maxColor + '), color-stop(1, ' + config.minColor + '))' :
+            'gradient(linear, left bottom, left top, color-stop(0, ' + config.maxColor + '), color-stop(' + (config.midGradientPosition / 100) + ', ' + config.midColor + '), color-stop(1, ' + config.minColor + '))';
+
+        // Create a CSS3 gradient between the min and max values.
+        gaugeLegend.css({
+            'background-image': linearGradientCss,
+            'background-image': '-webkit-' + linearGradientCss,
+            'background-image': '-webkit-' + gradientCss
+        });
+
+        // Get the datatable behind this chart.
+        dataTable = chart.getDataTable();
+
+        // Add an event handler to the chart's 'onmouseover' event.
+        google.visualization.events.addListener(chart.getChart(), 'onmouseover', function (e) {
+            var value, formattedValue, position, cssConfig;
+
+            // Get the heatmap value for the selected row.
+            value = dataTable.getValue(e.row, 2);
+            formattedValue = dataTable.getFormattedValue(e.row, 2);
+
+            // Calculate the percentage position of the value to display on the gauge.
+            position = 100 * ((value - config.min) / (config.max - config.min));
+
+            // Create a CSS object to pass to the span. We modify the position
+            // slightly to allow our span styling to better point at the gauge.
+            cssConfig = { 'display': 'block', 'top': (position - 2.5) + '%' };
+
+            // Find the chart legend, then its gaugeLegendSelectedValue, then add the heatmap
+            // value that's been selected, as well as displaying the value in the correct place.
+            gaugeLegend.find('span.gaugeLegendSelectedValue').html(formattedValue).css(cssConfig);
+        });
+
+        // Add an event handler to the chart's 'onmouseout' event.
+        google.visualization.events.addListener(chart.getChart(), 'onmouseout', function (e) {
+            // Hide any heatmap values that are currently on display.
+            gaugeLegend.find('span.gaugeLegendSelectedValue').css('display', 'none');
+        });
+    }
+
     // Function to create a new chart.
     // 'config' - An object containing configuration properties for the chart to be created.
     function create(config) {
@@ -9087,10 +9159,10 @@ WebAppLoader.addModule({ name: 'chartManager',
         chart.startDate = config.startDate;
         chart.timePeriods = config.timePeriods;
 
-        
         google.visualization.events.addListener(chart, 'error', function (errorObj) {
             onChartReady({ errorObj: errorObj });
         });
+
         // Return the chart.
         return chart;
     }
@@ -9147,11 +9219,9 @@ WebAppLoader.addModule({ name: 'chartManager',
 
         // Callback function to be invoked when data is returned from the server.
         function onDataLoaded(data) {
-            var dataTable, i, min, max, minDisplay, maxDisplay,
-                maxColor, minColor, midColor, midGradientPosition,
-                values = [], sliceOptions = [],
-                isAllPositiveOrNegative, containerId, gaugeLegendId,
-                presentationContainerId, tableWidth, tableHeight;
+            var dataTable, i, min, max, gaugeConfig,
+                values = [], sliceOptions = [], isAllPositiveOrNegative, 
+                presentationChart, presentationContainerId;
 
             output.log(data);
 
@@ -9170,17 +9240,21 @@ WebAppLoader.addModule({ name: 'chartManager',
                 onChartReady({
                     chartId: chart.getContainerId(),
                     numRows: dataTable.getNumberOfRows() // Used to calculate the height of the chart later.
-                }); 
+                });
             });
 
+            presentationChart = chart.clone();
+            presentationContainerId = 'presentation-' + chart.getContainerId();
+            presentationChart.setContainerId(presentationContainerId);
+
             if (type === 'Table') {
-                tableWidth = '980px !important;'; // chartDefaults.resizingSettings.tableWidth + 'px !important'; // ASA
-                // tableHeight = '660px !important;';
-//                tableHeight = (dataTable.getNumberOfRows() > 10)
-//                    ? chartDefaults.resizingSettings.calculateTableHeight(10) + 'px !important'
-//                    : chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()) + 'px !important';
-//                chart.setOption('height', tableHeight);
-                chart.setOption('width', tableWidth);
+                chart.setOption('height', '600px'); // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
+                chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
+                presentationChart.setOption('width', '1000px');
+                presentationChart.setOption('height', '720px');
+            } else { 
+                presentationChart.setOption('height', 680);
+                presentationChart.setOption('width', 1024);
             }
 
             // If our chart is a pie chart and we're displaying it as a heatmap...
@@ -9198,33 +9272,40 @@ WebAppLoader.addModule({ name: 'chartManager',
                 min = Math.min.apply(Math, values);
                 max = Math.max.apply(Math, values);
 
+                // Initialise our gauge configuration object.
+                gaugeConfig = {
+                    min: min,
+                    max: max,
+                    midGradientPosition: null
+                };
+
                 // Get the formatted values for our min and max values from the dataTable,
                 // since they already have the correct decimal accuracy and localization.
                 // If the min value somehow doesn't exist in the values collection, the
                 // dataTable has given us a null value, which we take to mean zero.
                 if ($.inArray(min, values) !== -1) {
-                    minDisplay = dataTable.getFormattedValue($.inArray(min, values), 2);
+                    gaugeConfig.minDisplay = dataTable.getFormattedValue($.inArray(min, values), 2);
                 } else {
-                    minDisplay = '0';
+                    gaugeConfig.minDisplay = '0';
                 }
 
                 if ($.inArray(max, values) !== -1) {
-                    maxDisplay = dataTable.getFormattedValue($.inArray(max, values), 2);
+                    gaugeConfig.maxDisplay = dataTable.getFormattedValue($.inArray(max, values), 2);
                 } else {
-                    maxDisplay = '0';
+                    gaugeConfig.maxDisplay = '0';
                 }
 
                 // Determine the colours we need to use for our gauge.
-                minColor = colorManager.getColorInRange(min, min, max, chart.isGradientReversed);
-                midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
-                maxColor = colorManager.getColorInRange(max, min, max, chart.isGradientReversed);
+                gaugeConfig.minColor = colorManager.getColorInRange(min, min, max, chart.isGradientReversed);
+                gaugeConfig.midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
+                gaugeConfig.maxColor = colorManager.getColorInRange(max, min, max, chart.isGradientReversed);
 
                 // Determine if the values are all positive or all negative.
                 isAllPositiveOrNegative = (min >= 0 && max >= 0) || (min <= 0 && max <= 0);
 
                 // Calculate the percentage position of the mid gradient point if we'll need it.
                 if (!isAllPositiveOrNegative) {
-                    midGradientPosition = 100 - (100 * ((0 - min) / (max - min)));
+                    gaugeConfig.midGradientPosition = 100 - (100 * ((0 - min) / (max - min)));
                 }
 
                 // Loop round the values, and use the colorManager to generate 
@@ -9235,95 +9316,26 @@ WebAppLoader.addModule({ name: 'chartManager',
                     });
                 }
 
-                // Set the colours as part of the 'slices' chart option.
+                // Set the colours as part of the 'slices' chart options.
                 chart.setOption('slices', sliceOptions);
+                presentationChart.setOption('slices', sliceOptions);
 
-                // Get the chart's container and generate a unique ID for this chart's gauge.
-                containerId = chart.getContainerId();
-                gaugeLegendId = containerId + '-gaugeLegend';
-
-                // Attach an event handler to the 'ready' event.
+                // Attach an event handler to the 'ready' events of the chart and its presentation clone.
                 google.visualization.events.addListener(chart, 'ready', function () {
-                    var linearGradientCss, gradientCss, gaugeLegend;
+                    renderHeatMapGauge(chart, gaugeConfig);
+                });
 
-                    // Remove any trace of an existing gauge.
-                    $('#' + gaugeLegendId).remove();
-
-                    // Add an element we can style to the chart's container.
-                    $('#' + containerId).append(
-                        '<div id="' + gaugeLegendId + '" class="gaugeLegend">' +
-                        '    <span class="gaugeLegendMaxValue">' + maxDisplay + '</span>' +
-                        '    <span class="gaugeLegendSelectedValue"></span>' +
-                        '    <span class="gaugeLegendMinValue">' + minDisplay + '</span>' +
-                        '</div>'
-                    );
-
-                    // Now we've recreated the gauge, store a reference to it.
-                    gaugeLegend = $('#' + gaugeLegendId);
-
-                    // If the values are all positive or all negative, we'll just need to create a CSS gradient 
-                    // from the max to min colours. If not, we'll need to go through the mid colour on the way.
-                    linearGradientCss = isAllPositiveOrNegative ?
-                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + minColor + ' 100%)' :
-                        'linear-gradient(bottom, ' + maxColor + ' 0%, ' + midColor + ' ' + midGradientPosition + '%, ' + minColor + ' 100%)';
-
-                    gradientCss = isAllPositiveOrNegative ?
-                        'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(1, ' + minColor + '))' :
-                        'gradient(linear, left bottom, left top, color-stop(0, ' + maxColor + '), color-stop(' + (midGradientPosition / 100) + ', ' + midColor + '), color-stop(1, ' + minColor + '))';
-
-                    // Create a CSS3 gradient between the min and max values.
-                    gaugeLegend.css({
-                        'background-image': linearGradientCss,
-                        'background-image': '-webkit-' + linearGradientCss,
-                        'background-image': '-webkit-' + gradientCss
-                    });
-
-                    // Add an event handler to the chart's 'onmouseover' event.
-                    google.visualization.events.addListener(chart.getChart(), 'onmouseover', function (e) {
-                        var value, formattedValue, position, cssConfig;
-
-                        // Get the heatmap value for the selected row.
-                        value = dataTable.getValue(e.row, 2);
-                        formattedValue = dataTable.getFormattedValue(e.row, 2);
-
-                        // Calculate the percentage position of the value to display on the gauge.
-                        position = 100 * ((value - min) / (max - min));
-
-                        // Create a CSS object to pass to the span. We modify the position
-                        // slightly to allow our span styling to better point at the gauge.
-                        cssConfig = { 'display': 'block', 'top': (position - 2.5) + '%' };
-
-                        // Find the chart legend, then its gaugeLegendSelectedValue, then add the heatmap
-                        // value that's been selected, as well as displaying the value in the correct place.
-                        gaugeLegend.find('span.gaugeLegendSelectedValue').html(formattedValue).css(cssConfig);
-                    });
-
-                    // Add an event handler to the chart's 'onmouseout' event.
-                    google.visualization.events.addListener(chart.getChart(), 'onmouseout', function (e) {
-                        // Hide any heatmap values that are currently on display.
-                        gaugeLegend.find('span.gaugeLegendSelectedValue').css('display', 'none');
-                    });
-
+                google.visualization.events.addListener(presentationChart, 'ready', function () {
+                    renderHeatMapGauge(presentationChart, gaugeConfig);
                 });
             }
 
             // Set the data table for the chart.
             chart.setDataTable(dataTable);
+            presentationChart.setDataTable(dataTable);
 
             // Draw the chart.
             chart.draw();
-
-            // ASA: Test
-            var presentationChart = chart.clone();
-            presentationContainerId = 'presentation-' + chart.getContainerId();
-            presentationChart.setContainerId(presentationContainerId);
-            if (type !== 'Table') {
-                presentationChart.setOption('height', 660);
-                presentationChart.setOption('width', 1024);
-            } else {
-                presentationChart.setOption('width', '96% !important');
-                presentationChart.setOption('height', '660px !important');
-            }
             presentationChart.draw();
         }
 
@@ -9742,6 +9754,7 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         timePeriodStartDateText                 : '#timePeriodStartDateText',
         timePeriodEndDateText                   : '#timePeriodEndDateText',
         errorMessageText                        : '#errorMessageText',
+        errorReasonText                         : '#errorReasonText',
         stayLoggedCheckbox                      : '#stayLoggedCheckbox',
         userEmailLabel                          : '#userEmailLabel',
         summaryTitleName                        : '#summaryTitleName',
@@ -9753,7 +9766,7 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         fullScreenContainer                     : '#fullScreenContainer',
         minimizeButton                          : '#minimizeButton',
         fullScreenMask                          : '#fullScreenMask',
-	    turnIcon                                : '#turnIcon',
+	turnIcon                                : '#turnIcon',
         presentationTitle                       : '#presentationTitle',
         presentationChartsContainer             : '#presentationChartsContainer',
         presentationTimePeriodStartDateText     : '#presentationTimePeriodStartDateText',
@@ -9985,51 +9998,35 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
                     chartId : 'fixedIncomeMaster_grid',
                     order   : 1
                 },{
-                    title: 'Bar Charts of Fixed Income Contributions:',
-                    chartId: '',
+                    chartId: 'fixedIncomeContribution_bar',
                     order   : 2
                 },{
-                    chartId: 'fixedIncomeContribution_bar',
+                    chartId: 'carryContribution_bar',
                     order   : 3
                 },{
-                    chartId: 'carryContribution_bar',
+                    chartId: 'yieldCurveContribution_bar',
                     order   : 4
                 },{
-                    chartId: 'yieldCurveContribution_bar',
+                    chartId: 'riskNumbers_bar',
                     order   : 5
                 },{
-                    chartId: 'riskNumbers_bar',
+                    chartId: 'interestRatesExposure_column',
                     order   : 6
                 },{
-                    title: 'Column Charts of Fixed Income Exposures:',
-                    chartId: '',
+                    chartId: 'creditSpreadsExposure_column',
                     order   : 7
                 },{
-                    chartId: 'interestRatesExposure_column',
+                    chartId: 'dv01Exposure_column',
                     order   : 8
                 },{
-                    chartId: 'creditSpreadsExposure_column',
+                    chartId: 'fixedIncome_grid',
                     order   : 9
                 },{
-                    chartId: 'dv01Exposure_column',
+                    chartId: 'fixedIncomeContribution_grid',
                     order   : 10
                 },{
-                    title: 'Grid of Risk Numbers:',
-                    chartId: '',
-                    order   : 11
-                },{
-                    chartId: 'fixedIncome_grid',
-                    order   : 12
-                },{
-                    chartId: 'fixedIncomeContribution_grid',
-                    order   : 13
-                },{
-                    title: 'Grid of FI Exposure',
-                    chartId: '',
-                    order   : 14
-                },{
                     chartId: 'fixedIncomeExposure_grid',
-                    order   : 15
+                    order   : 11
                 }]   
         },{
             name        : 'User Defined Test Page',
@@ -10366,8 +10363,9 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
 
     function loadPortfolio(portfolioCode, callback) {
         var defaultPortfolioCode,
-            portfolio = {
+            portfolio = {                
                 code: '',
+                name: '',
                 type: '',
                 analysisLink: '',
                 currency: '',
@@ -10407,19 +10405,24 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
                 oData.top = 1;
             }
 
-            ajaxManager.post(settings.siteUrls.portfolios, { oData: oData, datatype: 'json' }, function (data) {
-                
+            ajaxManager.post(settings.siteUrls.portfolios, { oData: oData, datatype: 'json' }, function (response) {
+
                 // If no portfolio data was returned for our query...
-                if (!data || !data.items || data.items.length < 1) {
-                    // ...raise a failure event and return.
-                    eventManager.raiseEvent('onFailed', lang.errors.portfolioNotFoundText);
+                if (!response || !response.data || !response.data.items || response.data.items.length < 1) {
+
+                    // ...clear out the portfolio and links...
+                    portfolio.code = '';
+                    defaultAnalysisLink = null;
+
+                    // ...and raise a failure event and return.
+                    eventManager.raiseEvent('onFailed', lang.errors.portfolioNotFoundText, lang.errors.portfolioNotFoundReasonText);
                     return;
                 }
 
                 // Persist the portfolio code and the link to its default analysis.
-                portfolio.code = data.items[0].code;
-                defaultAnalysisLink = data.items[0].links.defaultAnalysis.href;
-                
+                portfolio.code = response.data.items[0].code;
+                defaultAnalysisLink = response.data.items[0].links.defaultAnalysis.href;
+
                 // Call the callback.
                 callback({ defaultAnalysisLink: defaultAnalysisLink });
 
@@ -10434,25 +10437,26 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
         }
 
         function loadPortfolioAnalysis(defaultAnalysisLink, callback) {
-            ajaxManager.post(settings.siteUrls.portfolioAnalysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (data) {
+            ajaxManager.post(settings.siteUrls.portfolioAnalysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (response) {
 
-                // If no analysis data was returned for the given portfolio...
-                if (!data || !data.analysis) {
+                // If no analysis data was returned for the given 
+                // portfolio, or an explicit error was raised...
+                if (!response || !response.data || !response.data.analysis || response.error) {
                     // ...raise a failure event and return.
-                    eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText);
+                    eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText, lang.errors.analysisFailedReasonText);
                     return;
                 }
 
                 // Persist the basic portfolio information.
-                portfolio.name = data.name || '';
-                portfolio.type = data.type || '';
-                portfolio.currency = data.analysis.currency || '';
-                portfolio.version = data.analysis.version || '';
+                portfolio.name = response.data.name || '';
+                portfolio.type = response.data.type || '';
+                portfolio.currency = response.data.analysis.currency || '';
+                portfolio.version = response.data.analysis.version || '';
 
                 // If we have results, persist their basic details also.
-                if (data.analysis.results) {
-                    portfolio.timeStamp = data.analysis.results.timeStamp || '';
-                    portfolio.timePeriods = data.analysis.results.timePeriods || [];
+                if (response.data.analysis.results) {
+                    portfolio.timeStamp = response.data.analysis.results.timeStamp || '';
+                    portfolio.timePeriods = response.data.analysis.results.timePeriods || [];
                 }
 
                 // Call the callback.
@@ -10462,7 +10466,7 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
         }
 
         function onLoadPortfolioAnalysisCompleted() {
-            
+
             // Persist the currently selected portfolio.
             portfolioDataObj.setData(portfolio);
             lastPortfolioUsed = portfolio;
@@ -10478,17 +10482,18 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
 
     // Public
     function getAnalysis(uri, callback) {
-        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (data) {
+        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (response) {
 
-            // If no analysis HTML template data was returned for the given portfolio...
-            if (!data) {
+            // If no analysis HTML template data was returned for 
+            // the given portfolio, or an error was raised...
+            if (!response || !response.data || response.error) {
                 // ...raise a failure event and return.
-                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText);
+                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText, lang.errors.analysisFailedReasonText);
                 return;
             }
 
             // Raise notification events.
-            eventManager.raiseEvent('onAnalysisLoaded', data);
+            eventManager.raiseEvent('onAnalysisLoaded', response.data);
 
             // Call the callback.
             callback();
@@ -10645,9 +10650,9 @@ WebAppLoader.addModule({ name: 'repositories', sharedModules: ['settings', 'loca
 
         function loadData(callback) {
             var slotItems = {};
-            ajaxManager.post(settings.siteUrls.portfolios, { datatype: 'json' }, function (data) {
-                if (data) {
-                    $.each(data.items, function (i, val) {
+            ajaxManager.post(settings.siteUrls.portfolios, { datatype: 'json' }, function (response) {
+                if (response.data) {
+                    $.each(response.data.items, function (i, val) {
                         slotItems[val.code] = val.name;
                     });
                 } else {
@@ -11568,7 +11573,7 @@ Zepto(function ($) {
 
     // Swipe Button Control
     theApp.swipeButton = loader.loadModule('swipeButton');
-    
+
     // Local Storage Manager
     theApp.localStorage = loader.loadModule('localStorageManager');
 
@@ -11577,7 +11582,7 @@ Zepto(function ($) {
 
     // Resizing Settings
     theApp.resizingSettings = loader.loadModule('chartDefaults').resizingSettings;
-    
+
     // iOS Log
     theApp.iOSLog = loader.loadModule('blackbird');
 
@@ -11657,7 +11662,7 @@ Zepto(function ($) {
                     theApp.tryToChangeLanguage(language);
                 }
             }
-            
+
             // With the language defined, set the CultureInfo property of the 
             // JavaScript Date object, so date.js can hook in for localization.
             Date.CultureInfo = lang.cultureInfo;
@@ -11768,14 +11773,15 @@ Zepto(function ($) {
                 analysisPageCharts    = null,
                 analysisPageTitle     = '',
                 presentationViewWidth = 0,
+                timePeriodFound       = false,
                 i;
-            
+
             analysisPagesData = theApp.analysisManager.getData('analysisPages');
 
             analysisPage = jLinq.from(analysisPagesData.items)
                 .equals('id', analysisDataObject.analysisId)
                 .select();
- 
+
             // If no analysis page has been found load the first one.            
             if (analysisPage[0] && analysisPage[0].charts) {
                 analysisPageCharts = analysisPage[0].charts;
@@ -11800,21 +11806,31 @@ Zepto(function ($) {
 
                 if (period.code === analysisDataObject.timePeriodId) {
 
+                    // Flag that we've found a time period.
+                    timePeriodFound = true;
+
                     // Add the currently requested time period to each of the chart config objects.
                     theApp.chartComponents.setTimePeriod(chartsToRender, period);
 
                     startDate = Date.parse(period.startDate);
                     endDate = Date.parse(period.endDate);
-                    
+
                     theApp.customChartTimePeriods.timePeriods = period.code;
                     theApp.customChartTimePeriods.startDate = period.startDate;
                     theApp.customChartTimePeriods.endDate = period.endDate;
 
                     $(el.timePeriodStartDateText).html(startDate.toString('MMM d, yyyy'));
                     $(el.timePeriodEndDateText).html(endDate.toString('MMM d, yyyy'));
+
                     return false;
                 }
             });
+
+            // If we didn't find a time period in the loop, clear out the text.
+            if (!timePeriodFound) { 
+                $(el.timePeriodStartDateText).html('-');
+                $(el.timePeriodEndDateText).html('-');
+            }
 
             // Set and save the last used analysis object.
             theApp.setLastAnalysisObjectUsed(analysisDataObject);
@@ -11837,7 +11853,7 @@ Zepto(function ($) {
             // Generic UI stuffs.
             $(el.analysisComponentFullScreenButton).on('click', function (e, info) {
                 var data = {
-                    chartId:  $(this).attr('data-chartId'),
+                    chartId: $(this).attr('data-chartId'),
                     chartOrder: $(this).attr('data-order')
                 };
 
@@ -11852,12 +11868,12 @@ Zepto(function ($) {
         function onLoadPortfolioAnalysisCompleted(portfolio) {
             renderAnalysisPage(portfolio);
         }
-        
+
         // $(el.analysisPage + '_partial').animate({ opacity: 0 }, { duration: 250, easing: 'ease-out', complete: function () {}});
         // $(el.analysisPage + '_partial').html('');
         // $(el.analysisPage + '_partial').css({ opacity: 0 });
         // $(el.analysisPage + '_partial').css({ opacity: 1 });
-        
+
         // Remove all analysis content and scroll the page to top before rendering.
         $(el.analysisPage + '_partial').html('');
         theApp.scroll.scrollToPage(1);
@@ -11930,19 +11946,19 @@ Zepto(function ($) {
         // theApp.scroll.scrollToPage(1);
         // Save scroll position and rebuild a new one.
         // useTransform: true, zoom: true, zoomMax: 1.5 },
-        theApp.scroll.saveScrollPosition();        
+        theApp.scroll.saveScrollPosition();
         theApp.scroll.rebuild(
-            'fullScreenContainer', { 
-            iScrollOptions : {
-                // Scrolling options:
-                hScroll: true, vScroll: false, hScrollbar: true,
-                // Snap options:
-                snap: true, snapThreshold: 50, bounce: false, momentum: false
-                // Zoom options:
-                // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false
-            },
-            restorePosition: true
-        });
+            'fullScreenContainer', {
+                iScrollOptions: {
+                    // Scrolling options:
+                    hScroll: true, vScroll: false, hScrollbar: true,
+                    // Snap options:
+                    snap: true, snapThreshold: 50, bounce: false, momentum: false
+                    // Zoom options:
+                    // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false
+                },
+                restorePosition: true
+            });
 
         theApp.scroll.scrollToPage(data.chartOrder, 0, 0);
     });
@@ -12141,9 +12157,10 @@ Zepto(function ($) {
         theApp.tabbar.show();
     });
 
-    theApp.portfolioManager.on('onFailed', function (message) {
+    theApp.portfolioManager.on('onFailed', function (message, reason) {
         theApp.scroll.rebuild('error');
         $(el.errorMessageText).html(message);
+        $(el.errorReasonText).html(reason);
         theApp.nav.goToPage($(el.errorPage));
     });
 
@@ -12214,7 +12231,7 @@ Zepto(function ($) {
             theApp.removeFromFavourites();
         }
     });
-    
+
     // Test
     theApp.toolbar.on('onTestTap', function (isSelected) {
         theApp.onTestApp();
@@ -12243,11 +12260,11 @@ Zepto(function ($) {
         }
     });
 
-    theApp.iOSLog.on('show', function (){
+    theApp.iOSLog.on('show', function () {
         // theApp.toolbar.getButton('console').show();
     });
 
-    theApp.iOSLog.on('hide', function (){
+    theApp.iOSLog.on('hide', function () {
         // Deselect Console button.
         theApp.toolbar.getButton('console').deselect();
     });
@@ -12652,7 +12669,7 @@ Zepto(function ($) {
     theApp.portfoliosList.on('onDataReceived', function (data) {
         $(el.analysisPage + '_partial').html(data);
     });
-    
+
     // ------------------------------------------
     // TEARDOWN
     // ------------------------------------------
@@ -12715,7 +12732,7 @@ Zepto(function ($) {
             return;
         }
 
-        animationSpeed  = (theApp.settings.appSettings.animatedChartResizing)
+        animationSpeed = (theApp.settings.appSettings.animatedChartResizing)
             ? 500
             : 25;
 
@@ -12725,11 +12742,11 @@ Zepto(function ($) {
         if (restorePosition) {
             theApp.scroll.saveScrollPosition();
         }
-        
-        $('.analysisComponentContainer').each(function(){
-            var $component, $container, containerHeight, containerLandscapeHeight, 
+
+        $('.analysisComponentContainer').each(function () {
+            var $component, $container, containerHeight, containerLandscapeHeight,
             containerPortraitHeight, portraitScaleRatio, landscapeScaleRatio, realHeightData;
-            
+
             $container = $(this);
             $component = $container.children().filter('.resizableChart'); // $container.children().filter('.resizableChart'); // $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
             containerHeight = $component.height();
@@ -12741,7 +12758,7 @@ Zepto(function ($) {
                 landscapeScaleRatio = theApp.resizingSettings.chartLandscapeScaleRatio;
                 portraitScaleRatio = theApp.resizingSettings.chartPortraitScaleRatio;
             }
-            
+
             if (!$container.data("realHeight")) {
                 containerLandscapeHeight = parseInt(containerHeight * landscapeScaleRatio, 10);
                 containerPortraitHeight = parseInt(containerHeight * portraitScaleRatio, 10);
@@ -12751,37 +12768,37 @@ Zepto(function ($) {
                 containerLandscapeHeight = parseInt(realHeightData * landscapeScaleRatio, 10);
                 containerPortraitHeight = parseInt(realHeightData * portraitScaleRatio, 10);
             }
-            
+
             if ($component.hasClass('gridContainer')) {
-                containerLandscapeHeight = 0;
-                containerPortraitHeight = 0;
+                containerLandscapeHeight = 610;
+                containerPortraitHeight = 460;
             }
 
             if (device.orientation() === 'landscape') {
-                $component.css({'-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top'});
+                $component.css({ '-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top' });
                 $container.height(containerLandscapeHeight);
             } else {
-                $component.css({'-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top'});  
+                $component.css({ '-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top' });
                 $container.height(containerPortraitHeight);
-           }
+            }
         });
 
         if (theApp.settings.appSettings.automaticChartRepositioning) {
             theApp.synchronizeOrientation.pendingCount += 1;
-             
+
             // Rebuild the iScroll using a delay is necessary to ensure that the page height
             // is calculate correctly.
             setTimeout(function () {
                 if (theApp.synchronizeOrientation.pendingCount > 0) {
                     theApp.synchronizeOrientation.pendingCount -= 1;
                 }
-            
+
                 if (theApp.synchronizeOrientation.pendingCount === 0) {
                     theApp.scroll.rebuild('analysis');
                     if (theApp.synchronizeOrientation.chartToDisplay !== '') {
                         theApp.scroll.scrollToElement('#' + theApp.synchronizeOrientation.chartToDisplay, 75, 25);
                     }
-                    
+
                     theApp.preventTap(false);
                     // theApp.mask.hide('preventTap');
                 }
@@ -12795,14 +12812,14 @@ Zepto(function ($) {
             }, animationSpeed + rebuildingDelay);
         }
     };
-    
+
     // Memoization pattern.
     theApp.synchronizeOrientation.pendingCount = 0;
     theApp.synchronizeOrientation.chartToDisplay = '';
 
     theApp.getCurrentChartDisplayedInViewport = function () {
         var approximativeHeaderHeight   = 75,
-            horizon                     = 0, 
+            horizon                     = 0,
             charts                      = [],
             chart                       = {},
             positions                   = [],
@@ -12812,27 +12829,27 @@ Zepto(function ($) {
             ? (device.maxHeight()) / 2 + approximativeHeaderHeight
             : (device.maxWidth()) / 2 + approximativeHeaderHeight;
 
-        $('.snapper').each(function (){
+        $('.snapper').each(function () {
             var id, y;
             y = Math.abs($(this).offset().top - approximativeHeaderHeight);
             id = $(this).data('chartid');
             y = (y >= horizon)
                 ? y - horizon
                 : y;
-           
+
             positions.push(y);
-            charts.push({y: y, chartId: id});
+            charts.push({ y: y, chartId: id });
         });
-        
+
         // Reference: http://ejohn.org/blog/fast-javascript-maxmin/
         minY = Math.min.apply(Math, positions);
-        chart =  helper.getObjectFromArray(charts, 'y', minY);
+        chart = helper.getObjectFromArray(charts, 'y', minY);
 
         return chart.chartId;
     };
 
 
-    $('body').bind('turn', function(event, info){
+    $('body').bind('turn', function (event, info) {
         theApp.synchronizeOrientation.chartToDisplay = theApp.getCurrentChartDisplayedInViewport();
         theApp.synchronizeOrientation(true);
     });
@@ -12850,10 +12867,10 @@ Zepto(function ($) {
         theApp.experimentalPage.create();
     };
 
-    theApp.experimentalPage.on('onPreviewChart' , function (customChart) {
+    theApp.experimentalPage.on('onPreviewChart', function (customChart) {
         var charts = [];
         var chartComponentsData = theApp.chartComponents.getData('charts');
-        
+
         // Clear previous chart.
         $('#custom_chart_partial').html('');
 
@@ -12861,7 +12878,7 @@ Zepto(function ($) {
         customChart.timePeriods = theApp.customChartTimePeriods.timePeriods;
         customChart.startDate = theApp.customChartTimePeriods.startDate;
         customChart.endDate = theApp.customChartTimePeriods.endDate;
-        
+
         chartComponentsData[customChart.chartId] = customChart;
         charts.push({ chartId: customChart.chartId });
 

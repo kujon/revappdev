@@ -121,7 +121,7 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
 
     // PIE CHART
     pieChart = {
-        chartArea: { left: 80, width: '75%', height: '80%' },
+        chartArea: { left: 0, width: '85%', height: '90%' },
         fontName: commonSettings.labelFontName,
         fontSize: commonSettings.labelFontSize,
         forceIFrame: commonSettings.forceIFrame,
@@ -157,8 +157,8 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
         tableLandscapeScaleRatio: 1,
         tablePortraitScaleRatio: 0.80,
 
-        rowHeight: 50, // Same value of .tableRow and .oddTableRow
-        headerHeight: 50, // Same value of .headerRow
+        rowHeight: 60, // Same value of .tableRow and .oddTableRow
+        headerHeight: 60, // Same value of .headerRow
         fixedHeight: 10,
         
         calculateTableHeight: function (numRows) {

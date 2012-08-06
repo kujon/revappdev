@@ -284,9 +284,10 @@ WebAppLoader.addModule({ name: 'chartManager',
             presentationChart.setContainerId(presentationContainerId);
 
             if (type === 'Table') {
-                chart.setOption('height', chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
+                chart.setOption('height', '600px'); // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
                 chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
-                presentationChart.setOption('width', 1024);
+                presentationChart.setOption('width', '1000px');
+                presentationChart.setOption('height', '720px');
             } else { 
                 presentationChart.setOption('height', 680);
                 presentationChart.setOption('width', 1024);
