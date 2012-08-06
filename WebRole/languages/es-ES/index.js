@@ -139,7 +139,8 @@ exports.client = {
         fixedIncomeMasterTitle              : 'Key Fixed Income Numbers',
         riskMasterTitle                     : 'Key Risk Numbers',
         allocationMasterTitle               : 'Key Allocation Numbers',
-        contributionMasterTitle             : 'Key Contribution Numbers'
+        contributionMasterTitle             : 'Key Contribution Numbers',
+        allocationLongShortGridTitle        : 'Long/Short Allocation'
     },
 
     chartTypes: {

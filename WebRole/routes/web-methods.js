@@ -66,7 +66,7 @@ exports.segmentsTreeNode = function (req, res) {
 
         jsonObj = adapter.convert(
             segments.data,
-            req.body.include,
+            req.body.includeMeasuresFor,
             analysis,
             req.body.measures,
             currentLanguage            

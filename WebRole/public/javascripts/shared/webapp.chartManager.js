@@ -172,6 +172,14 @@ WebAppLoader.addModule({ name: 'chartManager',
         // Add a transparent background to all charts.
         options.backgroundColor = { fill: 'transparent' };
 
+        // Due to the differences with the treemap chart making it less flexible than the 
+        // others, we need to set the options for this chart before it gets created.
+        if (type === 'TreeMap' && config.isGradientReversed) {
+            options.minColor = '#6699cc';
+            options.midColor = '#ffffff';
+            options.maxColor = '#cc0000';
+        }
+
         // Create a new visualization wrapper instance, using the type, options and ID.
         chart = new google.visualization.ChartWrapper({
             chartType: type,
@@ -194,6 +202,7 @@ WebAppLoader.addModule({ name: 'chartManager',
         chart.seriesType = config.seriesType;
         chart.startDate = config.startDate;
         chart.timePeriods = config.timePeriods;
+        chart.topBottomSplit = config.topBottomSplit;
 
         google.visualization.events.addListener(chart, 'error', function (errorObj) {
             onChartReady({ errorObj: errorObj });
@@ -247,6 +256,7 @@ WebAppLoader.addModule({ name: 'chartManager',
         if (chart.startDate) { params.startDate = chart.startDate; }
         if (chart.seriesType) { params.seriesType = chart.seriesType; }
         if (chart.timePeriods) { params.timePeriods = chart.timePeriods; }
+        if (chart.topBottomSplit) { params.topBottomSplit = chart.topBottomSplit; }
 
         // Define the correct URL to use to retrieve data based on the chart type.
         url = (type === 'LineChart') ? siteUrls.timeSeries : siteUrls.segmentsTreeNode;
@@ -255,14 +265,28 @@ WebAppLoader.addModule({ name: 'chartManager',
 
         // Callback function to be invoked when data is returned from the server.
         function onDataLoaded(data) {
-            var dataTable, i, min, max, gaugeConfig,
-                values = [], sliceOptions = [], isAllPositiveOrNegative, 
+            var dataTable, totalRows, rangeRows, i, min, max, gaugeConfig,
+                values = [], sliceOptions = [], isAllPositiveOrNegative,
                 presentationChart, presentationContainerId;
 
             output.log(data);
 
             // Create a new visualization DataTable instance based on the data.
             dataTable = new google.visualization.DataTable(data);
+
+            // If we're only looking for a top/bottom selection, make that selection now.
+            if (chart.topBottomSplit) {
+
+                // Get the total rows available, and the calculation of how many rows we need.
+                totalRows = dataTable.getNumberOfRows();
+                requiredRows = (chart.topBottomSplit * 2);
+
+                // Only remove rows if there are more rows than required.
+                if (totalRows > requiredRows) {
+                    rangeRows = totalRows - requiredRows;
+                    dataTable.removeRows(chart.topBottomSplit, rangeRows);
+                }
+            }
 
             // Loop round the columns, applying the formatter to 'number' columns.
             for (i = 0; i < dataTable.getNumberOfColumns(); i++) {
@@ -287,7 +311,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                 chart.setOption('height', chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
                 chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
                 presentationChart.setOption('width', 1024);
-            } else { 
+            } else {
                 presentationChart.setOption('height', 680);
                 presentationChart.setOption('width', 1024);
             }

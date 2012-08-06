@@ -20,16 +20,16 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
             order       : 1,
             userDefined : false,
             charts      : [{
-                    chartId : 'performanceMaster_grid',
+                    chartId : 'performance_grid',
                     order   : 1
                 },{
                     chartId : 'performance_line',
                     order   : 2
                 },{
-                    chartId : 'performance_grid',
+                    chartId : 'performance_bubble',
                     order   : 3
                 },{
-                    chartId : 'performance_bubble',
+                    chartId : 'performanceMaster_grid',
                     order   : 4
                 },{
                     chartId: 'performance_bar',
@@ -79,6 +79,9 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
                 },{
                     chartId: 'allocation_bar',
                     order   : 3
+                },{
+                    chartId: 'allocationLongShort_grid',
+                    order   : 4
                 }]             
         },{
             name        : 'Contribution',
@@ -125,7 +128,7 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
             order       : 6,
             userDefined : false,
             charts      : [{
-                    chartId : 'fixedIncomeMaster_grid',
+                    chartId : 'fixedIncomeContribution_grid',
                     order   : 1
                 },{
                     chartId: 'fixedIncomeContribution_bar',
@@ -152,11 +155,8 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
                     chartId: 'fixedIncome_grid',
                     order   : 9
                 },{
-                    chartId: 'fixedIncomeContribution_grid',
-                    order   : 10
-                },{
                     chartId: 'fixedIncomeExposure_grid',
-                    order   : 11
+                    order   : 10
                 }]   
         },{
             name        : 'User Defined Test Page',
