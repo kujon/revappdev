@@ -608,7 +608,17 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             // Define a wrapper DIV class for the chart container depending on
             // the chart type. If the chart is a table, it sets its own height,
             // so an explicit class defining height is not required.
-            containerClass = (chartToAdd.chartType === 'Table') ? 'gridContainer resizableChart' : 'chartContainer resizableChart';
+            switch (chartToAdd.chartType) {
+                case 'Table':
+                    containerClass = 'gridContainer resizableChart';
+                    break;
+                case 'TreeMap':
+                    containerClass = 'treeMapContainer resizableChart';
+                    break;
+                default:
+                    containerClass = 'chartContainer resizableChart';
+            }
+            // containerClass = (chartToAdd.chartType === 'Table') ? 'gridContainer resizableChart' : 'chartContainer resizableChart';
 
             // Create the chart containers according to the chart types.
             for (var i = 0; i < chartsToRender.length; i++) {

@@ -27,7 +27,7 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
 
     // BUBBLE CHART
     bubbleChart = {
-        chartArea: { left: 80, top: 35, width: '70%', height: '80%' },
+        chartArea: { left: 80, top: 35, width: '70%', height: '85%' },
         fontName: commonSettings.labelFontName,
         fontSize: commonSettings.labelFontSize,
         forceIFrame: commonSettings.forceIFrame,
@@ -53,7 +53,7 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
 
     // BAR CHART
     barChart = {
-        chartArea: { left: '20%', width: '60%', height: '80%' },
+        chartArea: { left: '20%', width: '60%', height: '90%' },
         fontName: commonSettings.labelFontName,
         fontSize: commonSettings.labelFontSize,
         forceIFrame: commonSettings.forceIFrame,
@@ -113,7 +113,7 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
 
     // LINE CHART
     lineChart = {
-        chartArea: { left: 80, top: 35, width: '75%', height: '80%' },
+        chartArea: { left: 80, top: 35, width: '75%', height: '85%' },
         fontName: commonSettings.labelFontName,
         fontSize: commonSettings.labelFontSize,
         forceIFrame: commonSettings.forceIFrame

@@ -506,10 +506,20 @@ Zepto(function ($) {
     });
 
     theApp.presentationManager.on('onExit', function () {
+        var deviceOrientation = device.orientation();
+
+        // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
         theApp.isFullScreen = false;
-        theApp.scroll.rebuild('analysis', { restorePosition: true });
-        theApp.iOSLog.debug('rebuilt on onExit');
-        // theApp.synchronizeOrientation(false); // ASA TEST
+        
+        if (deviceOrientation === theApp.lastDeviceOrientation) {
+            theApp.iOSLog.debug('rebuilt on onExit');
+            theApp.scroll.rebuild('analysis', { restorePosition: true });
+        } else {
+            theApp.iOSLog.debug('synchronize on onExit');
+            theApp.synchronizeOrientation(false); // ASA TEST
+        }
+
+        // theApp.scroll.rebuild('analysis', { restorePosition: true });
         // theApp.preventAnalysisRebuilding = false; // ASA TEST
         
     });
@@ -1266,7 +1276,8 @@ Zepto(function ($) {
             deviceOrientation = device.orientation();
 
         // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
-        if (theApp.isFullScreen  || deviceOrientation === theApp.lastDeviceOrientation) {
+        if (theApp.isFullScreen) {
+            theApp.iOSLog.debug('synchronizeOrientation skipped.');
             return;
         }
         
@@ -1315,10 +1326,10 @@ Zepto(function ($) {
             }
 
             if (deviceOrientation === 'landscape') {
-                $component.css({ '-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top' });
+                $component.css({ '-webkit-transform': 'scale(.91)', '-webkit-transform-origin': 'left top' });
                 $container.height(containerLandscapeHeight);
             } else {
-                $component.css({ '-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top' });
+                $component.css({ '-webkit-transform': 'scale(.65)', '-webkit-transform-origin': 'left top' });
                 $container.height(containerPortraitHeight);
             }
         });

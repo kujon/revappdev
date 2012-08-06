@@ -8685,7 +8685,17 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             // Define a wrapper DIV class for the chart container depending on
             // the chart type. If the chart is a table, it sets its own height,
             // so an explicit class defining height is not required.
-            containerClass = (chartToAdd.chartType === 'Table') ? 'gridContainer resizableChart' : 'chartContainer resizableChart';
+            switch (chartToAdd.chartType) {
+                case 'Table':
+                    containerClass = 'gridContainer resizableChart';
+                    break;
+                case 'TreeMap':
+                    containerClass = 'treeMapContainer resizableChart';
+                    break;
+                default:
+                    containerClass = 'chartContainer resizableChart';
+            }
+            // containerClass = (chartToAdd.chartType === 'Table') ? 'gridContainer resizableChart' : 'chartContainer resizableChart';
 
             // Create the chart containers according to the chart types.
             for (var i = 0; i < chartsToRender.length; i++) {
@@ -8780,7 +8790,7 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
 
     // BUBBLE CHART
     bubbleChart = {
-        chartArea: { left: 80, top: 35, width: '70%', height: '80%' },
+        chartArea: { left: 80, top: 35, width: '70%', height: '85%' },
         fontName: commonSettings.labelFontName,
         fontSize: commonSettings.labelFontSize,
         forceIFrame: commonSettings.forceIFrame,
@@ -8806,7 +8816,7 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
 
     // BAR CHART
     barChart = {
-        chartArea: { left: '20%', width: '60%', height: '80%' },
+        chartArea: { left: '20%', width: '60%', height: '90%' },
         fontName: commonSettings.labelFontName,
         fontSize: commonSettings.labelFontSize,
         forceIFrame: commonSettings.forceIFrame,
@@ -8866,7 +8876,7 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
 
     // LINE CHART
     lineChart = {
-        chartArea: { left: 80, top: 35, width: '75%', height: '80%' },
+        chartArea: { left: 80, top: 35, width: '75%', height: '85%' },
         fontName: commonSettings.labelFontName,
         fontSize: commonSettings.labelFontSize,
         forceIFrame: commonSettings.forceIFrame
@@ -9254,7 +9264,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                 presentationChart.setOption('height', '560px !important;'); // presentationChart.setOption('height', '600px !important');
                 presentationChart.setOption('width', 1000); //  chartDefaults.resizingSettings.tableWidth); //'1024 !important; min-width: 1000px !important;');
             } else { 
-                presentationChart.setOption('height', 680);
+                presentationChart.setOption('height', 640);
                 presentationChart.setOption('width', 1024);
             }
 
@@ -11974,10 +11984,20 @@ Zepto(function ($) {
     });
 
     theApp.presentationManager.on('onExit', function () {
+        var deviceOrientation = device.orientation();
+
+        // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
         theApp.isFullScreen = false;
-        theApp.scroll.rebuild('analysis', { restorePosition: true });
-        theApp.iOSLog.debug('rebuilt on onExit');
-        // theApp.synchronizeOrientation(false); // ASA TEST
+        
+        if (deviceOrientation === theApp.lastDeviceOrientation) {
+            theApp.iOSLog.debug('rebuilt on onExit');
+            theApp.scroll.rebuild('analysis', { restorePosition: true });
+        } else {
+            theApp.iOSLog.debug('synchronize on onExit');
+            theApp.synchronizeOrientation(false); // ASA TEST
+        }
+
+        // theApp.scroll.rebuild('analysis', { restorePosition: true });
         // theApp.preventAnalysisRebuilding = false; // ASA TEST
         
     });
@@ -12734,7 +12754,8 @@ Zepto(function ($) {
             deviceOrientation = device.orientation();
 
         // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
-        if (theApp.isFullScreen  || deviceOrientation === theApp.lastDeviceOrientation) {
+        if (theApp.isFullScreen) {
+            theApp.iOSLog.debug('synchronizeOrientation skipped.');
             return;
         }
         
@@ -12783,10 +12804,10 @@ Zepto(function ($) {
             }
 
             if (deviceOrientation === 'landscape') {
-                $component.css({ '-webkit-transform': 'scale(.93)', '-webkit-transform-origin': 'left top' });
+                $component.css({ '-webkit-transform': 'scale(.91)', '-webkit-transform-origin': 'left top' });
                 $container.height(containerLandscapeHeight);
             } else {
-                $component.css({ '-webkit-transform': 'scale(.69)', '-webkit-transform-origin': 'left top' });
+                $component.css({ '-webkit-transform': 'scale(.65)', '-webkit-transform-origin': 'left top' });
                 $container.height(containerPortraitHeight);
             }
         });

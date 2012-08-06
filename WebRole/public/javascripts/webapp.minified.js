@@ -3680,8 +3680,12 @@ return
 G=true
 }else{C.push(D)
 }if(G){A(D.chartId,D.title)
-}E=(D.chartType==="Table")?"gridContainer resizableChart":"chartContainer resizableChart";
-for(var F=0;
+}switch(D.chartType){case"Table":E="gridContainer resizableChart";
+break;
+case"TreeMap":E="treeMapContainer resizableChart";
+break;
+default:E="chartContainer resizableChart"
+}for(var F=0;
 F<C.length;
 F++){chart=c[C[F].chartId]||null;
 v.push(chart);
@@ -3714,12 +3718,12 @@ return a
 });
 WebAppLoader.addModule({name:"chartDefaults",isShared:true},function(){var d={},f={},a={},b={},e={},g={},h={},i={},k={},m={},l={},j=this.getConsole();
 f={forceIFrame:false,labelFontName:"HelveticaNeue-Light",labelFontSize:12,titleFontName:"HelveticaNeue-Bold",titleFontSize:25};
-b={chartArea:{left:80,top:35,width:"70%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,hAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}},sizeAxis:{maxSize:100,maxValue:100,minSize:1,minValue:1},vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
-a={chartArea:{left:"20%",width:"60%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
+b={chartArea:{left:80,top:35,width:"70%",height:"85%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,hAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}},sizeAxis:{maxSize:100,maxValue:100,minSize:1,minValue:1},vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
+a={chartArea:{left:"20%",width:"60%",height:"90%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
 e={chartArea:{left:"10%",width:"70%",height:"75%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,vAxis:{titleTextStyle:{fontName:f.titleFontName,fontSize:f.titleFontSize}}};
 g={forceIFrame:f.forceIFrame,height:250,greenFrom:0,greenTo:4,yellowFrom:4,yellowTo:6,redFrom:6,redTo:20,max:20,minorTicks:5};
 h={allowHtml:true,alternatingRowStyle:true,page:"enable",pageSize:10,cssClassNames:{headerRow:"headerRow",tableRow:"tableRow",oddTableRow:"oddTableRow",selectedTableRow:"selectedTableRow",hoverTableRow:"hoverTableRow"}};
-i={chartArea:{left:80,top:35,width:"75%",height:"80%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame};
+i={chartArea:{left:80,top:35,width:"75%",height:"85%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame};
 k={chartArea:{left:0,width:"85%",height:"90%"},fontName:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,is3D:true,legend:{position:"none"},pieSliceText:"label",pieSliceTextStyle:{color:"#000000"}};
 m={fontFamily:f.labelFontName,fontSize:f.labelFontSize,forceIFrame:f.forceIFrame,headerHeight:25,minColor:"#cc0000",midColor:"#ffffff",maxColor:"#6699cc",maxDepth:3};
 l={chartWidth:960,tableWidth:980,chartLandscapeScaleRatio:1,chartPortraitScaleRatio:0.8,tableLandscapeScaleRatio:1,tablePortraitScaleRatio:0.8,rowHeight:50,headerHeight:50,fixedHeight:10,calculateTableHeight:function(n){return parseInt(n*this.rowHeight+this.headerHeight+this.fixedHeight,10)
@@ -3836,7 +3840,7 @@ if(z==="Table"){u.setOption("height","620px");
 u.setOption("width",d.resizingSettings.tableWidth);
 I.setOption("height","560px !important;");
 I.setOption("width",1000)
-}else{I.setOption("height",680);
+}else{I.setOption("height",640);
 I.setOption("width",1024)
 }if(z==="PieChart"&&u.isHeatMap){C.sort([{column:2}]);
 for(E=0;
@@ -4534,10 +4538,13 @@ n.scroll.scrollToPage(p.chartOrder,0,0)
 });
 n.presentationManager.on("onEnter",function(p){n.isFullScreen=true
 });
-n.presentationManager.on("onExit",function(){n.isFullScreen=false;
-n.scroll.rebuild("analysis",{restorePosition:true});
-n.iOSLog.debug("rebuilt on onExit")
-});
+n.presentationManager.on("onExit",function(){var p=b.orientation();
+n.isFullScreen=false;
+if(p===n.lastDeviceOrientation){n.iOSLog.debug("rebuilt on onExit");
+n.scroll.rebuild("analysis",{restorePosition:true})
+}else{n.iOSLog.debug("synchronize on onExit");
+n.synchronizeOrientation(false)
+}});
 n.scroll.on("onScrolledToPage",function(p){});
 n.showAnalysisSettingsPage=function(){var q={},p;
 q=n.analysisManager.getData("analysisPages");
@@ -4835,7 +4842,8 @@ n.settingsButton.setDisabled(true)
 n.settingsButton.setDisabled(false)
 }};
 n.synchronizeOrientation=function(u){var p=25,t=1000,s=null,u=e.getValueAs(u,"boolean"),q=b.orientation();
-if(n.isFullScreen||q===n.lastDeviceOrientation){return
+if(n.isFullScreen){n.iOSLog.debug("synchronizeOrientation skipped.");
+return
 }n.lastDeviceOrientation=q;
 p=(n.settings.appSettings.animatedChartResizing)?500:25;
 n.preventTap(true);
@@ -4856,9 +4864,9 @@ y=parseInt(C*A,10);
 z=parseInt(C*B,10)
 }if(v.hasClass("gridContainer")){y=640;
 z=480
-}if(q==="landscape"){v.css({"-webkit-transform":"scale(.93)","-webkit-transform-origin":"left top"});
+}if(q==="landscape"){v.css({"-webkit-transform":"scale(.91)","-webkit-transform-origin":"left top"});
 w.height(y)
-}else{v.css({"-webkit-transform":"scale(.69)","-webkit-transform-origin":"left top"});
+}else{v.css({"-webkit-transform":"scale(.65)","-webkit-transform-origin":"left top"});
 w.height(z)
 }});
 if(n.settings.appSettings.automaticChartRepositioning){n.synchronizeOrientation.pendingCount+=1;

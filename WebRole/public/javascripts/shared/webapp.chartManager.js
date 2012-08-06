@@ -289,7 +289,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                 presentationChart.setOption('height', '560px !important;'); // presentationChart.setOption('height', '600px !important');
                 presentationChart.setOption('width', 1000); //  chartDefaults.resizingSettings.tableWidth); //'1024 !important; min-width: 1000px !important;');
             } else { 
-                presentationChart.setOption('height', 680);
+                presentationChart.setOption('height', 640);
                 presentationChart.setOption('width', 1024);
             }
 
