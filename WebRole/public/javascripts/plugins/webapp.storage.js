@@ -6,7 +6,7 @@ WebAppLoader.addModule({ name: 'storage', plugins: ['helper'], isPlugin: true },
     var storage             = {},
         output              = this.getConsole(),
         helper              = this.getPlugin('helper'),
-        revolutionNamespace = 'Revolution';
+        revolutionNamespace = 'Revolution',
         usedSpace           = 0;
 
     // Public

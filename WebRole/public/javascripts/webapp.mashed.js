@@ -6754,7 +6754,7 @@ WebAppLoader.addModule({ name: 'storage', plugins: ['helper'], isPlugin: true },
     var storage             = {},
         output              = this.getConsole(),
         helper              = this.getPlugin('helper'),
-        revolutionNamespace = 'Revolution';
+        revolutionNamespace = 'Revolution',
         usedSpace           = 0;
 
     // Public
@@ -6864,7 +6864,7 @@ WebAppLoader.addExtension({ name: 'dataObject', plugins: ['helper', 'storage'], 
         output          = this.getConsole(),
         eventManager    = this.getEventManager(),
         storage         = this.getPlugin('storage'),
-        helper          = this.getPlugin('helper');
+        helper          = this.getPlugin('helper'),
         dataObjects     = {};
 
     var dataObject = (function() {
@@ -8102,6 +8102,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             include: 'childSegments',
             measures: ['rp'],
             includeMeasuresFor: ['childSegments'],
+            oData: { orderby: 'rp-{timePeriod} desc' },
             options: {
                 hAxis: { title: 'Return' }
             }
@@ -8113,6 +8114,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             include: 'childSegments',
             measures: ['wp', 'contributionvar'],
             includeMeasuresFor: ['childSegments'],
+            oData: { orderby: 'contributionvar-{timePeriod} desc' },
             options: {
                 hAxis: { title: 'Return' }
             }
@@ -8124,6 +8126,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             include: 'childSegments',
             measures: ['wover'],
             includeMeasuresFor: ['childSegments'],
+            oData: { orderby: 'wover-{timePeriod} desc' },
             options: {
                 hAxis: { title: 'Excess Weight %' }
             }
@@ -8131,10 +8134,12 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         'contribution_bar': {
             chartId: 'contribution_bar',
             title: lang.chart.contributionBarTitle,
+            topBottomSplit: 5,
             chartType: 'BarChart',
             include: 'securities',
             measures: ['ctp'],
             includeMeasuresFor: ['securities'],
+            oData: { orderby: 'ctp-{timePeriod} desc' },
             options: {
                 hAxis: { title: 'Contribution' }
             }
@@ -8145,6 +8150,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             chartType: 'BarChart',
             include: 'childSegments',
             measures: ['wendover', 'etotal'],
+            oData: { orderby: 'etotal-{timePeriod} desc' },
             includeMeasuresFor: ['childSegments']
         },
         'fixedIncomeContribution_bar': {
@@ -8282,6 +8288,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             chartType: 'ColumnChart',
             include: 'childSegments',
             measures: ['etotal', 'ealloc', 'eselecinter'],
+            oData: { orderby: 'etotal-{timePeriod} desc' },
             includeMeasuresFor: ['childSegments'],
             options: {
                 colors: ['#003366', '#FF6600', '#990066']
@@ -8338,7 +8345,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             title: lang.chart.contributionMasterTitle,
             chartType: 'Table',
             include: 'childSegments',
-            measures: ['wp', 'ctp', 'wb', 'ctb'],
+            measures: ['wp', 'ctp', 'rp', 'wb', 'ctb', 'rb'],
             includeMeasuresFor: ['segment', 'childSegments']
         },
         'attributionMaster_grid': {
@@ -8349,20 +8356,12 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             measures: ['wp', 'wb', 'ealloc', 'eselecinter', 'eallocc', 'etotal'],
             includeMeasuresFor: ['segment', 'childSegments']
         },
-        'fixedIncomeMaster_grid': {
-            chartId: 'fixedIncomeMaster_grid',
-            title: lang.chart.fixedIncomeMasterTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: ['wp', 'rp', 'rpyc', 'rpspread', 'ctp'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
         'allocationMaster_grid': {
             chartId: 'allocationMaster_grid',
             title: lang.chart.allocationMasterTitle,
             chartType: 'Table',
             include: 'childSegments',
-            measures: ['wp', 'wpgross', 'shortexposureend', 'longexposureend', 'mvend'],
+            measures: ['wpend', 'wpbeg', 'mvend'],
             includeMeasuresFor: ['segment', 'childSegments']
         },
         'riskMaster_grid': {
@@ -8402,6 +8401,14 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             ],
             includeMeasuresFor: ['segment', 'childSegments']
         },
+        'allocationLongShort_grid': {
+            chartId: 'allocationLongShort_grid',
+            title: lang.chart.allocationLongShortGridTitle,
+            chartType: 'Table',
+            include: 'childSegments',
+            measures: ['wp', 'wpgross', 'shortexposureend', 'longexposureend', 'leverageend'],
+            includeMeasuresFor: ['segment', 'childSegments']
+        },
         'fixedIncome_grid': {
             chartId: 'fixedIncome_grid',
             title: lang.chart.fixedIncomeGridTitle,
@@ -8438,25 +8445,26 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             chartType: 'Table',
             include: 'securities',
             measures: ['wpend', 'rp', 'ctp'],
-            oData: { orderby: 'wpend-Earliest desc', top: 10 },
+            oData: { orderby: 'wpend-{timePeriod} desc', top: 10 },
             includeMeasuresFor: ['securities']
         },
         'contributionTopTen_grid': {
             chartId: 'contributionTopTen_grid',
             title: lang.chart.contributionTopTenGridTitle,
+            topBottomSplit: 5,
             chartType: 'Table',
             include: 'securities',
             measures: ['wpend', 'rp', 'ctp'],
-            oData: { orderby: 'ctp-Earliest desc', top: 10 },
+            oData: { orderby: 'ctp-{timePeriod} desc' },
             includeMeasuresFor: ['securities']
-        },
+        },        
         'riskTopTen_grid': {
             chartId: 'riskTopTen_grid',
             title: lang.chart.riskTopTenGridTitle,
             chartType: 'Table',
             include: 'securities',
             measures: ['wpend', 'expectedshortfallpercent', 'valueatriskpercent', 'expectedvolatilitypercent'],
-            oData: { orderby: 'valueatriskpercent-Earliest desc', top: 10 },
+            oData: { orderby: 'valueatriskpercent-{timePeriod} desc', top: 10 },
             includeMeasuresFor: ['securities']
         },
 
@@ -8467,18 +8475,20 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         'performance_treemap': {
             chartId: 'performance_treemap',
             title: lang.chart.performanceTreemapTitle,
+            isGradientReversed: false,
             chartType: 'TreeMap',
             include: 'securities',
             measures: ['wpabsoluteend', 'rp'],
-            includeMeasuresFor: ['segment', 'securities']
+            includeMeasuresFor: ['securities']
         },
         'risk_treemap': {
             chartId: 'risk_treemap',
             title: lang.chart.riskTreemapTitle,
+            isGradientReversed: true,
             chartType: 'TreeMap',
             include: 'childSegments',
             measures: ['wpabsoluteend', 'contributionvar'],
-            includeMeasuresFor: ['segment', 'childSegments']
+            includeMeasuresFor: ['childSegments']
         },
 
         // ------------------------------------------
@@ -8593,6 +8603,12 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             config.timePeriods = timePeriod.code;
             config.startDate = timePeriod.startDate;
             config.endDate = timePeriod.endDate;
+
+            // If we've got an oData object and order associated with this chart,
+            // we'll need to replace the timeperiod placeholder with the period code.
+            if (config.oData && config.oData.orderby) { 
+                config.oData.orderby = config.oData.orderby.replace('{timePeriod}', timePeriod.code);
+            }
         });
     }
 
@@ -8618,7 +8634,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             // In order to increase the performances we add the chart to the presentation container here.
             addChartToPresentation(chartId, chartTitle);
         }
-        
+
         function addChartToPresentation(chartId, chartTitle) {
             var sb          = new helper.StringBuilder(),
                 containerId = "presentation-" + chartId;
@@ -9143,6 +9159,14 @@ WebAppLoader.addModule({ name: 'chartManager',
         // Add a transparent background to all charts.
         options.backgroundColor = { fill: 'transparent' };
 
+        // Due to the differences with the treemap chart making it less flexible than the 
+        // others, we need to set the options for this chart before it gets created.
+        if (type === 'TreeMap' && config.isGradientReversed) {
+            options.minColor = '#6699cc';
+            options.midColor = '#ffffff';
+            options.maxColor = '#cc0000';
+        }
+
         // Create a new visualization wrapper instance, using the type, options and ID.
         chart = new google.visualization.ChartWrapper({
             chartType: type,
@@ -9165,6 +9189,7 @@ WebAppLoader.addModule({ name: 'chartManager',
         chart.seriesType = config.seriesType;
         chart.startDate = config.startDate;
         chart.timePeriods = config.timePeriods;
+        chart.topBottomSplit = config.topBottomSplit;
 
         google.visualization.events.addListener(chart, 'error', function (errorObj) {
             onChartReady({ errorObj: errorObj });
@@ -9218,6 +9243,7 @@ WebAppLoader.addModule({ name: 'chartManager',
         if (chart.startDate) { params.startDate = chart.startDate; }
         if (chart.seriesType) { params.seriesType = chart.seriesType; }
         if (chart.timePeriods) { params.timePeriods = chart.timePeriods; }
+        if (chart.topBottomSplit) { params.topBottomSplit = chart.topBottomSplit; }
 
         // Define the correct URL to use to retrieve data based on the chart type.
         url = (type === 'LineChart') ? siteUrls.timeSeries : siteUrls.segmentsTreeNode;
@@ -9226,14 +9252,28 @@ WebAppLoader.addModule({ name: 'chartManager',
 
         // Callback function to be invoked when data is returned from the server.
         function onDataLoaded(data) {
-            var dataTable, i, min, max, gaugeConfig,
-                values = [], sliceOptions = [], isAllPositiveOrNegative, 
+            var dataTable, totalRows, rangeRows, i, min, max, gaugeConfig,
+                values = [], sliceOptions = [], isAllPositiveOrNegative,
                 presentationChart, presentationContainerId;
 
             output.log(data);
 
             // Create a new visualization DataTable instance based on the data.
             dataTable = new google.visualization.DataTable(data);
+
+            // If we're only looking for a top/bottom selection, make that selection now.
+            if (chart.topBottomSplit) {
+
+                // Get the total rows available, and the calculation of how many rows we need.
+                totalRows = dataTable.getNumberOfRows();
+                requiredRows = (chart.topBottomSplit * 2);
+
+                // Only remove rows if there are more rows than required.
+                if (totalRows > requiredRows) {
+                    rangeRows = totalRows - requiredRows;
+                    dataTable.removeRows(chart.topBottomSplit, rangeRows);
+                }
+            }
 
             // Loop round the columns, applying the formatter to 'number' columns.
             for (i = 0; i < dataTable.getNumberOfColumns(); i++) {
@@ -9259,7 +9299,7 @@ WebAppLoader.addModule({ name: 'chartManager',
                 chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
                 presentationChart.setOption('height', '560px !important;'); // presentationChart.setOption('height', '600px !important');
                 presentationChart.setOption('width', 1000); //  chartDefaults.resizingSettings.tableWidth); //'1024 !important; min-width: 1000px !important;');
-            } else { 
+            } else {
                 presentationChart.setOption('height', 640);
                 presentationChart.setOption('width', 1024);
             }
@@ -9893,16 +9933,16 @@ WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects
             order       : 1,
             userDefined : false,
             charts      : [{
-                    chartId : 'performanceMaster_grid',
+                    chartId : 'performance_grid',
                     order   : 1
                 },{
                     chartId : 'performance_line',
                     order   : 2
                 },{
-                    chartId : 'performance_grid',
+                    chartId : 'performance_bubble',
                     order   : 3
                 },{
-                    chartId : 'performance_bubble',
+                    chartId : 'performanceMaster_grid',
                     order   : 4
                 },{
                     chartId: 'performance_bar',
@@ -9952,6 +9992,9 @@ WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects
                 },{
                     chartId: 'allocation_bar',
                     order   : 3
+                },{
+                    chartId: 'allocationLongShort_grid',
+                    order   : 4
                 }]             
         },{
             name        : 'Contribution',
@@ -9998,7 +10041,7 @@ WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects
             order       : 6,
             userDefined : false,
             charts      : [{
-                    chartId : 'fixedIncomeMaster_grid',
+                    chartId : 'fixedIncomeContribution_grid',
                     order   : 1
                 },{
                     chartId: 'fixedIncomeContribution_bar',
@@ -10025,11 +10068,8 @@ WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects
                     chartId: 'fixedIncome_grid',
                     order   : 9
                 },{
-                    chartId: 'fixedIncomeContribution_grid',
-                    order   : 10
-                },{
                     chartId: 'fixedIncomeExposure_grid',
-                    order   : 11
+                    order   : 10
                 }]   
         },{
             name        : 'User Defined Test Page',
@@ -10507,7 +10547,7 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
 // ------------------------------------------
 
 WebAppLoader.addModule({ name: 'presentationManager', plugins: ['device'], sharedModules: ['pageElements'], hasEvents: true }, function () {
-    var presentationManager  = {},
+    var presentationManager = {},
         eventManager        = this.getEventManager(),
         output              = this.getConsole(),
         device              = this.getPlugin('device'),

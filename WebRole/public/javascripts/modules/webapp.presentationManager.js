@@ -3,7 +3,7 @@
 // ------------------------------------------
 
 WebAppLoader.addModule({ name: 'presentationManager', plugins: ['device'], sharedModules: ['pageElements'], hasEvents: true }, function () {
-    var presentationManager  = {},
+    var presentationManager = {},
         eventManager        = this.getEventManager(),
         output              = this.getConsole(),
         device              = this.getPlugin('device'),

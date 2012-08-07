@@ -8,7 +8,7 @@ WebAppLoader.addExtension({ name: 'dataObject', plugins: ['helper', 'storage'], 
         output          = this.getConsole(),
         eventManager    = this.getEventManager(),
         storage         = this.getPlugin('storage'),
-        helper          = this.getPlugin('helper');
+        helper          = this.getPlugin('helper'),
         dataObjects     = {};
 
     var dataObject = (function() {
