@@ -219,13 +219,14 @@ function addMeasureRows(rowArray, measures, analysis, language) {
 // DATA CONVERSION FUNCTIONS
 // ------------------------------------------
 
-function convert(node, dataToInclude, analysis, measures, language) {
+function convert(node, includeMeasuresFor, analysis, measures, language) {
     var columnArray = [],
         rowArray = [],
         children;
 
-    // Switch on the dataToInclude parameter.
-    if (dataToInclude === 'none') {
+    // If the only data to include string is 'segment',
+    // we know we're just getting top level data.
+    if ((includeMeasuresFor.length === 1) && (includeMeasuresFor.indexOf('segment') !== -1)) {
 
         if (this.addMeasureRows) {
             this.addColumn(columnArray, node.segment.name);
@@ -238,15 +239,22 @@ function convert(node, dataToInclude, analysis, measures, language) {
         }
 
     } else {
-
-        // Retrieve the segments or securities from the relevant 'included data' property.
-        children = (dataToInclude === 'childSegments') ?
-            node[dataToInclude].segments :
-            node[dataToInclude].securities;
-
+        
         if (this.addMeasureColumns) {
             this.addMeasureColumns(columnArray, measures, analysis, language);
         }
+
+        // If we've got the total level to add here...
+        if (includeMeasuresFor.indexOf('segment') !== -1) {
+            // ...add the row.
+            this.addRow(rowArray, node.segment);
+        }
+
+        // Retrieve the segments or securities from the relevant 'included data' property.
+        children = (includeMeasuresFor.indexOf('childSegments') !== -1) ?
+            node['childSegments'].segments :
+            node['securities'].securities;
+        
         this.addSegmentRows(rowArray, children);
     }
 
@@ -274,14 +282,14 @@ function lineChartConvert(dataPoints, seriesType, analysis, measures, language) 
     };
 };
 
-function treeMapConvert(node, dataToInclude, analysis) {
+function treeMapConvert(node, includeMeasuresFor, analysis) {
     var i,
         len,
         parent,
         children,
         child,
         measures,
-        isSecurityLevel = (dataToInclude === 'securities'),
+        isSecurityLevel = (includeMeasuresFor.indexOf('securities') !== -1),
         classifierName = '',
         rowArray = [];
 
@@ -292,10 +300,10 @@ function treeMapConvert(node, dataToInclude, analysis) {
     this.addRow(rowArray, parent.name, null, 0, 0);
 
     // Retrieve the segments or securities from the relevant 'included data' property.
-    children = isSecurityLevel ? node[dataToInclude].securities : node[dataToInclude].segments;
+    children = isSecurityLevel ? node['securities'].securities : node['childSegments'].segments;
 
     if (!isSecurityLevel) {
-        classifierName = node[dataToInclude].classifier.name;
+        classifierName = node['childSegments'].classifier.name;
     }
 
     // Determine the number of child segments.

@@ -29,6 +29,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             include: 'childSegments',
             measures: ['rp'],
             includeMeasuresFor: ['childSegments'],
+            oData: { orderby: 'rp-{timePeriod} desc' },
             options: {
                 hAxis: { title: 'Return' }
             }
@@ -40,6 +41,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             include: 'childSegments',
             measures: ['wp', 'contributionvar'],
             includeMeasuresFor: ['childSegments'],
+            oData: { orderby: 'contributionvar-{timePeriod} desc' },
             options: {
                 hAxis: { title: 'Return' }
             }
@@ -51,6 +53,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             include: 'childSegments',
             measures: ['wover'],
             includeMeasuresFor: ['childSegments'],
+            oData: { orderby: 'wover-{timePeriod} desc' },
             options: {
                 hAxis: { title: 'Excess Weight %' }
             }
@@ -58,10 +61,12 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         'contribution_bar': {
             chartId: 'contribution_bar',
             title: lang.chart.contributionBarTitle,
+            topBottomSplit: 5,
             chartType: 'BarChart',
             include: 'securities',
             measures: ['ctp'],
             includeMeasuresFor: ['securities'],
+            oData: { orderby: 'ctp-{timePeriod} desc' },
             options: {
                 hAxis: { title: 'Contribution' }
             }
@@ -72,6 +77,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             chartType: 'BarChart',
             include: 'childSegments',
             measures: ['wendover', 'etotal'],
+            oData: { orderby: 'etotal-{timePeriod} desc' },
             includeMeasuresFor: ['childSegments']
         },
         'fixedIncomeContribution_bar': {
@@ -209,6 +215,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             chartType: 'ColumnChart',
             include: 'childSegments',
             measures: ['etotal', 'ealloc', 'eselecinter'],
+            oData: { orderby: 'etotal-{timePeriod} desc' },
             includeMeasuresFor: ['childSegments'],
             options: {
                 colors: ['#003366', '#FF6600', '#990066']
@@ -265,7 +272,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             title: lang.chart.contributionMasterTitle,
             chartType: 'Table',
             include: 'childSegments',
-            measures: ['wp', 'ctp', 'wb', 'ctb'],
+            measures: ['wp', 'ctp', 'rp', 'wb', 'ctb', 'rb'],
             includeMeasuresFor: ['segment', 'childSegments']
         },
         'attributionMaster_grid': {
@@ -276,20 +283,12 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             measures: ['wp', 'wb', 'ealloc', 'eselecinter', 'eallocc', 'etotal'],
             includeMeasuresFor: ['segment', 'childSegments']
         },
-        'fixedIncomeMaster_grid': {
-            chartId: 'fixedIncomeMaster_grid',
-            title: lang.chart.fixedIncomeMasterTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: ['wp', 'rp', 'rpyc', 'rpspread', 'ctp'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
         'allocationMaster_grid': {
             chartId: 'allocationMaster_grid',
             title: lang.chart.allocationMasterTitle,
             chartType: 'Table',
             include: 'childSegments',
-            measures: ['wp', 'wpgross', 'shortexposureend', 'longexposureend', 'mvend'],
+            measures: ['wpend', 'wpbeg', 'mvend'],
             includeMeasuresFor: ['segment', 'childSegments']
         },
         'riskMaster_grid': {
@@ -329,6 +328,14 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             ],
             includeMeasuresFor: ['segment', 'childSegments']
         },
+        'allocationLongShort_grid': {
+            chartId: 'allocationLongShort_grid',
+            title: lang.chart.allocationLongShortGridTitle,
+            chartType: 'Table',
+            include: 'childSegments',
+            measures: ['wp', 'wpgross', 'shortexposureend', 'longexposureend', 'leverageend'],
+            includeMeasuresFor: ['segment', 'childSegments']
+        },
         'fixedIncome_grid': {
             chartId: 'fixedIncome_grid',
             title: lang.chart.fixedIncomeGridTitle,
@@ -365,25 +372,26 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             chartType: 'Table',
             include: 'securities',
             measures: ['wpend', 'rp', 'ctp'],
-            oData: { orderby: 'wpend-Earliest desc', top: 10 },
+            oData: { orderby: 'wpend-{timePeriod} desc', top: 10 },
             includeMeasuresFor: ['securities']
         },
         'contributionTopTen_grid': {
             chartId: 'contributionTopTen_grid',
             title: lang.chart.contributionTopTenGridTitle,
+            topBottomSplit: 5,
             chartType: 'Table',
             include: 'securities',
             measures: ['wpend', 'rp', 'ctp'],
-            oData: { orderby: 'ctp-Earliest desc', top: 10 },
+            oData: { orderby: 'ctp-{timePeriod} desc' },
             includeMeasuresFor: ['securities']
-        },
+        },        
         'riskTopTen_grid': {
             chartId: 'riskTopTen_grid',
             title: lang.chart.riskTopTenGridTitle,
             chartType: 'Table',
             include: 'securities',
             measures: ['wpend', 'expectedshortfallpercent', 'valueatriskpercent', 'expectedvolatilitypercent'],
-            oData: { orderby: 'valueatriskpercent-Earliest desc', top: 10 },
+            oData: { orderby: 'valueatriskpercent-{timePeriod} desc', top: 10 },
             includeMeasuresFor: ['securities']
         },
 
@@ -394,18 +402,20 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         'performance_treemap': {
             chartId: 'performance_treemap',
             title: lang.chart.performanceTreemapTitle,
+            isGradientReversed: false,
             chartType: 'TreeMap',
             include: 'securities',
             measures: ['wpabsoluteend', 'rp'],
-            includeMeasuresFor: ['segment', 'securities']
+            includeMeasuresFor: ['securities']
         },
         'risk_treemap': {
             chartId: 'risk_treemap',
             title: lang.chart.riskTreemapTitle,
+            isGradientReversed: true,
             chartType: 'TreeMap',
             include: 'childSegments',
             measures: ['wpabsoluteend', 'contributionvar'],
-            includeMeasuresFor: ['segment', 'childSegments']
+            includeMeasuresFor: ['childSegments']
         },
 
         // ------------------------------------------
@@ -520,6 +530,12 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             config.timePeriods = timePeriod.code;
             config.startDate = timePeriod.startDate;
             config.endDate = timePeriod.endDate;
+
+            // If we've got an oData object and order associated with this chart,
+            // we'll need to replace the timeperiod placeholder with the period code.
+            if (config.oData && config.oData.orderby) { 
+                config.oData.orderby = config.oData.orderby.replace('{timePeriod}', timePeriod.code);
+            }
         });
     }
 
@@ -545,7 +561,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             // In order to increase the performances we add the chart to the presentation container here.
             addChartToPresentation(chartId, chartTitle);
         }
-        
+
         function addChartToPresentation(chartId, chartTitle) {
             var sb          = new helper.StringBuilder(),
                 containerId = "presentation-" + chartId;
