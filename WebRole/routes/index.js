@@ -63,6 +63,21 @@ function getClientLanguage(lang) {
     return getLanguage(lang, 'client');
 }
 
+function getToken(req) {
+    var sessionToken = null,
+        bodyToken    = null;
+
+    if (req && req.session) {
+        sessionToken = req.session.token;
+    }
+
+    if (req && req.body) {
+        bodyToken = req.body.token;
+    }
+
+    return sessionToken || bodyToken;
+}
+
 // ------------------------------------------
 // VIEW ROUTING
 // ------------------------------------------
@@ -142,7 +157,6 @@ exports.authenticate = function (req, res, next) {
             // Otherwise, pass down the number of portfolios available to the user.
             obj.portfolioTotal = resource.data.portfolios.total;
         }
-
         // Respond with a confirmation object, indicating whether the
         // user's credentials have been accepted by the service.
         res.json(obj);
@@ -159,7 +173,7 @@ exports.portfolios = function (req, res) {
             top: ''
         };
 
-    webApi.getPortfolios(oData, datatype, req.session.token || req.body.token, function (resource, datatype) {
+    webApi.getPortfolios(oData, datatype, getToken(req), function (resource, datatype) {
         var viewModel = resource || {};
 
         switch (datatype) {
@@ -179,7 +193,7 @@ exports.portfolioAnalysis = function (req, res) {
     var datatype = req.body.datatype || '',
         maxAttempts = 3; // TODO: We could use a const to set the maxAttempts.
 
-    webApi.getPortfolioAnalysis(req.body.uri, maxAttempts, req.session.token || req.body.token, function (analysis) {
+    webApi.getPortfolioAnalysis(req.body.uri, maxAttempts, getToken(req), function (analysis) {
         var viewModel = analysis || {};
 
         switch (datatype) {
@@ -199,7 +213,7 @@ exports.analysis = function (req, res) {
     var datatype = req.body.datatype || '',
         maxAttempts = 3;
 
-    webApi.getPortfolioAnalysis(req.body.uri, maxAttempts, req.session.token || req.body.token, function (analysis) {
+    webApi.getPortfolioAnalysis(req.body.uri, maxAttempts, getToken(req), function (analysis) {
         var viewModel = analysis || {};
 
         switch (datatype) {
@@ -218,7 +232,7 @@ exports.analysis = function (req, res) {
 // EULA
 exports.eula = function (req, res) {
 
-    webApi.getEula('fragment', req.session.token || req.body.token, function (resource) {
+    webApi.getEula('fragment', getToken(req), function (resource) {
         var viewModel = {
             eula: resource.data || {},
             layout: false

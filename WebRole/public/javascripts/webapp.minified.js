@@ -4538,7 +4538,7 @@ a(c.presentationSummaryTitleBenchmarkName).html(p)
 };
 m.presentationManager.on("onBeforeEnter",function(o){m.updatePresentationSummaryInfo();
 m.scroll.saveScrollPosition();
-m.scroll.rebuild("fullScreenContainer",{iScrollOptions:{hScroll:true,vScroll:false,hScrollbar:true,snap:true,snapThreshold:50,bounce:false,momentum:false},restorePosition:true});
+m.scroll.rebuild("fullScreenContainer",{iScrollOptions:{hScroll:true,vScroll:false,hScrollbar:true,snap:true,snapThreshold:50,bounce:true,momentum:false},restorePosition:true});
 m.scroll.scrollToPage(o.chartOrder,0,0)
 });
 m.presentationManager.on("onEnter",function(o){m.isFullScreen=true

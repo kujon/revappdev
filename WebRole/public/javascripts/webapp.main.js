@@ -466,7 +466,7 @@ Zepto(function ($) {
                     // Scrolling options:
                     hScroll: true, vScroll: false, hScrollbar: true,
                     // Snap options:
-                    snap: true, snapThreshold: 50, bounce: false, momentum: false
+                    snap: true, snapThreshold: 50, bounce: true, momentum: false
                     // Zoom options:
                     // useTransform: true, zoom: true, bounceLock: true, zoomMax: 2, vScroll: true
                 },
