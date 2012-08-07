@@ -2137,10 +2137,10 @@ var Zepto = (function () {
                 defaults = {
                     themeStyleSelector: 'link[rel="stylesheet"][title]',
                     themeIncluded: [
-                        {title: 'Awesome', href: scriptpath + '../themes/css/mobile-dark.css'},
-                        {title: 'Apple', href: scriptpath + '../themes/css/apple.css'},
-                        {title: 'Boring', href: scriptpath + '../themes/css/jqtouch.css'},
-                        {title: 'Revolution', href: scriptpath + '../themes/css/revolution.css'}
+                        {title: 'Revolution', href: scriptpath + '../themes/css/revolution.css'},
+                        {title: 'Native', href: scriptpath + '../themes/css/apple.css'},
+                        {title: 'Business', href: scriptpath + '../themes/css/mobile-dark.css'},
+                        {title: 'Classic', href: scriptpath + '../themes/css/jqtouch.css'}
                     ]
                 },
                 options = $.extend({}, defaults, jQT.settings);
@@ -6997,8 +6997,6 @@ WebAppLoader.addModule({ name: 'portfoliosList', plugins: [],
         el              = this.getSharedModule('pageElements'),
         ajaxManager     = this.getSharedModule('ajaxManager');
     
-    $(document).on('click', el.portfolioAnalysisLink, onPortfolioAnalysisClick);
-
     function onPortfolioAnalysisClick(e) {
         var uri = $(this).attr("data-link");
 
@@ -7008,6 +7006,8 @@ WebAppLoader.addModule({ name: 'portfoliosList', plugins: [],
         
         return false;
     }
+
+    $(document).on('click', el.portfolioAnalysisLink, onPortfolioAnalysisClick);
     
     return portfoliosList;
 });
@@ -7019,7 +7019,6 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
     var scroll              = {},
         eventManager        = this.getEventManager(),
         helper              = this.getPlugin('helper'),
-        savedScrollPosition = [],
         lastXPosition       = 0,
         lastYPosition       = 0,
         isRebuilding        = false,
@@ -7028,15 +7027,16 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
     /* Use this for high compatibility (iDevice + Android)*/
     document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
+    // Public
     function saveScrollPosition() {
         // TODO: Store positions and return an id to use with restoreScrollPosition.
-        // savedScrollPosition[0] = {x: myScroll.x, y: myScroll.y};
         if (myScroll) {
             lastXPosition = myScroll.x;
             lastYPosition = myScroll.y;
         }
     }
 
+    // Public
     function restoreScrollPosition(offsetX, offsetY/* TODO: id*/) {
         offsetX = offsetX || 0;
         offsetY = offsetY || 0;
@@ -7052,6 +7052,7 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
         }, 100);
     }
     
+    // Public
     function scrollToElement(element, offset, time) {
         var top           = 0,
             el            = null,
@@ -7072,6 +7073,7 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
         }, 100);
     }
 
+    // Public
     function scrollTo(x, y, time) {
         var animationTime = helper.getValueAs(time, 'number');
 
@@ -7085,6 +7087,7 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
         }, 100);
     }
     
+    // Public
     function scrollToPage(pageX, pageY, time) {
         var animationTime = helper.getValueAs(time, 'number');
 
@@ -7097,6 +7100,30 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
         }, 100);
     }
 
+    // Public
+    function goUp() {
+        try {
+            myScroll.scrollTo(0, 0, 200);
+        } catch (e) {
+
+        }
+    }
+
+    // Private
+    function removeUnusedScroll($scroller) {
+        function removeNext($next) {
+            if ($next.length > 0) {
+                $next.remove();
+                if ($scroller.next().length > 0) {
+                    removeUnusedScroll($scroller.next());
+                }
+            }
+        }
+                
+        removeNext($scroller.next());
+    }
+
+    // Public
     function rebuildScroll(id, config) {
         var wrapper         = 'div#' + id + ' #wrapper',
             config          = config || {},
@@ -7113,6 +7140,10 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
 
         options.useTransform = (options.useTransform)
             ? options.useTransform
+            : false;
+
+        options.bounce = (options.bounce)
+            ? options.bounce
             : false;
 
         // Overriden events.
@@ -7137,13 +7168,6 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
             eventManager.raiseEvent('onScrolledToPage', page);
         };
 
-        
-//        options.onScrollMove = function() {
-//            //alert('onScrollMove');
-//        };
-//        
-
-
         // Try to restore any previous position if requested.
         if (restorePosition) {
             options.x = lastXPosition;
@@ -7165,19 +7189,6 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
             myScroll.destroy();
             myScroll = null;
 
-            function removeUnusedScroll($scroller) {
-                function removeNext($next) {
-                    if ($next.length > 0) {
-                        $next.remove();
-                        if ($scroller.next().length > 0) {
-                            removeUnusedScroll($scroller.next());
-                        }
-                    }
-                }
-                
-                removeNext($scroller.next());
-            }
-
             removeUnusedScroll($(wrapper).find('#scroller', '#horizontal_scroller'));
         }
 
@@ -7186,14 +7197,6 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
                 myScroll = new iScroll($(wrapper).get(0), options);
                 isRebuilding = false;
             }, 25); // Usually timers should be set to a minimum of 25 milliseconds to work properly.
-        }
-    }
-
-    function goUp() {
-        try {
-            myScroll.scrollTo(0, 0, 200);
-        } catch (e) {
-
         }
     }
 
@@ -7286,11 +7289,9 @@ WebAppLoader.addModule({ name: 'spinningWheel', plugins: ['helper'], sharedModul
 // SWIPE BUTTON
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'swipeButton', plugins: ['helper'],
-    sharedModules: ['settings', 'pageElements', 'ajaxManager'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'swipeButton', sharedModules: ['settings', 'pageElements', 'ajaxManager'], hasEvents: true }, function () {
     var swipeButton     = {},
         output          = this.getConsole(),
-        helper          = this.getPlugin('helper'),
         eventManager    = this.getEventManager(),
         el              = this.getSharedModule('pageElements');
     
@@ -7352,7 +7353,6 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
         var buttonPrefix    = config.buttonPrefix || 'tabbar_btn',
             badgePrefix     = 'tabbar_badge',
             doubleTapSpeed  = 2000;
-            that            = this;
 
         tabbarId = config.tabbarId || 'nav#tabbar';
         visible = (typeof config.visible == 'boolean')
@@ -7453,7 +7453,6 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
                         }, doubleTapSpeed);
                         executeTapEvent();
                     } else {
-                        // alert('prevent');
                         return false;
                     }
                 } else {
@@ -7488,7 +7487,6 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
     var toolbar          = {},
         output           = this.getConsole(),
         eventManager     = this.getEventManager(),
-        settings         = this.getSharedModule('settings'),
         el               = this.getSharedModule('pageElements'),
         helper           = this.getPlugin('helper'),
         toolbarId        = '',
@@ -7516,15 +7514,13 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
     }
 
     function create(config) {
-        var buttonPrefix = config.buttonPrefix || 'toolbar_btn',
-                that = this;
+        var buttonPrefix = config.buttonPrefix || 'toolbar_btn';
 
         toolbarId = config.toolbarId || '.toolbar';
         visible = helper.getValueAs(config.visible, 'boolean');
 
         $.each(config.items, function (i, val) {
-            var id = helper.capitaliseFirstLetter(val.id),
-                    itemsCount = config.items.length || 1;
+            var id = helper.capitaliseFirstLetter(val.id);
 
             buttonIndices[val.id] = i;
             buttons[i] = {
@@ -7611,12 +7607,11 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
 // AJAX MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'ajaxManager', plugins: ['helper'], hasEvents: true, isShared: true }, function () {
+WebAppLoader.addModule({ name: 'ajaxManager', hasEvents: true, isShared: true }, function () {
 
     var ajaxManager  = {},
         output       = this.getConsole(),
         eventManager = this.getEventManager(),
-        helper       = this.getPlugin('helper'),
         token        = '';
 
     // Public
@@ -7691,7 +7686,8 @@ WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true
         filters: 'bbFilters',
         controls: 'bbControls',
         size: 'bbSize'
-    }
+    };
+
     var messageTypes = { //order of these properties imply render order of filter controls
         debug: true,
         info: true,
@@ -9506,12 +9502,11 @@ WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
 // LOADING MASK MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElements'], plugins: ['helper'], hasEvents: true, isShared: true }, function () {
+WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElements'], hasEvents: true, isShared: true }, function () {
     var loadingMaskManager  = {},
         output              = this.getConsole(),
         eventManager        = this.getEventManager(),
         el                  = this.getSharedModule('pageElements'),
-        helper              = this.getPlugin('helper'),
         loadingText         = null,
         masks               = {};
 
@@ -9538,14 +9533,14 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
     };
     
     masks['default'] = masks.ajax;
+    
+    function hide(type /* TODO: fade */) {
+        var mask = masks[type || 'default'] || null;
 
-    $(el.ajaxLoadingMask).click(function(){
-        hide('ajax');
-    });
-
-    $(el.chartLoadingMask).click(function(){
-        hide('analysis');
-    });
+        if (mask) {
+            $(mask.el).css("display", "none");
+        }
+    }
 
     function show(type /* TODO: fade */) {
         var mask = masks[type || 'default'] || null;
@@ -9556,18 +9551,18 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
         }
     }
 
-    function hide(type /* TODO: fade */) {
-        var mask = masks[type || 'default'] || null;
-
-        if (mask) {
-            $(mask.el).css("display", "none");
-        }
-    }
-    
     function updateAnalysisText(text) {
         loadingText.html(text);
     }
 
+    $(el.ajaxLoadingMask).click(function(){
+        hide('ajax');
+    });
+
+    $(el.chartLoadingMask).click(function(){
+        hide('analysis');
+    });
+    
     // TODO: Add code to prevent showing of any masks and or to enable/disable them.
     loadingMaskManager.show = show;
     loadingMaskManager.hide = hide;
@@ -9651,7 +9646,7 @@ WebAppLoader.addModule({ name: 'localStorageManager', sharedModules: [], plugins
                 try {
                     value = JSON.parse(storedItem);
                 } catch (e) {
-                    output.log('Local Storage Manager - failed to parse stored item:', key, value);
+                    output.log('Local Storage Manager - failed to parse stored item:', value);
                 }
             } else {
                 value = storedItem;
@@ -9664,7 +9659,7 @@ WebAppLoader.addModule({ name: 'localStorageManager', sharedModules: [], plugins
     // Public
     function save(itemName, itemValue, namespace) {
         var name = getNamespacedName(itemName, namespace),
-            value = ''; //stringifiedValue = '';
+            value = '';
 
         if (name && helper.hasValue(itemValue)) {
             value = (typeof itemValue === 'object')
@@ -9883,15 +9878,12 @@ WebAppLoader.addModule({ name: 'settings', dataObjects: ['appSettings', 'userSet
 // ANALYSIS MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'], 
-    sharedModules: [], dataObjects: ['analysisPages'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects: ['analysisPages'], hasEvents: true }, function () {
 
     var analysisManager         = {},
         output                  = this.getConsole(),
         eventManager            = this.getEventManager(),
-        helper                  = this.getPlugin('helper'),
         analysisPagesDataObj    = this.getDataObject('analysisPages'),
-        charts                  = [],
         analysisPages           = {};
 
     analysisPagesDataObj.define({
@@ -10061,8 +10053,6 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
     }
 
     function init(lastUsernameUsed) {
-        var userAnalysisPages;
-        
         if (lastUsernameUsed) {
             analysisPagesDataObj.loadData(lastUsernameUsed);
         } 
@@ -10093,13 +10083,12 @@ WebAppLoader.addModule({ name: 'auth', plugins: ['base64'], sharedModules: ['aja
         hash = '';
         tokenHash = base64.encode(username + ':' + password);
         token = 'Basic ' + tokenHash;
-
         // Post the created token and the user's email to the authenticate action.
         ajaxManager.post(url, { email: username, token: token, lang: language }, function (response) {
             // If our response indicates that the user has been authenticated...
             if (response.authenticated) {
                 hash = tokenHash;
-                eventManager.raiseEvent('onLoginSuccess', token); //response.portfolioTotal
+                eventManager.raiseEvent('onLoginSuccess', token);
             } else {
                 eventManager.raiseEvent('onLoginFailed', response.message);
             }
@@ -10120,15 +10109,12 @@ WebAppLoader.addModule({ name: 'auth', plugins: ['base64'], sharedModules: ['aja
 // FAVOURITES MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'favouritesManager', plugins: ['helper'], 
-    sharedModules: [], dataObjects: ['favourites'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'favouritesManager', sharedModules: [], dataObjects: ['favourites'], hasEvents: true }, function () {
 
     var favouritesManager    = {},
         output               = this.getConsole(),
         eventManager         = this.getEventManager(),
-        helper               = this.getPlugin('helper'),
-        favouritesDataObj    = this.getDataObject('favourites'),
-        favourites           = {};
+        favouritesDataObj    = this.getDataObject('favourites');
 
     favouritesDataObj.define({
         items: []
@@ -10164,9 +10150,10 @@ WebAppLoader.addModule({ name: 'favouritesManager', plugins: ['helper'],
     function getAnalysisDataObjectFromFavourte(favouriteId) {
         var favourites         = favouritesDataObj.getData(),
             analysisDataObject = null,
-            favourite          = {};
+            favourite          = {},
+            i                  = 0;
 
-        for (var i = 0; i < favourites.items.length; i++) {
+        for (i = 0; i < favourites.items.length; i++) {
             favourite = favourites.items[i];
             if (favourite.favouriteId === favouriteId) {
                 // Create a new analysisDataObject and populate it with
@@ -10182,6 +10169,7 @@ WebAppLoader.addModule({ name: 'favouritesManager', plugins: ['helper'],
         return analysisDataObject;
     }
 
+    // NOTA BENE: This function is declared but not yet implemented.
     function favouriteExists(favouriteId) {
         var favourites = favouritesDataObj.getData();
     }
@@ -10191,8 +10179,7 @@ WebAppLoader.addModule({ name: 'favouritesManager', plugins: ['helper'],
     }
 
     function init(lastUsernameUsed) {
-        var favourites;
-        
+    
         if (lastUsernameUsed) {
             favouritesDataObj.loadData(lastUsernameUsed);
         } 
@@ -10254,16 +10241,14 @@ WebAppLoader.addModule({ name: 'nav', hasEvents: true }, function () {
 // EVENT PAGE MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedModules: ['pageElements', 'loadingMaskManager'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedModules: ['loadingMaskManager'], hasEvents: true }, function () {
     var pageEventsManager   = {},
         eventManager        = this.getEventManager(),
         output              = this.getConsole(),
         helper              = this.getPlugin('helper'),
-        el                  = this.getSharedModule('pageElements'),
         mask                = this.getSharedModule('loadingMaskManager');
 
     $('div[data-pageEvents]').each(function () {
-        var eventHandler = '';
 
         switch ($(this).attr("data-pageEvents")) {
             case 'start':
@@ -10307,10 +10292,6 @@ WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedM
     // GLOBAL AJAX EVENTS
     // ------------------------------------------
 
-    // Global Ajax Call
-    $(document).on('ajaxStart', onAjaxStart);
-    $(document).on('ajaxComplete', onAjaxComplete);
-
     function onAjaxStart(event, request, settings) {
         mask.show('ajax');
         output.log('ajaxStart', event, request, settings);
@@ -10328,6 +10309,10 @@ WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedM
 
         output.log('ajaxComplete', event, request, settings, obj);
     }
+
+    // Global Ajax Call
+    $(document).on('ajaxStart', onAjaxStart);
+    $(document).on('ajaxComplete', onAjaxComplete);
 
     return pageEventsManager;
 });
@@ -10359,17 +10344,24 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
         timePeriods: []
     });
 
-    function loadPortfolioAnalysis(portfolioCode, callback) {
+    // Public
+    function getAnalysis(uri, callback) {
+        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (response) {
 
-        function onGetAnalysisCompleted() {
-            callback(lastPortfolioUsed);
-        }
+            // If no analysis HTML template data was returned for 
+            // the given portfolio, or an error was raised...
+            if (!response || !response.data || response.error) {
+                // ...raise a failure event and return.
+                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText, lang.errors.analysisFailedReasonText);
+                return;
+            }
 
-        function onLoadPortfolioCompleted(defaultAnalysisLink) {
-            getAnalysis(defaultAnalysisLink, onGetAnalysisCompleted);
-        }
+            // Raise notification events.
+            eventManager.raiseEvent('onAnalysisLoaded', response.data);
 
-        loadPortfolio(portfolioCode, onLoadPortfolioCompleted);
+            // Call the callback.
+            callback();
+        }, 'json');
     }
 
     function loadPortfolio(portfolioCode, callback) {
@@ -10491,24 +10483,17 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
         }
     }
 
-    // Public
-    function getAnalysis(uri, callback) {
-        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (response) {
+    function loadPortfolioAnalysis(portfolioCode, callback) {
 
-            // If no analysis HTML template data was returned for 
-            // the given portfolio, or an error was raised...
-            if (!response || !response.data || response.error) {
-                // ...raise a failure event and return.
-                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText, lang.errors.analysisFailedReasonText);
-                return;
-            }
+        function onGetAnalysisCompleted() {
+            callback(lastPortfolioUsed);
+        }
 
-            // Raise notification events.
-            eventManager.raiseEvent('onAnalysisLoaded', response.data);
+        function onLoadPortfolioCompleted(defaultAnalysisLink) {
+            getAnalysis(defaultAnalysisLink, onGetAnalysisCompleted);
+        }
 
-            // Call the callback.
-            callback();
-        }, 'json');
+        loadPortfolio(portfolioCode, onLoadPortfolioCompleted);
     }
 
     portfolioManager.loadPortfolio = loadPortfolio;
@@ -10521,60 +10506,26 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
 // PRESENTATION MODE MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'device'], sharedModules: ['pageElements'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'presentationManager', plugins: ['device'], sharedModules: ['pageElements'], hasEvents: true }, function () {
     var presentationManager  = {},
         eventManager        = this.getEventManager(),
         output              = this.getConsole(),
-        helper              = this.getPlugin('helper'),
         device              = this.getPlugin('device'),
         el                  = this.getSharedModule('pageElements'),
         fullScreen          = false;
 
-    $(el.minimizeButton).on('click', function (e, info) {
-        exitPresentationMode();
-        e.preventDefault();
-    });
-    
-    function enterPresentationMode(data) {
-        fullScreen = true;
-        turnView();
-
-        eventManager.raiseEvent('onBeforeEnter', data);
-
-        $(el.fullScreenPage).show();
-        $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
-            eventManager.raiseEvent('onEnter', data);
-        }});
-
-        $('.google-visualization-table-table').width(1000);
-                
-    }
-
-    function exitPresentationMode() {
-        fullScreen = false;
-        $(el.fullScreenPage).animate({ opacity: 0 }, { duration: 750, easing: 'ease-out', complete: function () {
-            $(el.fullScreenPage).css({ 'display': 'none' });
-            eventManager.raiseEvent('onExit');
-        }});
-    }
-
-    function isFullScreen() {
-        return fullScreen;
-    }
-
     // Private
     function turnView() {
-        // ASA TODO: Use device.orientation()...
         var o         = Math.abs(window.orientation - 90),
             left      = '0',
             width     = '0',
             height    = '0',
             forceTurn = false;
         
-        o = (o == 180) ? 0: o;
+        o = (o === 180) ? 0: o;
         
         if (device.isIPad()) {
-            if (o == 90) {
+            if (o === 90) {
                 width     = '1004px !important';
                 height    = '768px';
                 left      = '768px';
@@ -10586,7 +10537,7 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
                 forceTurn = false;
             }
         } else {
-            if (o == 90) {
+            if (o === 90) {
                 width     = '460px !important';
                 height    = '320px';
                 left      = '320px';
@@ -10618,6 +10569,38 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['helper', 'devic
             left: left
         });
     }
+
+    function enterPresentationMode(data) {
+        fullScreen = true;
+        turnView();
+
+        eventManager.raiseEvent('onBeforeEnter', data);
+
+        $(el.fullScreenPage).show();
+        $(el.fullScreenPage).animate({ opacity: 1 }, { duration: 750, easing: 'ease-out', complete: function () {
+            eventManager.raiseEvent('onEnter', data);
+        }});
+
+        $('#fullScreenPage .google-visualization-table-table').width(1000);
+                
+    }
+
+    function exitPresentationMode() {
+        fullScreen = false;
+        $(el.fullScreenPage).animate({ opacity: 0 }, { duration: 750, easing: 'ease-out', complete: function () {
+            $(el.fullScreenPage).css({ 'display': 'none' });
+            eventManager.raiseEvent('onExit');
+        }});
+    }
+
+    function isFullScreen() {
+        return fullScreen;
+    }
+
+    $(el.minimizeButton).on('click', function (e, info) {
+        exitPresentationMode();
+        e.preventDefault();
+    });
 
     $('body').bind('turn', function(event, info){
         if (isFullScreen()) {
@@ -10835,21 +10818,18 @@ WebAppLoader.addModule({ name: 'repositories', sharedModules: ['settings', 'loca
 // THEMES MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'themesManager', plugins: ['helper'], sharedModules: ['pageElements'], 
+WebAppLoader.addModule({ name: 'themesManager', sharedModules: ['pageElements'], 
     dataObjects: ['theme'], hasEvents: true }, function () {
     var themesManager   = {},
         eventManager    = this.getEventManager(),
         output          = this.getConsole(),
-        helper          = this.getPlugin('helper'),
         el              = this.getSharedModule('pageElements'),
         themeDataObj    = this.getDataObject('theme'),
-        defaultStyle    = 'Awesome';
+        defaultStyle    = 'Revolution';
 
     themeDataObj.define({
         name: defaultStyle
     });
-
-    $(el.themesPage + ' ul li a').on('click', onThemeChange);
 
     // Private
     function onThemeChange(event) {
@@ -10867,6 +10847,8 @@ WebAppLoader.addModule({ name: 'themesManager', plugins: ['helper'], sharedModul
         }
         jQT.switchStyle(style || defaultStyle);
     }
+    
+    $(el.themesPage + ' ul li a').on('click', onThemeChange);
 
     themesManager.switchStyle = switchStyle;
 
@@ -10882,7 +10864,6 @@ WebAppLoader.addModule({ name: 'analysisSettingsPage', plugins: ['helper'],
         output               = this.getConsole(),
         eventManager         = this.getEventManager(),
         helper               = this.getPlugin('helper'),
-        settings             = this.getSharedModule('settings'),
         lang                 = this.getSharedModule('localizationManager').getLanguage() || {},
         el                   = this.getSharedModule('pageElements');
 
@@ -11441,14 +11422,12 @@ WebAppLoader.addModule({ name: 'experimentalPage',
 // LANGUAGE SETTINGS PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'languageSettingsPage', plugins: ['helper'], sharedModules: ['settings', 'pageElements'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'languageSettingsPage', sharedModules: ['settings', 'pageElements'], hasEvents: true }, function () {
     var languageSettingsPage    = {},
         output                  = this.getConsole(),
         eventManager            = this.getEventManager(),
-        helper                  = this.getPlugin('helper'),
         languages               = this.getSharedModule('settings').languages,
-        el                      = this.getSharedModule('pageElements'),
-        isCreated               = false;
+        el                      = this.getSharedModule('pageElements');
 
     function onLanguageClick() {
         var language = JSON.parse($(this).data("link"));
@@ -11512,7 +11491,6 @@ Zepto(function ($) {
     var theApp       = {},
         loader       = WebAppLoader, // Alias
         output       = loader.getConsole(),
-        eventManager = loader.getEventManager(),
         helper       = loader.loadModule('helper'),
         device       = loader.loadModule('device'),
         siteUrls     = loader.getSharedModule('settings').siteUrls,
@@ -11884,11 +11862,6 @@ Zepto(function ($) {
             renderAnalysisPage(portfolio);
         }
 
-        // $(el.analysisPage + '_partial').animate({ opacity: 0 }, { duration: 250, easing: 'ease-out', complete: function () {}});
-        // $(el.analysisPage + '_partial').html('');
-        // $(el.analysisPage + '_partial').css({ opacity: 0 });
-        // $(el.analysisPage + '_partial').css({ opacity: 1 });
-
         // Remove all analysis content and scroll the page to top before rendering.
         $(el.analysisPage + '_partial').html('');
         theApp.scroll.scrollToPage(1);
@@ -11916,21 +11889,6 @@ Zepto(function ($) {
     });
 
     theApp.chartComponents.on('onChartLoaded', function (chart) { // chartId, numRows) {
-//        var $chart      = $('#' + chartId),
-//            realHeight  = 0;
-//            chartHeight = 0;
-//         
-//        // My last desperate attempt to resize table charts...       
-//        if ($chart.hasClass('gridContainer') && $chart.parent().data('realHeight') < 1) {
-//            numRows = (numRows > 10)
-//                ? 10
-//                : numRows;
-
-//            realHeight = theApp.resizingSettings.calculateTableHeight(numRows);
-//            chartHeight = theApp.resizingSettings.rescaleTable(realHeight, device.orientation());
-
-//            $chart.height(chartHeight);
-//            $chart.parent().data('realHeight',  realHeight);
             theApp.iOSLog.debug('rebuilt on onChartLoaded');
             theApp.scroll.saveScrollPosition();
             theApp.scroll.rebuild('analysis', { restorePosition: true });
@@ -11958,9 +11916,6 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onBeforeEnter', function (data) {
         theApp.updatePresentationSummaryInfo();
-        // theApp.scroll.scrollToPage(1);
-        // Save scroll position and rebuild a new one.
-        // useTransform: true, zoom: true, zoomMax: 1.5 },
         theApp.scroll.saveScrollPosition();
         theApp.scroll.rebuild(
             'fullScreenContainer', {
@@ -11970,7 +11925,7 @@ Zepto(function ($) {
                     // Snap options:
                     snap: true, snapThreshold: 50, bounce: false, momentum: false
                     // Zoom options:
-                    // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false
+                    // useTransform: true, zoom: true, bounceLock: true, zoomMax: 2, vScroll: true
                 },
                 restorePosition: true
             });
@@ -11980,7 +11935,6 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onEnter', function (data) {
         theApp.isFullScreen = true;
-        // theApp.preventAnalysisRebuilding = true; // ASA TEST
     });
 
     theApp.presentationManager.on('onExit', function () {
@@ -11994,12 +11948,8 @@ Zepto(function ($) {
             theApp.scroll.rebuild('analysis', { restorePosition: true });
         } else {
             theApp.iOSLog.debug('synchronize on onExit');
-            theApp.synchronizeOrientation(false); // ASA TEST
+            theApp.synchronizeOrientation(false);
         }
-
-        // theApp.scroll.rebuild('analysis', { restorePosition: true });
-        // theApp.preventAnalysisRebuilding = false; // ASA TEST
-        
     });
 
     theApp.scroll.on('onScrolledToPage', function (page) {
@@ -12286,7 +12236,7 @@ Zepto(function ($) {
     });
 
     theApp.iOSLog.on('show', function () {
-        // theApp.toolbar.getButton('console').show();
+        // Add code here...
     });
 
     theApp.iOSLog.on('hide', function () {
@@ -12877,7 +12827,6 @@ Zepto(function ($) {
         return chart.chartId;
     };
 
-
     $('body').bind('turn', function (event, info) {
         theApp.synchronizeOrientation.chartToDisplay = theApp.getCurrentChartDisplayedInViewport();
         theApp.synchronizeOrientation(true);
@@ -12889,7 +12838,7 @@ Zepto(function ($) {
     };
 
     // ------------------------------------------
-    // EXPERIMENTAL
+    // EXPERIMENTAL PAGE
     // ------------------------------------------
 
     theApp.initExperimentalPage = function () {
@@ -12913,7 +12862,7 @@ Zepto(function ($) {
 
         // Render the new custom chart.
         theApp.chartComponents.render(charts, '#custom_chart_partial');
-        theApp.scroll.rebuild('experimental');
+        theApp.scroll.rebuild('experimental', { forceRebuilding: true });
     });
 
 });

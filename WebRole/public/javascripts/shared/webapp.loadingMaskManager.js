@@ -2,12 +2,11 @@
 // LOADING MASK MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElements'], plugins: ['helper'], hasEvents: true, isShared: true }, function () {
+WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElements'], hasEvents: true, isShared: true }, function () {
     var loadingMaskManager  = {},
         output              = this.getConsole(),
         eventManager        = this.getEventManager(),
         el                  = this.getSharedModule('pageElements'),
-        helper              = this.getPlugin('helper'),
         loadingText         = null,
         masks               = {};
 
@@ -34,14 +33,14 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
     };
     
     masks['default'] = masks.ajax;
+    
+    function hide(type /* TODO: fade */) {
+        var mask = masks[type || 'default'] || null;
 
-    $(el.ajaxLoadingMask).click(function(){
-        hide('ajax');
-    });
-
-    $(el.chartLoadingMask).click(function(){
-        hide('analysis');
-    });
+        if (mask) {
+            $(mask.el).css("display", "none");
+        }
+    }
 
     function show(type /* TODO: fade */) {
         var mask = masks[type || 'default'] || null;
@@ -52,18 +51,18 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
         }
     }
 
-    function hide(type /* TODO: fade */) {
-        var mask = masks[type || 'default'] || null;
-
-        if (mask) {
-            $(mask.el).css("display", "none");
-        }
-    }
-    
     function updateAnalysisText(text) {
         loadingText.html(text);
     }
 
+    $(el.ajaxLoadingMask).click(function(){
+        hide('ajax');
+    });
+
+    $(el.chartLoadingMask).click(function(){
+        hide('analysis');
+    });
+    
     // TODO: Add code to prevent showing of any masks and or to enable/disable them.
     loadingMaskManager.show = show;
     loadingMaskManager.hide = hide;

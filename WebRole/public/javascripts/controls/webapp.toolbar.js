@@ -6,7 +6,6 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
     var toolbar          = {},
         output           = this.getConsole(),
         eventManager     = this.getEventManager(),
-        settings         = this.getSharedModule('settings'),
         el               = this.getSharedModule('pageElements'),
         helper           = this.getPlugin('helper'),
         toolbarId        = '',
@@ -34,15 +33,13 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
     }
 
     function create(config) {
-        var buttonPrefix = config.buttonPrefix || 'toolbar_btn',
-                that = this;
+        var buttonPrefix = config.buttonPrefix || 'toolbar_btn';
 
         toolbarId = config.toolbarId || '.toolbar';
         visible = helper.getValueAs(config.visible, 'boolean');
 
         $.each(config.items, function (i, val) {
-            var id = helper.capitaliseFirstLetter(val.id),
-                    itemsCount = config.items.length || 1;
+            var id = helper.capitaliseFirstLetter(val.id);
 
             buttonIndices[val.id] = i;
             buttons[i] = {

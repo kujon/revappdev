@@ -37,7 +37,6 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
         var buttonPrefix    = config.buttonPrefix || 'tabbar_btn',
             badgePrefix     = 'tabbar_badge',
             doubleTapSpeed  = 2000;
-            that            = this;
 
         tabbarId = config.tabbarId || 'nav#tabbar';
         visible = (typeof config.visible == 'boolean')
@@ -138,7 +137,6 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
                         }, doubleTapSpeed);
                         executeTapEvent();
                     } else {
-                        // alert('prevent');
                         return false;
                     }
                 } else {

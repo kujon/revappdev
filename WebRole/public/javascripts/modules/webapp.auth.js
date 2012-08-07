@@ -16,13 +16,12 @@ WebAppLoader.addModule({ name: 'auth', plugins: ['base64'], sharedModules: ['aja
         hash = '';
         tokenHash = base64.encode(username + ':' + password);
         token = 'Basic ' + tokenHash;
-
         // Post the created token and the user's email to the authenticate action.
         ajaxManager.post(url, { email: username, token: token, lang: language }, function (response) {
             // If our response indicates that the user has been authenticated...
             if (response.authenticated) {
                 hash = tokenHash;
-                eventManager.raiseEvent('onLoginSuccess', token); //response.portfolioTotal
+                eventManager.raiseEvent('onLoginSuccess', token);
             } else {
                 eventManager.raiseEvent('onLoginFailed', response.message);
             }

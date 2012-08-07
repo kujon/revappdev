@@ -8,7 +8,6 @@ WebAppLoader.addModule({ name: 'analysisSettingsPage', plugins: ['helper'],
         output               = this.getConsole(),
         eventManager         = this.getEventManager(),
         helper               = this.getPlugin('helper'),
-        settings             = this.getSharedModule('settings'),
         lang                 = this.getSharedModule('localizationManager').getLanguage() || {},
         el                   = this.getSharedModule('pageElements');
 

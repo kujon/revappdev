@@ -44,7 +44,7 @@ WebAppLoader.addModule({ name: 'localStorageManager', sharedModules: [], plugins
                 try {
                     value = JSON.parse(storedItem);
                 } catch (e) {
-                    output.log('Local Storage Manager - failed to parse stored item:', key, value);
+                    output.log('Local Storage Manager - failed to parse stored item:', value);
                 }
             } else {
                 value = storedItem;
@@ -57,7 +57,7 @@ WebAppLoader.addModule({ name: 'localStorageManager', sharedModules: [], plugins
     // Public
     function save(itemName, itemValue, namespace) {
         var name = getNamespacedName(itemName, namespace),
-            value = ''; //stringifiedValue = '';
+            value = '';
 
         if (name && helper.hasValue(itemValue)) {
             value = (typeof itemValue === 'object')

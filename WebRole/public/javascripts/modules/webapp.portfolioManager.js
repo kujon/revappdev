@@ -26,17 +26,24 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
         timePeriods: []
     });
 
-    function loadPortfolioAnalysis(portfolioCode, callback) {
+    // Public
+    function getAnalysis(uri, callback) {
+        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (response) {
 
-        function onGetAnalysisCompleted() {
-            callback(lastPortfolioUsed);
-        }
+            // If no analysis HTML template data was returned for 
+            // the given portfolio, or an error was raised...
+            if (!response || !response.data || response.error) {
+                // ...raise a failure event and return.
+                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText, lang.errors.analysisFailedReasonText);
+                return;
+            }
 
-        function onLoadPortfolioCompleted(defaultAnalysisLink) {
-            getAnalysis(defaultAnalysisLink, onGetAnalysisCompleted);
-        }
+            // Raise notification events.
+            eventManager.raiseEvent('onAnalysisLoaded', response.data);
 
-        loadPortfolio(portfolioCode, onLoadPortfolioCompleted);
+            // Call the callback.
+            callback();
+        }, 'json');
     }
 
     function loadPortfolio(portfolioCode, callback) {
@@ -158,24 +165,17 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
         }
     }
 
-    // Public
-    function getAnalysis(uri, callback) {
-        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (response) {
+    function loadPortfolioAnalysis(portfolioCode, callback) {
 
-            // If no analysis HTML template data was returned for 
-            // the given portfolio, or an error was raised...
-            if (!response || !response.data || response.error) {
-                // ...raise a failure event and return.
-                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText, lang.errors.analysisFailedReasonText);
-                return;
-            }
+        function onGetAnalysisCompleted() {
+            callback(lastPortfolioUsed);
+        }
 
-            // Raise notification events.
-            eventManager.raiseEvent('onAnalysisLoaded', response.data);
+        function onLoadPortfolioCompleted(defaultAnalysisLink) {
+            getAnalysis(defaultAnalysisLink, onGetAnalysisCompleted);
+        }
 
-            // Call the callback.
-            callback();
-        }, 'json');
+        loadPortfolio(portfolioCode, onLoadPortfolioCompleted);
     }
 
     portfolioManager.loadPortfolio = loadPortfolio;

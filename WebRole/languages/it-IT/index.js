@@ -567,7 +567,7 @@ exports.server = {
         themesText                  : 'Temi',
         reloadText                  : 'Ricarica Applicazione',
         analysisPageText            : 'Pagina di Analisi',
-        analysisPagesText           : 'Pagine di Analisi',
+        analysisPagesText           : 'Pagine Personalizzate',
         userPageText                : 'Analisi Utente',
         userPagesText               : 'Analisi Utenti',
         defaultPagesText            : 'Analisi Predefinite',

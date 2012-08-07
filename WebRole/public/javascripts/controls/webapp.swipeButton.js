@@ -2,11 +2,9 @@
 // SWIPE BUTTON
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'swipeButton', plugins: ['helper'],
-    sharedModules: ['settings', 'pageElements', 'ajaxManager'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'swipeButton', sharedModules: ['settings', 'pageElements', 'ajaxManager'], hasEvents: true }, function () {
     var swipeButton     = {},
         output          = this.getConsole(),
-        helper          = this.getPlugin('helper'),
         eventManager    = this.getEventManager(),
         el              = this.getSharedModule('pageElements');
     

@@ -2,12 +2,11 @@
 // AJAX MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'ajaxManager', plugins: ['helper'], hasEvents: true, isShared: true }, function () {
+WebAppLoader.addModule({ name: 'ajaxManager', hasEvents: true, isShared: true }, function () {
 
     var ajaxManager  = {},
         output       = this.getConsole(),
         eventManager = this.getEventManager(),
-        helper       = this.getPlugin('helper'),
         token        = '';
 
     // Public

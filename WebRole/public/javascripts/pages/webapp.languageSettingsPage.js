@@ -2,14 +2,12 @@
 // LANGUAGE SETTINGS PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'languageSettingsPage', plugins: ['helper'], sharedModules: ['settings', 'pageElements'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'languageSettingsPage', sharedModules: ['settings', 'pageElements'], hasEvents: true }, function () {
     var languageSettingsPage    = {},
         output                  = this.getConsole(),
         eventManager            = this.getEventManager(),
-        helper                  = this.getPlugin('helper'),
         languages               = this.getSharedModule('settings').languages,
-        el                      = this.getSharedModule('pageElements'),
-        isCreated               = false;
+        el                      = this.getSharedModule('pageElements');
 
     function onLanguageClick() {
         var language = JSON.parse($(this).data("link"));

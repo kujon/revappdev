@@ -11,8 +11,6 @@ WebAppLoader.addModule({ name: 'portfoliosList', plugins: [],
         el              = this.getSharedModule('pageElements'),
         ajaxManager     = this.getSharedModule('ajaxManager');
     
-    $(document).on('click', el.portfolioAnalysisLink, onPortfolioAnalysisClick);
-
     function onPortfolioAnalysisClick(e) {
         var uri = $(this).attr("data-link");
 
@@ -22,6 +20,8 @@ WebAppLoader.addModule({ name: 'portfoliosList', plugins: [],
         
         return false;
     }
+
+    $(document).on('click', el.portfolioAnalysisLink, onPortfolioAnalysisClick);
     
     return portfoliosList;
 });

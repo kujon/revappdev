@@ -34,7 +34,6 @@ Zepto(function ($) {
     var theApp       = {},
         loader       = WebAppLoader, // Alias
         output       = loader.getConsole(),
-        eventManager = loader.getEventManager(),
         helper       = loader.loadModule('helper'),
         device       = loader.loadModule('device'),
         siteUrls     = loader.getSharedModule('settings').siteUrls,
@@ -406,11 +405,6 @@ Zepto(function ($) {
             renderAnalysisPage(portfolio);
         }
 
-        // $(el.analysisPage + '_partial').animate({ opacity: 0 }, { duration: 250, easing: 'ease-out', complete: function () {}});
-        // $(el.analysisPage + '_partial').html('');
-        // $(el.analysisPage + '_partial').css({ opacity: 0 });
-        // $(el.analysisPage + '_partial').css({ opacity: 1 });
-
         // Remove all analysis content and scroll the page to top before rendering.
         $(el.analysisPage + '_partial').html('');
         theApp.scroll.scrollToPage(1);
@@ -438,21 +432,6 @@ Zepto(function ($) {
     });
 
     theApp.chartComponents.on('onChartLoaded', function (chart) { // chartId, numRows) {
-//        var $chart      = $('#' + chartId),
-//            realHeight  = 0;
-//            chartHeight = 0;
-//         
-//        // My last desperate attempt to resize table charts...       
-//        if ($chart.hasClass('gridContainer') && $chart.parent().data('realHeight') < 1) {
-//            numRows = (numRows > 10)
-//                ? 10
-//                : numRows;
-
-//            realHeight = theApp.resizingSettings.calculateTableHeight(numRows);
-//            chartHeight = theApp.resizingSettings.rescaleTable(realHeight, device.orientation());
-
-//            $chart.height(chartHeight);
-//            $chart.parent().data('realHeight',  realHeight);
             theApp.iOSLog.debug('rebuilt on onChartLoaded');
             theApp.scroll.saveScrollPosition();
             theApp.scroll.rebuild('analysis', { restorePosition: true });
@@ -480,9 +459,6 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onBeforeEnter', function (data) {
         theApp.updatePresentationSummaryInfo();
-        // theApp.scroll.scrollToPage(1);
-        // Save scroll position and rebuild a new one.
-        // useTransform: true, zoom: true, zoomMax: 1.5 },
         theApp.scroll.saveScrollPosition();
         theApp.scroll.rebuild(
             'fullScreenContainer', {
@@ -492,7 +468,7 @@ Zepto(function ($) {
                     // Snap options:
                     snap: true, snapThreshold: 50, bounce: false, momentum: false
                     // Zoom options:
-                    // useTransform: true, zoom: true, bounce: true, bounceLock: true, zoomMax: 1.5, momentum: false
+                    // useTransform: true, zoom: true, bounceLock: true, zoomMax: 2, vScroll: true
                 },
                 restorePosition: true
             });
@@ -502,7 +478,6 @@ Zepto(function ($) {
 
     theApp.presentationManager.on('onEnter', function (data) {
         theApp.isFullScreen = true;
-        // theApp.preventAnalysisRebuilding = true; // ASA TEST
     });
 
     theApp.presentationManager.on('onExit', function () {
@@ -516,12 +491,8 @@ Zepto(function ($) {
             theApp.scroll.rebuild('analysis', { restorePosition: true });
         } else {
             theApp.iOSLog.debug('synchronize on onExit');
-            theApp.synchronizeOrientation(false); // ASA TEST
+            theApp.synchronizeOrientation(false);
         }
-
-        // theApp.scroll.rebuild('analysis', { restorePosition: true });
-        // theApp.preventAnalysisRebuilding = false; // ASA TEST
-        
     });
 
     theApp.scroll.on('onScrolledToPage', function (page) {
@@ -808,7 +779,7 @@ Zepto(function ($) {
     });
 
     theApp.iOSLog.on('show', function () {
-        // theApp.toolbar.getButton('console').show();
+        // Add code here...
     });
 
     theApp.iOSLog.on('hide', function () {
@@ -1399,7 +1370,6 @@ Zepto(function ($) {
         return chart.chartId;
     };
 
-
     $('body').bind('turn', function (event, info) {
         theApp.synchronizeOrientation.chartToDisplay = theApp.getCurrentChartDisplayedInViewport();
         theApp.synchronizeOrientation(true);
@@ -1411,7 +1381,7 @@ Zepto(function ($) {
     };
 
     // ------------------------------------------
-    // EXPERIMENTAL
+    // EXPERIMENTAL PAGE
     // ------------------------------------------
 
     theApp.initExperimentalPage = function () {
@@ -1435,7 +1405,7 @@ Zepto(function ($) {
 
         // Render the new custom chart.
         theApp.chartComponents.render(charts, '#custom_chart_partial');
-        theApp.scroll.rebuild('experimental');
+        theApp.scroll.rebuild('experimental', { forceRebuilding: true });
     });
 
 });

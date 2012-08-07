@@ -2,16 +2,14 @@
 // EVENT PAGE MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedModules: ['pageElements', 'loadingMaskManager'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedModules: ['loadingMaskManager'], hasEvents: true }, function () {
     var pageEventsManager   = {},
         eventManager        = this.getEventManager(),
         output              = this.getConsole(),
         helper              = this.getPlugin('helper'),
-        el                  = this.getSharedModule('pageElements'),
         mask                = this.getSharedModule('loadingMaskManager');
 
     $('div[data-pageEvents]').each(function () {
-        var eventHandler = '';
 
         switch ($(this).attr("data-pageEvents")) {
             case 'start':
@@ -55,10 +53,6 @@ WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedM
     // GLOBAL AJAX EVENTS
     // ------------------------------------------
 
-    // Global Ajax Call
-    $(document).on('ajaxStart', onAjaxStart);
-    $(document).on('ajaxComplete', onAjaxComplete);
-
     function onAjaxStart(event, request, settings) {
         mask.show('ajax');
         output.log('ajaxStart', event, request, settings);
@@ -76,6 +70,10 @@ WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedM
 
         output.log('ajaxComplete', event, request, settings, obj);
     }
+
+    // Global Ajax Call
+    $(document).on('ajaxStart', onAjaxStart);
+    $(document).on('ajaxComplete', onAjaxComplete);
 
     return pageEventsManager;
 });

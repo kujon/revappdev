@@ -2,15 +2,12 @@
 // ANALYSIS MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'], 
-    sharedModules: [], dataObjects: ['analysisPages'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects: ['analysisPages'], hasEvents: true }, function () {
 
     var analysisManager         = {},
         output                  = this.getConsole(),
         eventManager            = this.getEventManager(),
-        helper                  = this.getPlugin('helper'),
         analysisPagesDataObj    = this.getDataObject('analysisPages'),
-        charts                  = [],
         analysisPages           = {};
 
     analysisPagesDataObj.define({
@@ -180,8 +177,6 @@ WebAppLoader.addModule({ name: 'analysisManager', plugins: ['helper'],
     }
 
     function init(lastUsernameUsed) {
-        var userAnalysisPages;
-        
         if (lastUsernameUsed) {
             analysisPagesDataObj.loadData(lastUsernameUsed);
         } 

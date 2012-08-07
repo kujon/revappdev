@@ -6,7 +6,6 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
     var scroll              = {},
         eventManager        = this.getEventManager(),
         helper              = this.getPlugin('helper'),
-        savedScrollPosition = [],
         lastXPosition       = 0,
         lastYPosition       = 0,
         isRebuilding        = false,
@@ -15,15 +14,16 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
     /* Use this for high compatibility (iDevice + Android)*/
     document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
+    // Public
     function saveScrollPosition() {
         // TODO: Store positions and return an id to use with restoreScrollPosition.
-        // savedScrollPosition[0] = {x: myScroll.x, y: myScroll.y};
         if (myScroll) {
             lastXPosition = myScroll.x;
             lastYPosition = myScroll.y;
         }
     }
 
+    // Public
     function restoreScrollPosition(offsetX, offsetY/* TODO: id*/) {
         offsetX = offsetX || 0;
         offsetY = offsetY || 0;
@@ -39,6 +39,7 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
         }, 100);
     }
     
+    // Public
     function scrollToElement(element, offset, time) {
         var top           = 0,
             el            = null,
@@ -59,6 +60,7 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
         }, 100);
     }
 
+    // Public
     function scrollTo(x, y, time) {
         var animationTime = helper.getValueAs(time, 'number');
 
@@ -72,6 +74,7 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
         }, 100);
     }
     
+    // Public
     function scrollToPage(pageX, pageY, time) {
         var animationTime = helper.getValueAs(time, 'number');
 
@@ -84,6 +87,30 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
         }, 100);
     }
 
+    // Public
+    function goUp() {
+        try {
+            myScroll.scrollTo(0, 0, 200);
+        } catch (e) {
+
+        }
+    }
+
+    // Private
+    function removeUnusedScroll($scroller) {
+        function removeNext($next) {
+            if ($next.length > 0) {
+                $next.remove();
+                if ($scroller.next().length > 0) {
+                    removeUnusedScroll($scroller.next());
+                }
+            }
+        }
+                
+        removeNext($scroller.next());
+    }
+
+    // Public
     function rebuildScroll(id, config) {
         var wrapper         = 'div#' + id + ' #wrapper',
             config          = config || {},
@@ -100,6 +127,10 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
 
         options.useTransform = (options.useTransform)
             ? options.useTransform
+            : false;
+
+        options.bounce = (options.bounce)
+            ? options.bounce
             : false;
 
         // Overriden events.
@@ -124,13 +155,6 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
             eventManager.raiseEvent('onScrolledToPage', page);
         };
 
-        
-//        options.onScrollMove = function() {
-//            //alert('onScrollMove');
-//        };
-//        
-
-
         // Try to restore any previous position if requested.
         if (restorePosition) {
             options.x = lastXPosition;
@@ -152,19 +176,6 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
             myScroll.destroy();
             myScroll = null;
 
-            function removeUnusedScroll($scroller) {
-                function removeNext($next) {
-                    if ($next.length > 0) {
-                        $next.remove();
-                        if ($scroller.next().length > 0) {
-                            removeUnusedScroll($scroller.next());
-                        }
-                    }
-                }
-                
-                removeNext($scroller.next());
-            }
-
             removeUnusedScroll($(wrapper).find('#scroller', '#horizontal_scroller'));
         }
 
@@ -173,14 +184,6 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
                 myScroll = new iScroll($(wrapper).get(0), options);
                 isRebuilding = false;
             }, 25); // Usually timers should be set to a minimum of 25 milliseconds to work properly.
-        }
-    }
-
-    function goUp() {
-        try {
-            myScroll.scrollTo(0, 0, 200);
-        } catch (e) {
-
         }
     }
 

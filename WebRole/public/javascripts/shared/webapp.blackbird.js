@@ -26,7 +26,8 @@ WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true
         filters: 'bbFilters',
         controls: 'bbControls',
         size: 'bbSize'
-    }
+    };
+
     var messageTypes = { //order of these properties imply render order of filter controls
         debug: true,
         info: true,

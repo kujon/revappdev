@@ -2,21 +2,18 @@
 // THEMES MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'themesManager', plugins: ['helper'], sharedModules: ['pageElements'], 
+WebAppLoader.addModule({ name: 'themesManager', sharedModules: ['pageElements'], 
     dataObjects: ['theme'], hasEvents: true }, function () {
     var themesManager   = {},
         eventManager    = this.getEventManager(),
         output          = this.getConsole(),
-        helper          = this.getPlugin('helper'),
         el              = this.getSharedModule('pageElements'),
         themeDataObj    = this.getDataObject('theme'),
-        defaultStyle    = 'Awesome';
+        defaultStyle    = 'Revolution';
 
     themeDataObj.define({
         name: defaultStyle
     });
-
-    $(el.themesPage + ' ul li a').on('click', onThemeChange);
 
     // Private
     function onThemeChange(event) {
@@ -34,6 +31,8 @@ WebAppLoader.addModule({ name: 'themesManager', plugins: ['helper'], sharedModul
         }
         jQT.switchStyle(style || defaultStyle);
     }
+    
+    $(el.themesPage + ' ul li a').on('click', onThemeChange);
 
     themesManager.switchStyle = switchStyle;
 

@@ -2,15 +2,12 @@
 // FAVOURITES MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'favouritesManager', plugins: ['helper'], 
-    sharedModules: [], dataObjects: ['favourites'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'favouritesManager', sharedModules: [], dataObjects: ['favourites'], hasEvents: true }, function () {
 
     var favouritesManager    = {},
         output               = this.getConsole(),
         eventManager         = this.getEventManager(),
-        helper               = this.getPlugin('helper'),
-        favouritesDataObj    = this.getDataObject('favourites'),
-        favourites           = {};
+        favouritesDataObj    = this.getDataObject('favourites');
 
     favouritesDataObj.define({
         items: []
@@ -46,9 +43,10 @@ WebAppLoader.addModule({ name: 'favouritesManager', plugins: ['helper'],
     function getAnalysisDataObjectFromFavourte(favouriteId) {
         var favourites         = favouritesDataObj.getData(),
             analysisDataObject = null,
-            favourite          = {};
+            favourite          = {},
+            i                  = 0;
 
-        for (var i = 0; i < favourites.items.length; i++) {
+        for (i = 0; i < favourites.items.length; i++) {
             favourite = favourites.items[i];
             if (favourite.favouriteId === favouriteId) {
                 // Create a new analysisDataObject and populate it with
@@ -64,6 +62,7 @@ WebAppLoader.addModule({ name: 'favouritesManager', plugins: ['helper'],
         return analysisDataObject;
     }
 
+    // NOTA BENE: This function is declared but not yet implemented.
     function favouriteExists(favouriteId) {
         var favourites = favouritesDataObj.getData();
     }
@@ -73,8 +72,7 @@ WebAppLoader.addModule({ name: 'favouritesManager', plugins: ['helper'],
     }
 
     function init(lastUsernameUsed) {
-        var favourites;
-        
+    
         if (lastUsernameUsed) {
             favouritesDataObj.loadData(lastUsernameUsed);
         } 

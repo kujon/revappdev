@@ -77,12 +77,9 @@
 				h1 #{lang.settingsPages.settingsText}
 			#wrapper.settingsWrapper
 				#scroller
-					// h2 #{lang.settingsPages.applicationSettingsText}
 					ul.rounded
 						li.arrow
 							a(href="#analysisPagesSettings") #{lang.settingsPages.analysisPagesText}
-
-					// h2 #{lang.settingsPages.userPreferencesText}
 					ul.rounded
 						li.arrow
 							a(href="#themes") #{lang.settingsPages.themesText}
@@ -91,8 +88,6 @@
 						li #{lang.settingsPages.autoLoginText}
 							span.toggle
 								input#stayLoggedCheckbox(type="checkbox")
-
-					// h2 TODO: Memory Statistics / Consumed
 					ul.rounded
 						li
 							a#reloadAppButton(href="#") #{lang.settingsPages.reloadText}
@@ -103,8 +98,6 @@
 							a(href="#about") #{lang.settingsPages.aboutText}
 						li.arrow
 							a(href="#eula") #{lang.settingsPages.licenseText}
-					// a#reloadApp.whiteButton(href='#') #{lang.settingsPages.reloadText}
-					// a#resetApp.whiteButton(href='#reset') Reset App
 					ul.rounded
 						li#userEmailLabel.centeredText
 					ul.rounded
@@ -118,6 +111,7 @@
 			ul.rounded
 				li#resetCurrentSettingsButton.centeredText #{lang.settingsPages.resetCurrentSettingsText}
 				li#resetAllSettingsButton.centeredText #{lang.settingsPages.resetAllSettingsText}
+		
 		#themes
 			.toolbar
 				h1 #{lang.settingsPages.themesText}
@@ -194,17 +188,14 @@
 		
 		#experimental(data-pageEvents="both")
 			.toolbar
-				// #{lang.settingsPages.analysisPageText}
 				h1 Experimental 
 				a.back(href='#settings') #{lang.shared.backText}
 			#wrapper
 				#scroller
-					// #{lang.settingsPages.userPageText}
 					h2 Custom Chart
 					form.scroll
 						ul.edit.rounded
 							li
-								// #{lang.settingsPages.pageNameText}
 								input#expTitle(type='text', placeholder='Chart Title', value='')						
 							li.arrow
 								select#expChartType
