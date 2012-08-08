@@ -47,8 +47,7 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
     }
 
     function loadPortfolio(portfolioCode, callback) {
-        var defaultPortfolioCode,
-            portfolio = {                
+        var portfolio = {                
                 code: '',
                 name: '',
                 type: '',

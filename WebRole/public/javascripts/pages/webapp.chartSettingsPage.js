@@ -2,14 +2,11 @@
 // CHART SETTINGS PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartSettingsPage',
-    plugins: ['helper'], sharedModules: ['settings', 'pageElements', 'localizationManager'],
-    hasEvents: true
-}, function () {
+WebAppLoader.addModule({ name: 'chartSettingsPage', sharedModules: ['settings', 'pageElements', 'localizationManager'],
+    hasEvents: true}, function () {
     var chartSettingsPage = {},
         output            = this.getConsole(),
         eventManager      = this.getEventManager(),
-        helper            = this.getPlugin('helper'),
         lang              = this.getSharedModule('localizationManager').getLanguage() || {},
         settings          = this.getSharedModule('settings'),
         el                = this.getSharedModule('pageElements'),

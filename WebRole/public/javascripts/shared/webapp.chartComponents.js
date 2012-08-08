@@ -601,6 +601,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         function addChartToChartsToRender(chartToAdd) {
             var chartsToRender = [],
                 isGroup        = false,
+                chart          = null,
                 containerClass;
 
             // Exit if the chart to add doesn't exist.

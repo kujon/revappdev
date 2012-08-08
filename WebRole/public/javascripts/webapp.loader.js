@@ -141,7 +141,6 @@ var WebAppLoader = {};
                 events[event] = callback;
                 // ... fire all events in the queue and then remove it.
                 for (var i = 0; i < eventsQueue[event].events.length; i++) {
-                    // ASA TODO: Add a time interval property.
                     events[event].apply(null, eventsQueue[event].events[i]);
                 }
                 delete eventsQueue[event];

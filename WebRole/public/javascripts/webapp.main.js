@@ -250,8 +250,7 @@ Zepto(function ($) {
 
     theApp.init = function () {
         var lastLoggedOnUser = '',
-            automaticLogin = false,
-            analysisDataObject = {};
+            automaticLogin = false;
 
         theApp.nav.goToPage($(el.startupPage), 'dissolve');
         theApp.tabbar.show();
@@ -309,8 +308,7 @@ Zepto(function ($) {
                 analysisPageCharts    = null,
                 analysisPageTitle     = '',
                 presentationViewWidth = 0,
-                timePeriodFound       = false,
-                i;
+                timePeriodFound       = false;
 
             analysisPagesData = theApp.analysisManager.getData('analysisPages');
 
@@ -578,7 +576,6 @@ Zepto(function ($) {
             };
         }
 
-        // TODO: Add comments...
         if (charts.length === 0) {
             for (var chart in chartComponentsData) {
                 charts.push({
@@ -1242,7 +1239,6 @@ Zepto(function ($) {
     theApp.synchronizeOrientation = function (restorePosition) {
         var animationSpeed  = 25,
             rebuildingDelay = 1000,
-            el              = null,
             restorePosition = helper.getValueAs(restorePosition, 'boolean'),
             deviceOrientation = device.orientation();
 
@@ -1377,7 +1373,7 @@ Zepto(function ($) {
 
     // Generic test method.
     theApp.onTestApp = function () {
-        // TODO: Add code here.
+        // TODO: Add code here...
     };
 
     // ------------------------------------------

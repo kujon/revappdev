@@ -59,7 +59,7 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         fullScreenContainer                     : '#fullScreenContainer',
         minimizeButton                          : '#minimizeButton',
         fullScreenMask                          : '#fullScreenMask',
-	turnIcon                                : '#turnIcon',
+	    turnIcon                                : '#turnIcon',
         presentationTitle                       : '#presentationTitle',
         presentationChartsContainer             : '#presentationChartsContainer',
         presentationTimePeriodStartDateText     : '#presentationTimePeriodStartDateText',

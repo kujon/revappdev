@@ -5835,7 +5835,6 @@ var WebAppLoader = {};
                 events[event] = callback;
                 // ... fire all events in the queue and then remove it.
                 for (var i = 0; i < eventsQueue[event].events.length; i++) {
-                    // ASA TODO: Add a time interval property.
                     events[event].apply(null, eventsQueue[event].events[i]);
                 }
                 delete eventsQueue[event];
@@ -6513,7 +6512,7 @@ WebAppLoader.addModule({ name: 'helper', isPlugin: true }, function () {
 
 	    this.append = function ()
 	    {
-            string = format.apply(null, arguments);
+            var string = format.apply(null, arguments);
 
 		    string = verify(string);
 		    if (string.length > 0) strings[strings.length] = string;
@@ -6524,7 +6523,7 @@ WebAppLoader.addModule({ name: 'helper', isPlugin: true }, function () {
 
 	    this.appendLine = function (string)
 	    {
-		    string = verify(string);
+		    var string = verify(string);
 		    if (this.isEmpty())
 		    {
 			    if (string.length > 0) strings[strings.length] = string;
@@ -7289,11 +7288,10 @@ WebAppLoader.addModule({ name: 'spinningWheel', plugins: ['helper'], sharedModul
 // SWIPE BUTTON
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'swipeButton', sharedModules: ['settings', 'pageElements', 'ajaxManager'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'swipeButton', sharedModules: ['settings', 'ajaxManager'], hasEvents: true }, function () {
     var swipeButton     = {},
         output          = this.getConsole(),
-        eventManager    = this.getEventManager(),
-        el              = this.getSharedModule('pageElements');
+        eventManager    = this.getEventManager();
     
       function addTo(containerId, label, callback, autoRemove, buttonClass) {
         $(containerId + ' li').swipeDelete({
@@ -8674,6 +8672,7 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         function addChartToChartsToRender(chartToAdd) {
             var chartsToRender = [],
                 isGroup        = false,
+                chart          = null,
                 containerClass;
 
             // Exit if the chart to add doesn't exist.
@@ -9812,7 +9811,7 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         fullScreenContainer                     : '#fullScreenContainer',
         minimizeButton                          : '#minimizeButton',
         fullScreenMask                          : '#fullScreenMask',
-	turnIcon                                : '#turnIcon',
+	    turnIcon                                : '#turnIcon',
         presentationTitle                       : '#presentationTitle',
         presentationChartsContainer             : '#presentationChartsContainer',
         presentationTimePeriodStartDateText     : '#presentationTimePeriodStartDateText',
@@ -10405,8 +10404,7 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
     }
 
     function loadPortfolio(portfolioCode, callback) {
-        var defaultPortfolioCode,
-            portfolio = {                
+        var portfolio = {                
                 code: '',
                 name: '',
                 type: '',
@@ -10731,7 +10729,7 @@ WebAppLoader.addModule({ name: 'repositories', sharedModules: ['settings', 'loca
         eventManager.attachTo(repository);
 
         function getAnalysisSlotItems() {
-            // ASA TODO: Investigate...
+            // TODO: Investigate...
             return analysisSlotItems;
             return (analysisSlotItems)
                 ? analysisSlotItems
@@ -10978,14 +10976,11 @@ WebAppLoader.addModule({ name: 'analysisSettingsPage', plugins: ['helper'],
 // CHART SETTINGS PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartSettingsPage',
-    plugins: ['helper'], sharedModules: ['settings', 'pageElements', 'localizationManager'],
-    hasEvents: true
-}, function () {
+WebAppLoader.addModule({ name: 'chartSettingsPage', sharedModules: ['settings', 'pageElements', 'localizationManager'],
+    hasEvents: true}, function () {
     var chartSettingsPage = {},
         output            = this.getConsole(),
         eventManager      = this.getEventManager(),
-        helper            = this.getPlugin('helper'),
         lang              = this.getSharedModule('localizationManager').getLanguage() || {},
         settings          = this.getSharedModule('settings'),
         el                = this.getSharedModule('pageElements'),
@@ -11747,8 +11742,7 @@ Zepto(function ($) {
 
     theApp.init = function () {
         var lastLoggedOnUser = '',
-            automaticLogin = false,
-            analysisDataObject = {};
+            automaticLogin = false;
 
         theApp.nav.goToPage($(el.startupPage), 'dissolve');
         theApp.tabbar.show();
@@ -11806,8 +11800,7 @@ Zepto(function ($) {
                 analysisPageCharts    = null,
                 analysisPageTitle     = '',
                 presentationViewWidth = 0,
-                timePeriodFound       = false,
-                i;
+                timePeriodFound       = false;
 
             analysisPagesData = theApp.analysisManager.getData('analysisPages');
 
@@ -12075,7 +12068,6 @@ Zepto(function ($) {
             };
         }
 
-        // TODO: Add comments...
         if (charts.length === 0) {
             for (var chart in chartComponentsData) {
                 charts.push({
@@ -12739,7 +12731,6 @@ Zepto(function ($) {
     theApp.synchronizeOrientation = function (restorePosition) {
         var animationSpeed  = 25,
             rebuildingDelay = 1000,
-            el              = null,
             restorePosition = helper.getValueAs(restorePosition, 'boolean'),
             deviceOrientation = device.orientation();
 
@@ -12874,7 +12865,7 @@ Zepto(function ($) {
 
     // Generic test method.
     theApp.onTestApp = function () {
-        // TODO: Add code here.
+        // TODO: Add code here...
     };
 
     // ------------------------------------------

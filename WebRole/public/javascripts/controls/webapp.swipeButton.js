@@ -2,11 +2,10 @@
 // SWIPE BUTTON
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'swipeButton', sharedModules: ['settings', 'pageElements', 'ajaxManager'], hasEvents: true }, function () {
+WebAppLoader.addModule({ name: 'swipeButton', sharedModules: ['settings', 'ajaxManager'], hasEvents: true }, function () {
     var swipeButton     = {},
         output          = this.getConsole(),
-        eventManager    = this.getEventManager(),
-        el              = this.getSharedModule('pageElements');
+        eventManager    = this.getEventManager();
     
       function addTo(containerId, label, callback, autoRemove, buttonClass) {
         $(containerId + ' li').swipeDelete({

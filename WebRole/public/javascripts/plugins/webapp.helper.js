@@ -38,7 +38,7 @@ WebAppLoader.addModule({ name: 'helper', isPlugin: true }, function () {
 
 	    this.append = function ()
 	    {
-            string = format.apply(null, arguments);
+            var string = format.apply(null, arguments);
 
 		    string = verify(string);
 		    if (string.length > 0) strings[strings.length] = string;
@@ -49,7 +49,7 @@ WebAppLoader.addModule({ name: 'helper', isPlugin: true }, function () {
 
 	    this.appendLine = function (string)
 	    {
-		    string = verify(string);
+		    var string = verify(string);
 		    if (this.isEmpty())
 		    {
 			    if (string.length > 0) strings[strings.length] = string;
