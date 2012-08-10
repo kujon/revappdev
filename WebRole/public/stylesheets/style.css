@@ -188,6 +188,31 @@ div .google-visualization-table-div-page img /* :first-child */
     min-height: 500px;    
 }
 
+.customNumberContainer {
+    display: block;
+    float: left;
+    width: auto;
+    margin: 0 30px;
+    clear: both;
+}
+
+.customNumber {
+    display: inline-block;    
+    width: 33%;
+    margin: 30px 0 0 0; 
+}
+
+.customNumber span { display: block; float: left; width: 100%; line-height: 1em; }
+
+.customNumberValue {
+    font-family: HelveticaNeue-Bold; 
+    font-size: 50px; 
+    letter-spacing: 0;
+	text-shadow: #666 0 1px 0; 
+}
+
+.customNumberLabel { font-family: HelveticaNeue-Light; font-size: 10px; }
+
 #presentationCharts li 
 {
     float: left;

@@ -61,8 +61,7 @@ $summaryBold-font-family: "CopystructBold";
 			letter-spacing: 0;
 			text-shadow: #666 0 1px 0;
 			line-height:30px;
-			padding-top: 12px !important;
-
+			bottom: 4px;
 		}
     }
 		
@@ -122,8 +121,8 @@ $summaryBold-font-family: "CopystructBold";
 #analysisSummary
 {
     margin: 0;
-    padding: 10px 30px;
-    height: 36px !important;
+    padding: 22px 30px;
+    height: 28px !important;
     overflow: hidden;
     background-color: $rev-blue-color !important;
 }
@@ -142,7 +141,7 @@ $summaryBold-font-family: "CopystructBold";
 #analysisLogo
 {
     position: absolute;
-    top: 5px;
+    top: 7px;
     left: 25px;
     z-index: 1500;
     height: 30px;
@@ -176,6 +175,21 @@ $summaryBold-font-family: "CopystructBold";
 
 .analysisSummarySection {
     border-bottom: 1px solid $rev-midgrey-color !important;
+}
+
+.customNumberContainer {
+	margin: 30px 30px 0 !important;
+}
+
+.customNumberValue {
+	color: $rev-blue-color !important;
+	font-family: $toolbar-font-family !important;
+	font-size: 35px !important;	
+}
+
+.customNumberLabel {
+	font-family: $summaryNormal-font-family !important;
+	font-size: 10px !important;
 }
 
 /************************************************

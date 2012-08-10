@@ -13,7 +13,7 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
         buttonIndices    = {},
         visible          = true,
         buttonWidth      = 30,
-        buttonPadding    = 5,
+        buttonPadding    = 25,
         buttonsCount     = 0;
 
     $(el.toolbar).click(function () {

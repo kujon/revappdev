@@ -31,14 +31,14 @@ var jQT = new $.jQTouch({
 // Main functions:
 Zepto(function ($) {
 
-    var theApp       = {},
-        loader       = WebAppLoader, // Alias
-        output       = loader.getConsole(),
-        helper       = loader.loadModule('helper'),
-        device       = loader.loadModule('device'),
-        siteUrls     = loader.getSharedModule('settings').siteUrls,
-        el           = loader.getSharedModule('pageElements'),
-        lang         = loader.getSharedModule('localizationManager').getLanguage() || {};
+    var theApp = {},
+        loader = WebAppLoader, // Alias
+        output = loader.getConsole(),
+        helper = loader.loadModule('helper'),
+        device = loader.loadModule('device'),
+        siteUrls = loader.getSharedModule('settings').siteUrls,
+        el = loader.getSharedModule('pageElements'),
+        lang = loader.getSharedModule('localizationManager').getLanguage() || {};
 
     // Test log method.
     output.log('Hello from Dan & Asa!');
@@ -69,7 +69,7 @@ Zepto(function ($) {
     theApp.preventAnalysisRebuilding = false;
 
     /* ----------------------- ON/OFF ----------------------- /
-       'Switch comments off changing /* in //* and viceversa'
+    'Switch comments off changing /* in //* and viceversa'
     // ------------------------------------------------------ */
 
     // ------------------------------------------
@@ -300,15 +300,16 @@ Zepto(function ($) {
         theApp.nav.goToPage($(el.analysisPage), 'dissolve');
 
         function renderAnalysisPage(portfolio) {
-            var chartsToRender        = [],
-                analysisPagesData     = {},
-                analysisPage          = {},
-                portfolioId           = portfolio.code,
-                portfolioName         = portfolio.name,
-                analysisPageCharts    = null,
-                analysisPageTitle     = '',
+            var chartsToRender = [],
+                analysisPagesData = {},
+                analysisPage = {},
+                portfolioId = portfolio.code,
+                portfolioName = portfolio.name,
+                analysisPageCharts = null,
+                analysisPageTitle = '',
                 presentationViewWidth = 0,
-                timePeriodFound       = false;
+                presentationChartCount = 0,
+                timePeriodFound = false;
 
             analysisPagesData = theApp.analysisManager.getData('analysisPages');
 
@@ -361,7 +362,7 @@ Zepto(function ($) {
             });
 
             // If we didn't find a time period in the loop, clear out the text.
-            if (!timePeriodFound) { 
+            if (!timePeriodFound) {
                 $(el.timePeriodStartDateText).html('-');
                 $(el.timePeriodEndDateText).html('-');
             }
@@ -394,8 +395,14 @@ Zepto(function ($) {
                 theApp.presentationManager.enterPresentationMode(data);
             });
 
+            // Filter the charts so that we're only selecting 
+            // those which should have a presentation view.
+            presentationChartCount = jLinq.from(analysisPageCharts)
+                .notStarts('noPresentation', true)
+                .count();
+
             // Set the width of the presentation view in order to contain all charts.
-            presentationViewWidth = parseInt((chartsToRender.length || 1) * device.maxWidth(), 10);
+            presentationViewWidth = parseInt((presentationChartCount || 1) * device.maxWidth(), 10);
             $(el.presentationChartsContainer).width(presentationViewWidth);
         }
 
@@ -429,11 +436,10 @@ Zepto(function ($) {
         output.log('onChartsLoading', chartCount, chartTotal);
     });
 
-    theApp.chartComponents.on('onChartLoaded', function (chart) { // chartId, numRows) {
-            theApp.iOSLog.debug('rebuilt on onChartLoaded');
-            theApp.scroll.saveScrollPosition();
-            theApp.scroll.rebuild('analysis', { restorePosition: true });
-//        }
+    theApp.chartComponents.on('onChartLoaded', function (chart) {
+        theApp.iOSLog.debug('rebuilt on onChartLoaded');
+        theApp.scroll.saveScrollPosition();
+        theApp.scroll.rebuild('analysis', { restorePosition: true });
     });
 
     // ------------------------------------------
@@ -441,11 +447,11 @@ Zepto(function ($) {
     // ------------------------------------------
 
     theApp.updatePresentationSummaryInfo = function () {
-        var analysisTitle               = $(el.analysisTitle).html() || '',
-            timePeriodStartDateText     = $(el.timePeriodStartDateText).html() || '',
-            timePeriodEndDateText       = $(el.timePeriodEndDateText).html() || '',
-            summaryTitleName            = $(el.summaryTitleName).html() || '',
-            summaryTitleBenchmarkName   = $(el.summaryTitleBenchmarkName).html() || '';
+        var analysisTitle = $(el.analysisTitle).html() || '',
+            timePeriodStartDateText = $(el.timePeriodStartDateText).html() || '',
+            timePeriodEndDateText = $(el.timePeriodEndDateText).html() || '',
+            summaryTitleName = $(el.summaryTitleName).html() || '',
+            summaryTitleBenchmarkName = $(el.summaryTitleBenchmarkName).html() || '';
 
         // Set values from the analysis summary info to the presentation summary info.
         $(el.presentationTitle).html(analysisTitle);
@@ -483,7 +489,7 @@ Zepto(function ($) {
 
         // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
         theApp.isFullScreen = false;
-        
+
         if (deviceOrientation === theApp.lastDeviceOrientation) {
             theApp.iOSLog.debug('rebuilt on onExit');
             theApp.scroll.rebuild('analysis', { restorePosition: true });
@@ -728,7 +734,7 @@ Zepto(function ($) {
         items: [
             { id: 'favourite', title: lang.tabbar.favourites, btnClass: 'favourite' },
             { id: 'console', title: 'console', btnClass: 'console' }
-            // { id: 'test', title: test, btnClass: 'favourite' } // Comment off to add a test button.
+        // { id: 'test', title: test, btnClass: 'favourite' } // Comment off to add a test button.
         ]
     };
 
@@ -824,7 +830,7 @@ Zepto(function ($) {
     theApp.tabbar.on('onTimePeriodsTap', function () {
         theApp.spinningWheel.getSlot('timePeriods').show(theApp.getLastAnalysisObjectUsed().timePeriodId);
     });
-    
+
     theApp.tabbar.on('onSettingsTap', function (button) {
         if (button.isHighlighted) {
             theApp.nav.goToPage($(el.settingsPage));
@@ -1237,7 +1243,7 @@ Zepto(function ($) {
     };
 
     theApp.synchronizeOrientation = function (restorePosition) {
-        var animationSpeed  = 25,
+        var animationSpeed = 25,
             rebuildingDelay = 1000,
             restorePosition = helper.getValueAs(restorePosition, 'boolean'),
             deviceOrientation = device.orientation();
@@ -1247,7 +1253,7 @@ Zepto(function ($) {
             theApp.iOSLog.debug('synchronizeOrientation skipped.');
             return;
         }
-        
+
         theApp.lastDeviceOrientation = deviceOrientation;
 
         animationSpeed = (theApp.settings.appSettings.animatedChartResizing)
@@ -1336,12 +1342,12 @@ Zepto(function ($) {
     theApp.synchronizeOrientation.chartToDisplay = '';
 
     theApp.getCurrentChartDisplayedInViewport = function () {
-        var approximativeHeaderHeight   = 75,
-            horizon                     = 0,
-            charts                      = [],
-            chart                       = {},
-            positions                   = [],
-            minY                        = 0;
+        var approximativeHeaderHeight = 75,
+            horizon = 0,
+            charts = [],
+            chart = {},
+            positions = [],
+            minY = 0;
 
         horizon = (device.orientation() === 'landscape')
             ? (device.maxHeight()) / 2 + approximativeHeaderHeight

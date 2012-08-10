@@ -431,6 +431,19 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
         },
 
         // ------------------------------------------
+        // CUSTOM NUMBER CHARTS
+        // ------------------------------------------
+
+        'attribution_customNumber': {
+            chartId: 'attribution_customNumber',
+            title: '',
+            chartType: 'CustomNumber',
+            include: 'none',
+            measures: ['rp', 'ctb', 'relr', 'eselec', 'ealloc'],
+            includeMeasuresFor: ['segment']
+        },
+
+        // ------------------------------------------
         // CHART GROUPS
         // ------------------------------------------
 
@@ -632,11 +645,13 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
                 case 'TreeMap':
                     containerClass = 'treeMapContainer resizableChart';
                     break;
+                case 'CustomNumber':
+                    containerClass = 'customNumberContainer resizableChart';
+                    break;
                 default:
                     containerClass = 'chartContainer resizableChart';
             }
-            // containerClass = (chartToAdd.chartType === 'Table') ? 'gridContainer resizableChart' : 'chartContainer resizableChart';
-
+            
             // Create the chart containers according to the chart types.
             for (var i = 0; i < chartsToRender.length; i++) {
                 chart = chartsData[chartsToRender[i].chartId] || null;
@@ -644,9 +659,12 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
                 // Add current chart to the list of charts to load.
                 chartsToLoad.push(chart);
 
-                if (chart) {
+                if (chart) {                    
                     if (isGroup) {
                         addChartToGroup(chartsToRender[i]);
+                    } else if (chart.chartType === 'CustomNumber') {
+                        addChartToAnalysisSection(chartsToRender[i], containerClass);
+                        appendHtmlToAnalysisSection();
                     } else {
                         openAnalysisSection(chart.chartId, chart.title);
                         addChartToAnalysisSection(chartsToRender[i], containerClass);

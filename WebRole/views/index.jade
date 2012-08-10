@@ -68,7 +68,7 @@
 			.toolbar
 				h1 #{lang.eulaPage.eulaText}
 				a.back(href='#settings') #{lang.shared.backText}
-			#wrapper
+			#wrapper.settingsWrapper
 				#scroller
 					#eula_partial
 		
@@ -108,21 +108,23 @@
 			.toolbar
 				h1 #{lang.settingsPages.resetText}
 				a.back(href='#settings') #{lang.shared.backText}
-			ul.rounded
-				li#resetCurrentSettingsButton.centeredText #{lang.settingsPages.resetCurrentSettingsText}
-				li#resetAllSettingsButton.centeredText #{lang.settingsPages.resetAllSettingsText}
+			#wrapper.settingsWrapper
+				ul.rounded
+					li#resetCurrentSettingsButton.centeredText #{lang.settingsPages.resetCurrentSettingsText}
+					li#resetAllSettingsButton.centeredText #{lang.settingsPages.resetAllSettingsText}
 		
-		#themes
+		#themes.settingsWrapper
 			.toolbar
 				h1 #{lang.settingsPages.themesText}
 				a.back(href='#settings') #{lang.shared.backText}
-			ul.rounded
+			#wrapper.settingsWrapper
+				ul.rounded
 
 		#analysisPagesSettings(data-pageEvents="both")
 			.toolbar
 				h1 #{lang.settingsPages.analysisPagesText}
 				a.back(href='#settings') #{lang.shared.backText}
-			#wrapper
+			#wrapper.settingsWrapper
 				#scroller
 					h2 #{lang.settingsPages.userPagesText}
 					ul#listAnalysisSettingsUserPages.edit.rounded
@@ -133,7 +135,7 @@
 			.toolbar
 				h1 #{lang.settingsPages.analysisPageText}
 				a.back(href='#settings') #{lang.shared.backText}
-			#wrapper
+			#wrapper.settingsWrapper
 				#scroller
 					h2 #{lang.settingsPages.userPageText}
 					form.scroll
@@ -148,14 +150,14 @@
 			.toolbar
 				h1 #{lang.languageSettingsPage.settingsText}
 				a.back(href='#settings') #{lang.shared.backText}
-			#wrapper
+			#wrapper.settingsWrapper
 				#scroller
 					ul#listLanguagesPages.rounded
 		
 		#error(data-pageEvents="both")
 			.toolbar
 				h1 #{lang.errorPage.errorText}
-			#wrapper
+			#wrapper.settingsWrapper
 				#scroller
 					#errorMessage
 						.genericContainer
@@ -166,7 +168,7 @@
 			.toolbar
 				h1 #{lang.aboutPage.aboutText}
 				a.back(href='#settings') #{lang.shared.backText}
-			#wrapper
+			#wrapper.settingsWrapper
 				#scroller
 					#about_partial
 						.genericContainer
@@ -190,7 +192,7 @@
 			.toolbar
 				h1 Experimental 
 				a.back(href='#settings') #{lang.shared.backText}
-			#wrapper
+			#wrapper.settingsWrapper
 				#scroller
 					h2 Custom Chart
 					form.scroll

@@ -180,12 +180,28 @@ WebAppLoader.addModule({ name: 'chartManager',
             options.maxColor = '#cc0000';
         }
 
-        // Create a new visualization wrapper instance, using the type, options and ID.
-        chart = new google.visualization.ChartWrapper({
-            chartType: type,
-            options: options,
-            containerId: id
-        });
+        // If we're creating a CustomNumber chart, we just need a basic object,
+        // rather than a full-blown Google Visualization chart wrapper.
+        if (type === 'CustomNumber') {
+
+            chart = {
+                chartType: type,
+                containerId: id
+            };
+
+        } else {
+
+            // Create a new visualization wrapper instance, using the type, options and ID.
+            chart = new google.visualization.ChartWrapper({
+                chartType: type,
+                options: options,
+                containerId: id
+            });
+
+            google.visualization.events.addListener(chart, 'error', function (errorObj) {
+                onChartReady({ errorObj: errorObj });
+            });
+        }
 
         eventManager.raiseEvent('chartReady', chart);
         eventManager.raiseEvent('showMask', config.chartId);
@@ -204,10 +220,6 @@ WebAppLoader.addModule({ name: 'chartManager',
         chart.timePeriods = config.timePeriods;
         chart.topBottomSplit = config.topBottomSplit;
 
-        google.visualization.events.addListener(chart, 'error', function (errorObj) {
-            onChartReady({ errorObj: errorObj });
-        });
-
         // Return the chart.
         return chart;
     }
@@ -215,7 +227,7 @@ WebAppLoader.addModule({ name: 'chartManager',
     // Function to load the given chart with data.
     // 'chart'  - The instance of the Google Visualization API chart object to load.
     function load(chart, newRequest) {
-        var type, params, url, formatter;
+        var type, containerId, params, url, formatter;
 
         // Don't attempt to load the chart if it doesn't exist yet.
         if (!chart) {
@@ -231,7 +243,8 @@ WebAppLoader.addModule({ name: 'chartManager',
         chartTotal++;
 
         // Get the current chart type.
-        type = chart.getChartType();
+        type = (chart.chartType === 'CustomNumber') ? chart.chartType : chart.getChartType();
+        containerId = (type === 'CustomNumber') ? chart.containerId : chart.getContainerId();
 
         // Create a new number formatter.
         formatter = new google.visualization.NumberFormat({
@@ -261,13 +274,13 @@ WebAppLoader.addModule({ name: 'chartManager',
         // Define the correct URL to use to retrieve data based on the chart type.
         url = (type === 'LineChart') ? siteUrls.timeSeries : siteUrls.segmentsTreeNode;
 
-        eventManager.raiseEvent('showMask', chart.getContainerId());
+        eventManager.raiseEvent('showMask', containerId);
 
         // Callback function to be invoked when data is returned from the server.
         function onDataLoaded(data) {
             var dataTable, totalRows, rangeRows, i, min, max, gaugeConfig,
                 values = [], sliceOptions = [], isAllPositiveOrNegative,
-                presentationChart, presentationContainerId;
+                template, presentationChart, presentationContainerId;
 
             output.log(data);
 
@@ -295,108 +308,142 @@ WebAppLoader.addModule({ name: 'chartManager',
                 }
             }
 
-            // Register the chart with the ready and error event listeners.
-            google.visualization.events.addListener(chart, 'ready', function () {
-                onChartReady({
-                    chartId: chart.getContainerId(),
-                    numRows: dataTable.getNumberOfRows() // Used to calculate the height of the chart later.
-                });
-            });
+            // If we're rendering one of our custom number charts...
+            if (type === 'CustomNumber') {
 
-            presentationChart = chart.clone();
-            presentationContainerId = 'presentation-' + chart.getContainerId();
-            presentationChart.setContainerId(presentationContainerId);
+                // Remove any existing custom number controls.
+                $('.customNumber').remove();
 
-            if (type === 'Table') {
-                chart.setOption('height', '620px'); // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
-                chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
-                presentationChart.setOption('height', '560px !important;'); // presentationChart.setOption('height', '600px !important');
-                presentationChart.setOption('width', 1000); //  chartDefaults.resizingSettings.tableWidth); //'1024 !important; min-width: 1000px !important;');
-            } else {
-                presentationChart.setOption('height', 640);
-                presentationChart.setOption('width', 1024);
-            }
+                // If we've actually got some data to display...
+                if (dataTable.getNumberOfRows() > 0) {
 
-            // If our chart is a pie chart and we're displaying it as a heatmap...
-            if (type === 'PieChart' && chart.isHeatMap) {
+                    // ...create a template.
+                    template = '';
 
-                // ...sort the data by our heatmap measure.
-                dataTable.sort([{ column: 2}]);
+                    // For each of the numbers required, create a DIV element containing the value and label.
+                    // NOTE: We start at 1 so that we avoid the 'Name' column.
+                    for (i = 1; i < dataTable.getNumberOfColumns(); i++) {
+                        template += '<div class="customNumber">' +
+                                    '    <span class="customNumberValue">' + dataTable.getFormattedValue(0, i) + '</span>' +
+                                    '    <span class="customNumberLabel">' + dataTable.getColumnLabel(i) + '</span>' +
+                                    '</div>';
+                    }
 
-                // Collate the heatmap measure from the datatable.
-                for (i = 0; i < dataTable.getNumberOfRows(); i++) {
-                    values.push(dataTable.getValue(i, 2));
-                }
+                    // Write the elements into the main chart container.
+                    $('#' + containerId).append(template);
 
-                // Get the highest and lowest values from the heatmap measure values.
-                min = Math.min.apply(Math, values);
-                max = Math.max.apply(Math, values);
-
-                // Initialise our gauge configuration object.
-                gaugeConfig = {
-                    min: min,
-                    max: max,
-                    midGradientPosition: null
-                };
-
-                // Get the formatted values for our min and max values from the dataTable,
-                // since they already have the correct decimal accuracy and localization.
-                // If the min value somehow doesn't exist in the values collection, the
-                // dataTable has given us a null value, which we take to mean zero.
-                if ($.inArray(min, values) !== -1) {
-                    gaugeConfig.minDisplay = dataTable.getFormattedValue($.inArray(min, values), 2);
-                } else {
-                    gaugeConfig.minDisplay = '0';
-                }
-
-                if ($.inArray(max, values) !== -1) {
-                    gaugeConfig.maxDisplay = dataTable.getFormattedValue($.inArray(max, values), 2);
-                } else {
-                    gaugeConfig.maxDisplay = '0';
-                }
-
-                // Determine the colours we need to use for our gauge.
-                gaugeConfig.minColor = colorManager.getColorInRange(min, min, max, chart.isGradientReversed);
-                gaugeConfig.midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
-                gaugeConfig.maxColor = colorManager.getColorInRange(max, min, max, chart.isGradientReversed);
-
-                // Determine if the values are all positive or all negative.
-                isAllPositiveOrNegative = (min >= 0 && max >= 0) || (min <= 0 && max <= 0);
-
-                // Calculate the percentage position of the mid gradient point if we'll need it.
-                if (!isAllPositiveOrNegative) {
-                    gaugeConfig.midGradientPosition = 100 - (100 * ((0 - min) / (max - min)));
-                }
-
-                // Loop round the values, and use the colorManager to generate 
-                // a colour in the gradient range for that measure value.
-                for (i = 0; i < values.length; i++) {
-                    sliceOptions.push({
-                        color: colorManager.getColorInRange(values[i], min, max, chart.isGradientReversed)
+                    // Call the onChartReady function to finish the render process.
+                    onChartReady({
+                        chartId: containerId,
+                        numRows: dataTable.getNumberOfRows() // Used to calculate the height of the chart later.
                     });
                 }
 
-                // Set the colours as part of the 'slices' chart options.
-                chart.setOption('slices', sliceOptions);
-                presentationChart.setOption('slices', sliceOptions);
+            } else {
 
-                // Attach an event handler to the 'ready' events of the chart and its presentation clone.
+                // Register the chart with the ready and error event listeners.
                 google.visualization.events.addListener(chart, 'ready', function () {
-                    renderHeatMapGauge(chart, gaugeConfig);
+                    onChartReady({
+                        chartId: containerId,
+                        numRows: dataTable.getNumberOfRows() // Used to calculate the height of the chart later.
+                    });
                 });
 
-                google.visualization.events.addListener(presentationChart, 'ready', function () {
-                    renderHeatMapGauge(presentationChart, gaugeConfig);
-                });
+                presentationChart = chart.clone();
+                presentationContainerId = 'presentation-' + chart.getContainerId();
+                presentationChart.setContainerId(presentationContainerId);
+
+                if (type === 'Table') {
+                    chart.setOption('height', '620px'); // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
+                    chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
+                    presentationChart.setOption('height', '560px !important;'); // presentationChart.setOption('height', '600px !important');
+                    presentationChart.setOption('width', 1000); //  chartDefaults.resizingSettings.tableWidth); //'1024 !important; min-width: 1000px !important;');
+                } else {
+                    presentationChart.setOption('height', 640);
+                    presentationChart.setOption('width', 1024);
+                }
+
+                // If our chart is a pie chart and we're displaying it as a heatmap...
+                if (type === 'PieChart' && chart.isHeatMap) {
+
+                    // ...sort the data by our heatmap measure.
+                    dataTable.sort([{ column: 2}]);
+
+                    // Collate the heatmap measure from the datatable.
+                    for (i = 0; i < dataTable.getNumberOfRows(); i++) {
+                        values.push(dataTable.getValue(i, 2));
+                    }
+
+                    // Get the highest and lowest values from the heatmap measure values.
+                    min = Math.min.apply(Math, values);
+                    max = Math.max.apply(Math, values);
+
+                    // Initialise our gauge configuration object.
+                    gaugeConfig = {
+                        min: min,
+                        max: max,
+                        midGradientPosition: null
+                    };
+
+                    // Get the formatted values for our min and max values from the dataTable,
+                    // since they already have the correct decimal accuracy and localization.
+                    // If the min value somehow doesn't exist in the values collection, the
+                    // dataTable has given us a null value, which we take to mean zero.
+                    if ($.inArray(min, values) !== -1) {
+                        gaugeConfig.minDisplay = dataTable.getFormattedValue($.inArray(min, values), 2);
+                    } else {
+                        gaugeConfig.minDisplay = '0';
+                    }
+
+                    if ($.inArray(max, values) !== -1) {
+                        gaugeConfig.maxDisplay = dataTable.getFormattedValue($.inArray(max, values), 2);
+                    } else {
+                        gaugeConfig.maxDisplay = '0';
+                    }
+
+                    // Determine the colours we need to use for our gauge.
+                    gaugeConfig.minColor = colorManager.getColorInRange(min, min, max, chart.isGradientReversed);
+                    gaugeConfig.midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
+                    gaugeConfig.maxColor = colorManager.getColorInRange(max, min, max, chart.isGradientReversed);
+
+                    // Determine if the values are all positive or all negative.
+                    isAllPositiveOrNegative = (min >= 0 && max >= 0) || (min <= 0 && max <= 0);
+
+                    // Calculate the percentage position of the mid gradient point if we'll need it.
+                    if (!isAllPositiveOrNegative) {
+                        gaugeConfig.midGradientPosition = 100 - (100 * ((0 - min) / (max - min)));
+                    }
+
+                    // Loop round the values, and use the colorManager to generate 
+                    // a colour in the gradient range for that measure value.
+                    for (i = 0; i < values.length; i++) {
+                        sliceOptions.push({
+                            color: colorManager.getColorInRange(values[i], min, max, chart.isGradientReversed)
+                        });
+                    }
+
+                    // Set the colours as part of the 'slices' chart options.
+                    chart.setOption('slices', sliceOptions);
+                    presentationChart.setOption('slices', sliceOptions);
+
+                    // Attach an event handler to the 'ready' events of the chart and its presentation clone.
+                    google.visualization.events.addListener(chart, 'ready', function () {
+                        renderHeatMapGauge(chart, gaugeConfig);
+                    });
+
+                    google.visualization.events.addListener(presentationChart, 'ready', function () {
+                        renderHeatMapGauge(presentationChart, gaugeConfig);
+                    });
+                }
+
+                // Set the data table for the chart.
+                chart.setDataTable(dataTable);
+                presentationChart.setDataTable(dataTable);
+
+                // Draw the chart.
+                chart.draw();
+                presentationChart.draw();
             }
-
-            // Set the data table for the chart.
-            chart.setDataTable(dataTable);
-            presentationChart.setDataTable(dataTable);
-
-            // Draw the chart.
-            chart.draw();
-            presentationChart.draw();
         }
 
         // Attempt to load the data.

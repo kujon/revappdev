@@ -107,8 +107,9 @@ WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects
             order       : 5,
             userDefined : false,
             charts      : [{
-                    chartId : 'attributionMaster_grid',
-                    order   : 1
+                    chartId         : 'attribution_customNumber',
+                    order           : 1,
+                    noPresentation  : true
                 },{
                     chartId: 'attribution_column',
                     order   : 2

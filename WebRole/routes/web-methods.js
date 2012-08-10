@@ -21,6 +21,21 @@ function getServerLanguage(lang) {
         : languages[defaultLanguage]['server'];
 }
 
+function getToken(req) {
+    var sessionToken = null,
+        bodyToken    = null;
+
+    if (req && req.session) {
+        sessionToken = req.session.token;
+    }
+
+    if (req && req.body) {
+        bodyToken = req.body.token;
+    }
+
+    return sessionToken || bodyToken;
+}
+
 // ------------------------------------------
 // WEB METHOD ROUTING
 // ------------------------------------------
@@ -58,7 +73,7 @@ exports.segmentsTreeNode = function (req, res) {
         includeMeasuresFor: req.body.includeMeasuresFor
     };
 
-    webApi.getSegmentsTreeNode(oData, params, req.session.token, function (segments, analysis, language) {
+    webApi.getSegmentsTreeNode(oData, params, getToken(req), function (segments, analysis, language) {
         var currentLanguage, jsonObj;
 
         // Retrieve the language passed from the API.
@@ -93,7 +108,7 @@ exports.timeSeries = function (req, res) {
         include: req.body.include
     };
 
-    webApi.getTimeSeries(params, req.session.token, function (series, analysis, language) {
+    webApi.getTimeSeries(params, getToken(req), function (series, analysis, language) {
         var currentLanguage, jsonObj;
 
         // Retrieve the language passed from the API.
