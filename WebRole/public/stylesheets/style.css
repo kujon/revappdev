@@ -189,8 +189,6 @@ div .google-visualization-table-div-page img /* :first-child */
 }
 
 .customNumberContainer {
-    display: block;
-    float: left;
     width: auto;
     margin: 0 30px;
     clear: both;
