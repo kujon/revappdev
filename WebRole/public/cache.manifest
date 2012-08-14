@@ -30,9 +30,9 @@ CACHE:
 /img/pinstripes2.gif
 /img/UIBack.png
 /img/UIBackPressed.png
-/javascripts/chart.js
-/javascripts/helper.js
-/javascripts/main.js
+/scripts/chart.js
+/scripts/helper.js
+/scripts/main.js
 /src/add2home.js
 /src/add2home.min.js
 /src/backup/iscroll.js

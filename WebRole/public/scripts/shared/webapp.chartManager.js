@@ -255,7 +255,7 @@ function () {
         // Create a new number formatter.
         formatter = new google.visualization.NumberFormat({
             decimalSymbol: lang.shared.decimalSymbol,
-            fractionDigits: 3,
+            fractionDigits: 2,
             groupingSymbol: lang.shared.groupingSymbol,
             negativeColor: '#cc0000',
             negativeParens: false
