@@ -224,13 +224,16 @@ function getResource(resourceName, options, callback) {
                     resource.data = obj[resourceName];
 
                 } catch (e) {
-
+                
                     // Something went wrong while parsing, so just assign the data we've
                     // got to the resource object.
                     resource.data = data;
 
-                    // Use the response processor to generate an error object.
-                    resource.error = processResponse(500, data);
+                    // Use the response processor to generate an error 
+                    // object if we didn't expect the JSON parsing to fail.
+                    if (resourceName !== '') {
+                        resource.error = processResponse(500, data);
+                    }
                 }
             }
 
@@ -529,7 +532,7 @@ exports.getTimeSeries = function (params, token, callback) {
 //                may be null, and an error property, which will either be boolean false 
 //                (indicating that the request was successful), a boolean true, or a 
 //                complete error object (both indicating that the request failed).
-exports.getEula = function (eulaFormat, token, language, callback) {
+exports.getEula = function (eulaFormat, token, callback) {
     var options;
 
     function getEulaDoc(eulaUri) {

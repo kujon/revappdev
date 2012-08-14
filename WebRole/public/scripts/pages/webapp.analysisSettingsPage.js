@@ -71,7 +71,7 @@ function () {
             }
         }
         
-        $(appendTo).append(
+        $(el.listAnalysisSettingsUserPages).append(
             $('<li>').attr('class', 'arrow').append(
                 $('<a>').attr({ 'href': '#', 'data-link' : pageId })
                 .html(lang.chartTexts.addNewPage)
