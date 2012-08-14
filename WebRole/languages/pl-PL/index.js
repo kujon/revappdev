@@ -135,11 +135,11 @@ exports.client = {
         fixedIncomeExposuresGroupTitle      : 'Narażenie papierów dłużnych',
         fixedIncomeRiskNumbersGroupTitle    : 'Wrażliwość papierów dłużnych',
         performanceMasterTitle              : 'Key Performance Numbers',
-        attributionMasterTitle              : 'Key Attribution Numbers',
         fixedIncomeMasterTitle              : 'Key Fixed Income Numbers',
         riskMasterTitle                     : 'Key Risk Numbers',
         allocationMasterTitle               : 'Key Allocation Numbers',
         contributionMasterTitle             : 'Key Contribution Numbers',
+        attributionKeyNumbersTitle          : 'Key Attribution Numbers',
         allocationLongShortGridTitle        : 'Long/Short Allocation'
     },
 
@@ -148,6 +148,7 @@ exports.client = {
         BarChart                            : 'Wykres słupkowy',
         BubbleChart                         : 'Wykres bąbelkowy',
         ColumnChart                         : 'Wykres kolumnowy',
+        CustomNumber                        : 'Custom Number',
         Group                               : 'Grupa',
         LineChart                           : 'Wykres liniowy',
         PieChart                            : 'Wykres kołowy',

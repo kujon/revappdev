@@ -284,14 +284,6 @@ function () {
             measures: ['wp', 'ctp', 'rp', 'wb', 'ctb', 'rb'],
             includeMeasuresFor: ['segment', 'childSegments']
         },
-        'attributionMaster_grid': {
-            chartId: 'attributionMaster_grid',
-            title: lang.chart.attributionMasterTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: ['wp', 'wb', 'ealloc', 'eselecinter', 'eallocc', 'etotal'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
         'allocationMaster_grid': {
             chartId: 'allocationMaster_grid',
             title: lang.chart.allocationMasterTitle,
@@ -445,7 +437,7 @@ function () {
 
         'attribution_customNumber': {
             chartId: 'attribution_customNumber',
-            title: '',
+            title: lang.chart.attributionKeyNumbersTitle,
             chartType: 'CustomNumber',
             include: 'none',
             measures: ['rp', 'ctb', 'relr', 'eselec', 'ealloc'],

@@ -135,11 +135,11 @@ exports.client = {
         fixedIncomeExposuresGroupTitle      : 'Exposición de la Renta Fija',
         fixedIncomeRiskNumbersGroupTitle    : 'Números de Riesgo de la Renta Fija',
         performanceMasterTitle              : 'Key Performance Numbers',
-        attributionMasterTitle              : 'Key Attribution Numbers',
         fixedIncomeMasterTitle              : 'Key Fixed Income Numbers',
         riskMasterTitle                     : 'Key Risk Numbers',
         allocationMasterTitle               : 'Key Allocation Numbers',
         contributionMasterTitle             : 'Key Contribution Numbers',
+        attributionKeyNumbersTitle          : 'Key Attribution Numbers',
         allocationLongShortGridTitle        : 'Long/Short Allocation'
     },
 
@@ -148,6 +148,7 @@ exports.client = {
         BarChart                            : 'Barra',
         BubbleChart                         : 'Burbuja',
         ColumnChart                         : 'Columna',
+        CustomNumber                        : 'Custom Number',
         Group                               : 'Grupo',
         LineChart                           : 'Línea',
         PieChart                            : 'Circular',
