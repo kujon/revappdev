@@ -2,8 +2,15 @@
 // REPOSITORIES
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'repositories', sharedModules: ['settings', 'localizationManager', 'ajaxManager'],
-    hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'repositories', 
+    sharedModules: ['settings', 'localizationManager', 'ajaxManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var repositories    = {},
         eventManager    = this.getEventManager(),
         output          = this.getConsole(),

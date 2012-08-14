@@ -1,8 +1,16 @@
 ﻿// ------------------------------------------
 // DEVICE
-// ---------------------    ---------------------
+// ------------------------------------------
 
-WebAppLoader.addModule({ name: 'device', plugins: ['helper'], isPlugin: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'device',
+    plugins: ['helper'],
+    isPlugin: true
+}, 
+
+// Constructor
+function () {
     var device          = {},
         output          = this.getConsole(),
         helper          = this.getPlugin('helper'),

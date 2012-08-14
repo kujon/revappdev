@@ -2,7 +2,16 @@
 // TOOLBAR
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['pageElements'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'toolbar',
+    plugins: ['helper'],
+    sharedModules: ['pageElements'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var toolbar          = {},
         output           = this.getConsole(),
         eventManager     = this.getEventManager(),
@@ -21,7 +30,7 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
         output.log('toolbar tapped!');
     });
     
-    // Enlarge and center the title to prevet ellispsis.
+    // Enlarge and center the title to prevent ellipsis.
     $('#jqt .toolbar > h1').width('80%').css({ 'margin': '0 0 0 -40%'});
 
     function getButton(index) {

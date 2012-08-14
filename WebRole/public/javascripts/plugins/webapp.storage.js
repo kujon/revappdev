@@ -2,7 +2,15 @@
 // LOCAL STORAGE MANAGER
 // ---------------------    ---------------------
 
-WebAppLoader.addModule({ name: 'storage', plugins: ['helper'], isPlugin: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'storage',
+    plugins: ['helper'],
+    isPlugin: true
+}, 
+
+// Constructor
+function () {
     var storage             = {},
         output              = this.getConsole(),
         helper              = this.getPlugin('helper'),

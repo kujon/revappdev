@@ -2,7 +2,16 @@
 // BLACKBIRD LOGGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true, isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'blackbird',
+    plugins: ['helper'],
+    hasEvents: true,
+    isShared: true
+}, 
+
+// Constructor
+function () {
 
     var blackbird    = {},
         output       = this.getConsole(),

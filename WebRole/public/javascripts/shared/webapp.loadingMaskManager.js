@@ -2,7 +2,16 @@
 // LOADING MASK MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElements'], hasEvents: true, isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'loadingMaskManager',
+    sharedModules: ['pageElements'],
+    hasEvents: true,
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var loadingMaskManager  = {},
         output              = this.getConsole(),
         eventManager        = this.getEventManager(),

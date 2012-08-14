@@ -2,7 +2,16 @@
 // SPINNING WHEEL SLOT
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'spinningWheel', plugins: ['helper'], sharedModules: ['localizationManager'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'spinningWheel',
+    plugins: ['helper'],
+    sharedModules: ['localizationManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var spinningWheel   = {},
         slots           = [],
         slotIndices     = {},

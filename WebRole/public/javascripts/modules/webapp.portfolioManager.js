@@ -2,9 +2,17 @@
 // PORTFOLIO MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: ['settings', 'ajaxManager', 'localizationManager'],
-    dataObjects: ['portfolio'], hasEvents: true
-}, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'portfolioManager',
+    plugins: [], 
+    sharedModules: ['settings', 'ajaxManager', 'localizationManager'],
+    dataObjects: ['portfolio'], 
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var portfolioManager    = {},
         output              = this.getConsole(),
         eventManager        = this.getEventManager(),
@@ -121,7 +129,7 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
         }
 
         function loadPortfolioAnalysis(defaultAnalysisLink, callback) {
-            ajaxManager.post(settings.siteUrls.portfolioAnalysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (response) {
+            ajaxManager.post(settings.siteUrls.analysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (response) {
 
                 // If no analysis data was returned for the given 
                 // portfolio, or an explicit error was raised...

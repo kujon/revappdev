@@ -2,7 +2,14 @@
 // HELPER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'helper', isPlugin: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'helper',
+    isPlugin: true
+}, 
+
+// Constructor
+function () {
     var helper = {};
 
     // ------------------------------------------

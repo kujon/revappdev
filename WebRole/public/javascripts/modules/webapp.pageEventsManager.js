@@ -2,7 +2,16 @@
 // EVENT PAGE MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedModules: ['loadingMaskManager'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'pageEventsManager',
+    plugins: ['helper'],
+    sharedModules: ['loadingMaskManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var pageEventsManager   = {},
         eventManager        = this.getEventManager(),
         output              = this.getConsole(),

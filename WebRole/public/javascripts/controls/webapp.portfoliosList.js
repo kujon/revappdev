@@ -2,8 +2,16 @@
 // PORTFOLIOS LIST
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'portfoliosList', plugins: [],
-    sharedModules: ['settings', 'pageElements', 'ajaxManager'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'portfoliosList', 
+    plugins: [],
+    sharedModules: ['settings', 'pageElements', 'ajaxManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var portfoliosList  = {},
         output          = this.getConsole(),
         eventManager    = this.getEventManager(),

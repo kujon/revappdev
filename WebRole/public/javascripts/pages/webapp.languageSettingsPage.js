@@ -2,7 +2,15 @@
 // LANGUAGE SETTINGS PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'languageSettingsPage', sharedModules: ['settings', 'pageElements'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'languageSettingsPage',
+    sharedModules: ['settings', 'pageElements'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var languageSettingsPage    = {},
         output                  = this.getConsole(),
         eventManager            = this.getEventManager(),

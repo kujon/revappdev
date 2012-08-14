@@ -2,7 +2,14 @@
 // NAV
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'nav', hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'nav',
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var nav             = {},
         eventManager    = this.getEventManager();
 

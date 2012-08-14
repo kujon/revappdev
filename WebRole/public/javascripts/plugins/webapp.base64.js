@@ -2,7 +2,14 @@
 // BASE64
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'base64', isPlugin: true}, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'base64',
+    isPlugin: true
+}, 
+
+// Constructor
+function () {
     var base64 = {},
         keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 

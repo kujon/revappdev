@@ -2,9 +2,18 @@
 // CHARTS COMPONENTS
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedModules: ['chartManager', 'localizationManager', 'pageElements'],
-    dataObjects: ['charts'], hasEvents: true, isShared: true
-}, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'chartComponents',
+    plugins: ['helper'], 
+    sharedModules: ['chartManager', 'localizationManager', 'pageElements'],
+    dataObjects: ['charts'],
+    hasEvents: true, 
+    isShared: true
+}, 
+
+// Constructor
+function () {
 
     var chartComponents  = {},
         output           = this.getConsole(),

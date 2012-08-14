@@ -2,11 +2,19 @@
 // PAGE ELEMENTS
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'pageElements',
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var pageElements = {};
 
     pageElements = {
-        // App pages.
+        
+        // App Pages
         blankPage                               : '#blank_page',
         dashboardPage                           : '#dashboard',
         homePage                                : '#home',
@@ -22,9 +30,8 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         languageSettingsPages                   : '#languageSettings',
         errorPage                               : '#error',
         fullScreenPage                          : '#fullScreenPage',
-	
 
-        // Elements.
+        // Elements
         portfolioAnalysisLink                   : '.defaultAnalysisLink',
         toolbar                                 : '.toolbar',
         loginButton                             : '#loginButton',

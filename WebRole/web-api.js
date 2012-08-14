@@ -3,16 +3,18 @@
 // ------------------------------------------
 
 // Module Dependencies
-var https = require('https'),
-    path = require("path"),
-    url = require("url"),
-    languages = require('./languages'),
-    defaultLanguage = 'en-US';
+var https           = require('https'),
+    path            = require("path"),
+    url             = require("url"),
+    languages       = require('./languages'),
+    defaultLanguage = 'en-US',
+    currentLanguage = {},
+    currentAnalysis = {},
+    MAX_ATTEMPTS    = 1;
 
-var MAX_ATTEMPTS = 1;
-
-// Current Language
-var currentLanguage = {};
+// ------------------------------------------
+// LANGUAGE HELPER FUNCTIONS
+// ------------------------------------------
 
 // Returns the server-side language dictionary 
 // object for the current user, or null if not defined.
@@ -42,9 +44,9 @@ function setCurrentLanguage(value) {
     }
 }
 
-
-// Current Analysis
-var currentAnalysis = {};
+// ------------------------------------------
+// ANALYSIS HELPER FUNCTIONS
+// ------------------------------------------
 
 function getCurrentAnalysis(token, resource){
     if (resource) {
@@ -62,8 +64,10 @@ function setCurrentAnalysis(token, analysis, value){
     currentAnalysis[token][analysis] = value || null;
 }
 
+// ------------------------------------------
+// RESOURCE LINKS HELPER FUNCTIONS
+// ------------------------------------------
 
-// Resource Links
 var resourceLinks = {};
 
 function getResourceLink(token, resource){
@@ -79,7 +83,7 @@ function setResourceLink(token, resource, link){
 }
 
 // ------------------------------------------
-// HELPER FUNCTIONS
+// API HELPER FUNCTIONS
 // ------------------------------------------
 
 // Generates and returns a configuration object for an HTTP GET request.

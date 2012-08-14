@@ -2,7 +2,15 @@
 // TABBAR
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'tabbar',
+    plugins: ['helper'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var tabbar          = {},
         output          = this.getConsole(),
         eventManager    = this.getEventManager(),

@@ -2,8 +2,15 @@
 // CHART SETTINGS PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartSettingsPage', sharedModules: ['settings', 'pageElements', 'localizationManager'],
-    hasEvents: true}, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'chartSettingsPage', 
+    sharedModules: ['settings', 'pageElements', 'localizationManager'],
+    hasEvents: true
+},
+
+// Constructor
+function () {
     var chartSettingsPage = {},
         output            = this.getConsole(),
         eventManager      = this.getEventManager(),

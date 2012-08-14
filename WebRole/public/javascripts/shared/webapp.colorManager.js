@@ -2,7 +2,14 @@
 // SETTINGS
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'colorManager',
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var colorManager = {},
         output = this.getConsole();
 

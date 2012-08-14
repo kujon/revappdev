@@ -2,7 +2,16 @@
 // PRESENTATION MODE MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'presentationManager', plugins: ['device'], sharedModules: ['pageElements'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'presentationManager',
+    plugins: ['device'],
+    sharedModules: ['pageElements'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var presentationManager = {},
         eventManager        = this.getEventManager(),
         output              = this.getConsole(),

@@ -2,7 +2,16 @@
 // ANALYSIS MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects: ['analysisPages'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'analysisManager',
+    sharedModules: [],
+    dataObjects: ['analysisPages'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
 
     var analysisManager         = {},
         output                  = this.getConsole(),

@@ -2,7 +2,16 @@
 // FAVOURITES MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'favouritesManager', sharedModules: [], dataObjects: ['favourites'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'favouritesManager',
+    sharedModules: [],
+    dataObjects: ['favourites'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
 
     var favouritesManager    = {},
         output               = this.getConsole(),

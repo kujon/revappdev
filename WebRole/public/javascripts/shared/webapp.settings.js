@@ -2,7 +2,15 @@
 // SETTINGS
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'settings', dataObjects: ['appSettings', 'userSettings'], isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'settings',
+    dataObjects: ['appSettings', 'userSettings'],
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var settings            = {},
         appSettings         = {},
         siteUrls            = {},

@@ -2,7 +2,14 @@
 // LOCALIZATION MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'localizationManager', isShared: true }, function (config) {
+// Configuration
+WebAppLoader.addModule({
+    name: 'localizationManager',
+    isShared: true
+}, 
+
+// Constructor
+function (config) {
     var manager     = {},
         output      = this.getConsole(),
         language    = require('express.language');

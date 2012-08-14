@@ -2,7 +2,15 @@
 // ISCROLL
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'scroll',
+    plugins: ['helper'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var scroll              = {},
         eventManager        = this.getEventManager(),
         helper              = this.getPlugin('helper'),

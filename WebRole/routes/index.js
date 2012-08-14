@@ -3,25 +3,23 @@
 // ------------------------------------------
 
 var http            = require('http'),
+    os              = require('os'),
     webApi          = require('../web-api'),
     expose          = require('../node_modules/express-expose'),
     languages       = require('../languages'),
-    defaultLanguage = 'en-US';
-
-var os = require('os');
-
-var osInfo = {
-    platform: os.platform(),
-    hostname: os.hostname(),
-    type: os.type(),
-    arch: os.arch(),
-    release: os.release(),
-    uptime: os.uptime(),
-    loadavg :os.loadavg(),
-    totalmem :os.totalmem(),
-    freemem :os.freemem(),
-    cpus: os.cpus()
-};
+    defaultLanguage = 'en-US',
+    osInfo          = {
+        platform: os.platform(),
+        hostname: os.hostname(),
+        type: os.type(),
+        arch: os.arch(),
+        release: os.release(),
+        uptime: os.uptime(),
+        loadavg :os.loadavg(),
+        totalmem :os.totalmem(),
+        freemem :os.freemem(),
+        cpus: os.cpus()
+    };
 
 /* ----------------------- ON/OFF ----------------------- /
 
@@ -38,43 +36,56 @@ var serverSideObj = {
 // ------------------------------------------------------ */
 
 // ------------------------------------------
-// LANGUAGE HELPER FUNCTIONS
+// HELPER FUNCTIONS
 // ------------------------------------------
 
+// Function to get the language dictionaries for a specific language,
+// and a specific context; 'server' or 'client'.
 function getLanguage(lang, host) {
     var language = lang || defaultLanguage;
 
+    // Ensure the language culture string is all lowercase.
     language = language.charAt(0).toLowerCase() + 
                language.charAt(1).toLowerCase() + 
                '-' +
                language.charAt(3).toUpperCase() + 
                language.charAt(4).toUpperCase();
 
+    // If the language requested doesn't exist, return the default langauge.
     return (languages[language] && languages[language][host])
         ? languages[language][host]
         : languages[defaultLanguage][host];
 }
 
+// Fucntion to retrieve the 'server' language 
+// dictionaries for the passed language.
 function getServerLanguage(lang) {
     return getLanguage(lang, 'server');
 }
 
+// Fucntion to retrieve the 'client' language 
+// dictionaries for the passed language.
 function getClientLanguage(lang) {
     return getLanguage(lang, 'client');
 }
 
+// Function to get the token stored either in the currently 
+// implemented session storage, or the body of the request.
 function getToken(req) {
     var sessionToken = null,
         bodyToken    = null;
 
+    // If we've got a token in session, retrieve it.
     if (req && req.session) {
         sessionToken = req.session.token;
     }
 
+    // If we've got a token in the body, retrieve it.
     if (req && req.body) {
         bodyToken = req.body.token;
     }
 
+    // Prioritise the token we've stored in the session.
     return sessionToken || bodyToken;
 }
 
@@ -173,9 +184,12 @@ exports.portfolios = function (req, res) {
             top: ''
         };
 
+    // Attempt to consume the service.
     webApi.getPortfolios(oData, datatype, getToken(req), function (resource, datatype) {
         var viewModel = resource || {};
 
+        // Switch on the datatype - if JSON has been requested, then return our viewmodel
+        // as a simple JSON-encoded string. Otherwise, pass the model to the relevant view.
         switch (datatype) {
             case 'json':
                 res.json(viewModel);
@@ -188,34 +202,17 @@ exports.portfolios = function (req, res) {
     });
 };
 
-// Portfolio Analysis
-exports.portfolioAnalysis = function (req, res) {
-    var datatype = req.body.datatype || '',
-        maxAttempts = 3; // TODO: We could use a const to set the maxAttempts.
-
-    webApi.getPortfolioAnalysis(req.body.uri, maxAttempts, getToken(req), function (analysis) {
-        var viewModel = analysis || {};
-
-        switch (datatype) {
-            case 'json':
-                res.json(viewModel);
-                break;
-            default:
-                viewModel.layout = false;
-                res.render('portfolioAnalysis', viewModel);
-                break;
-        }
-    });
-};
-
 // Analysis
 exports.analysis = function (req, res) {
     var datatype = req.body.datatype || '',
         maxAttempts = 3;
 
+    // Attempt to consume the service, passing up the maxAttempts parameter.
     webApi.getPortfolioAnalysis(req.body.uri, maxAttempts, getToken(req), function (analysis) {
         var viewModel = analysis || {};
 
+        // Switch on the datatype - if JSON has been requested, then return our viewmodel
+        // as a simple JSON-encoded string. Otherwise, pass the model to the relevant view.
         switch (datatype) {
             case 'json':
                 res.json(viewModel);
@@ -223,7 +220,7 @@ exports.analysis = function (req, res) {
             default:
                 // Set language and layout.
                 viewModel.layout = false;
-                res.render('analysis', viewModel);
+                res.render('portfolioAnalysis', viewModel);
                 break;
         }
     });
@@ -231,13 +228,16 @@ exports.analysis = function (req, res) {
 
 // EULA
 exports.eula = function (req, res) {
-
+    
+    // Attempt to consume the service.
     webApi.getEula('fragment', getToken(req), function (resource) {
         var viewModel = {
             eula: resource.data || {},
             layout: false
         };
 
+        // We don't support a pure JSON version of the EULA, so 
+        // in this case, we just pass the model to the view.
         res.render('eula', viewModel);
     });
 };

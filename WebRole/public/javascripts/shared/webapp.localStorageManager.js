@@ -2,7 +2,17 @@
 // LOCAL STORAGE MANAGER
 // ---------------------    ---------------------
 
-WebAppLoader.addModule({ name: 'localStorageManager', sharedModules: [], plugins: ['helper'], hasEvents: true, isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'localStorageManager',
+    sharedModules: [],
+    plugins: ['helper'],
+    hasEvents: true,
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var localStorageManager  = {},
         output               = this.getConsole(),
         eventManager         = this.getEventManager(),

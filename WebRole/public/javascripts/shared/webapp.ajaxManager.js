@@ -2,7 +2,15 @@
 // AJAX MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'ajaxManager', hasEvents: true, isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'ajaxManager',
+    hasEvents: true,
+    isShared: true
+}, 
+
+// Constructor
+function () {
 
     var ajaxManager  = {},
         output       = this.getConsole(),

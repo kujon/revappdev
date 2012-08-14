@@ -2,7 +2,14 @@
 // SETTINGS
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'chartDefaults',
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var chartDefaults    = {},
         commonSettings   = {},
         barChart         = {},

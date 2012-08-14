@@ -2,10 +2,16 @@
 // EXPERIMENTAL PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'experimentalPage',
-    plugins: ['helper'], sharedModules: ['settings', 'pageElements', 'localizationManager'],
+// Configuration
+WebAppLoader.addModule({ 
+    name: 'experimentalPage',
+    plugins: ['helper'], 
+    sharedModules: ['settings', 'pageElements', 'localizationManager'],
     hasEvents: true
-}, function () {
+}, 
+
+// Constructor
+function () {
     var experimentalPage  = {},
         output            = this.getConsole(),
         eventManager      = this.getEventManager(),

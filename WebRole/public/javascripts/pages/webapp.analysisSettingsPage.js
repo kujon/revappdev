@@ -2,8 +2,16 @@
 // ANALYSIS SETTINGS PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'analysisSettingsPage', plugins: ['helper'], 
-    sharedModules: ['settings', 'pageElements', 'localizationManager'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'analysisSettingsPage', 
+    plugins: ['helper'],
+    sharedModules: ['settings', 'pageElements', 'localizationManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var analysisSettingsPage = {},
         output               = this.getConsole(),
         eventManager         = this.getEventManager(),

@@ -2,8 +2,16 @@
 // THEMES MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'themesManager', sharedModules: ['pageElements'], 
-    dataObjects: ['theme'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'themesManager', 
+    sharedModules: ['pageElements'],
+    dataObjects: ['theme'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var themesManager   = {},
         eventManager    = this.getEventManager(),
         output          = this.getConsole(),

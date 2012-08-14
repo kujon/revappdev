@@ -487,7 +487,6 @@ Zepto(function ($) {
     theApp.presentationManager.on('onExit', function () {
         var deviceOrientation = device.orientation();
 
-        // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
         theApp.isFullScreen = false;
 
         if (deviceOrientation === theApp.lastDeviceOrientation) {
@@ -728,13 +727,12 @@ Zepto(function ($) {
     // ------------------------------------------
 
     var toolbarConfig = {
-        toolbarId: '#analysis .toolbar',  // TODO: Use page element instead of a hardcoded value.
+        toolbarId: el.analysisPage + ' ' + el.toolbar,
         buttonPrefix: 'toolbar_btn',
         visible: true,
         items: [
             { id: 'favourite', title: lang.tabbar.favourites, btnClass: 'favourite' },
             { id: 'console', title: 'console', btnClass: 'console' }
-        // { id: 'test', title: test, btnClass: 'favourite' } // Comment off to add a test button.
         ]
     };
 
@@ -753,12 +751,7 @@ Zepto(function ($) {
         }
     });
 
-    // Test
-    theApp.toolbar.on('onTestTap', function (isSelected) {
-        theApp.onTestApp();
-    });
-
-    // Hide the console button if
+    // Hide the console button if we're in development mode.
     if (serverEnvironment !== 'development') {
         theApp.toolbar.getButton('console').hide();
     }
@@ -987,11 +980,6 @@ Zepto(function ($) {
         output.log('onAboutEnd');
     });
 
-    theApp.pageEventsManager.on('onTestEnd', function () {
-        theApp.scroll.rebuild('test');
-        output.log('onTestEnd');
-    });
-
     theApp.pageEventsManager.on('onResetEnd', function () {
         theApp.scroll.rebuild('reset', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onResetEnd');
@@ -1116,14 +1104,13 @@ Zepto(function ($) {
             favouritesData = null;
 
         favouriteToAdd = theApp.analysisDataObjectToFavourite(theApp.lastAnalysisObjectUsed);
-        if (favouriteToAdd) {
-            if (!theApp.favouriteExists(favouriteToAdd.favouriteId)) {
-                favouritesData = theApp.favouritesManager.getData('favourites');
-                favouritesData.items.push(favouriteToAdd);
-                theApp.favouritesManager.saveData('favourites', theApp.lastUsernameUsed);
-                theApp.favouritesManager.update(theApp.lastUsernameUsed);
-                theApp.setLastFavouriteSelected(favouriteToAdd.favouriteId);
-            }
+
+        if (favouriteToAdd && !theApp.favouriteExists(favouriteToAdd.favouriteId)) {
+            favouritesData = theApp.favouritesManager.getData('favourites');
+            favouritesData.items.push(favouriteToAdd);
+            theApp.favouritesManager.saveData('favourites', theApp.lastUsernameUsed);
+            theApp.favouritesManager.update(theApp.lastUsernameUsed);
+            theApp.setLastFavouriteSelected(favouriteToAdd.favouriteId);
         }
     };
 
@@ -1132,13 +1119,13 @@ Zepto(function ($) {
             favouritesData = null;
 
         favouriteToRemove = theApp.analysisDataObjectToFavourite(theApp.lastAnalysisObjectUsed);
-        if (favouriteToRemove) {
-            if (theApp.favouriteExists(favouriteToRemove.favouriteId)) {
-                favouritesData = theApp.favouritesManager.getData('favourites');
-                if (helper.removeObjectFromArray(favouritesData.items, 'favouriteId', favouriteToRemove.favouriteId)) {
-                    theApp.favouritesManager.saveData('favourites', theApp.lastUsernameUsed);
-                    theApp.favouritesManager.update(theApp.lastUsernameUsed);
-                }
+
+        if (favouriteToRemove && theApp.favouriteExists(favouriteToRemove.favouriteId)) {
+            favouritesData = theApp.favouritesManager.getData('favourites');
+            
+            if (helper.removeObjectFromArray(favouritesData.items, 'favouriteId', favouriteToRemove.favouriteId)) {
+                theApp.favouritesManager.saveData('favourites', theApp.lastUsernameUsed);
+                theApp.favouritesManager.update(theApp.lastUsernameUsed);
             }
         }
     };
@@ -1248,7 +1235,6 @@ Zepto(function ($) {
             restorePosition = helper.getValueAs(restorePosition, 'boolean'),
             deviceOrientation = device.orientation();
 
-        // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
         if (theApp.isFullScreen) {
             theApp.iOSLog.debug('synchronizeOrientation skipped.');
             return;
@@ -1261,7 +1247,6 @@ Zepto(function ($) {
             : 25;
 
         theApp.preventTap(true);
-        // theApp.mask.show('preventTap');
 
         if (restorePosition) {
             theApp.scroll.saveScrollPosition();
@@ -1272,7 +1257,7 @@ Zepto(function ($) {
             containerPortraitHeight, portraitScaleRatio, landscapeScaleRatio, realHeightData;
 
             $container = $(this);
-            $component = $container.children().filter('.resizableChart'); // $container.children().filter('.resizableChart'); // $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
+            $component = $container.children().filter('.resizableChart');
             containerHeight = $component.height();
 
             if ($component.hasClass('gridContainer')) {
@@ -1324,14 +1309,12 @@ Zepto(function ($) {
                     }
 
                     theApp.preventTap(false);
-                    // theApp.mask.hide('preventTap');
                 }
             }, animationSpeed + rebuildingDelay);
         } else {
             setTimeout(function () {
                 theApp.scroll.rebuild('analysis', { restorePosition: restorePosition });
                 theApp.preventTap(false);
-                // theApp.mask.hide('preventTap');
                 theApp.iOSLog.debug('rebuilt on synchronizeOrientation');
             }, animationSpeed + rebuildingDelay);
         }
@@ -1377,11 +1360,6 @@ Zepto(function ($) {
         theApp.synchronizeOrientation(true);
     });
 
-    // Generic test method.
-    theApp.onTestApp = function () {
-        // TODO: Add code here...
-    };
-
     // ------------------------------------------
     // EXPERIMENTAL PAGE
     // ------------------------------------------
@@ -1391,8 +1369,8 @@ Zepto(function ($) {
     };
 
     theApp.experimentalPage.on('onPreviewChart', function (customChart) {
-        var charts = [];
-        var chartComponentsData = theApp.chartComponents.getData('charts');
+        var charts = [],
+            chartComponentsData = theApp.chartComponents.getData('charts');
 
         // Clear previous chart.
         $('#custom_chart_partial').html('');

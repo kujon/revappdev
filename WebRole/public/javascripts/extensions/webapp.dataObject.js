@@ -2,7 +2,15 @@
 // DATA OBJECT
 // ------------------------------------------
 
-WebAppLoader.addExtension({ name: 'dataObject', plugins: ['helper', 'storage'], hasEvents: true }, function (module) {
+// Configuration
+WebAppLoader.addExtension({
+    name: 'dataObject',
+    plugins: ['helper', 'storage'],
+    hasEvents: true
+}, 
+
+// Constructor
+function (module) {
     var extension       = {},
         loader          = module.loader, // The loader object shared by all modules.
         output          = this.getConsole(),
