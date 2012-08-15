@@ -309,6 +309,8 @@ Zepto(function ($) {
                 analysisPageTitle = '',
                 presentationViewWidth = 0,
                 presentationChartCount = 0,
+                timePeriodStartEl = null,
+                timePeriodEndEl = null,
                 timePeriodFound = false;
 
             analysisPagesData = theApp.analysisManager.getData('analysisPages');
@@ -333,6 +335,10 @@ Zepto(function ($) {
             // Update the page title.
             $(el.analysisTitle).html(analysisPageTitle);
 
+            // Get the start and end date placeholders.
+            timePeriodStartEl = $(el.timePeriodStartDateText);
+            timePeriodEndEl = $(el.timePeriodEndDateText);
+
             // Loop around the provided time periods for the portfolio,
             // and get hold of the start and end date for that particular
             // period, breaking the loop when found.
@@ -354,8 +360,8 @@ Zepto(function ($) {
                     theApp.customChartTimePeriods.startDate = period.startDate;
                     theApp.customChartTimePeriods.endDate = period.endDate;
 
-                    $(el.timePeriodStartDateText).html(startDate.toString('MMM d, yyyy'));
-                    $(el.timePeriodEndDateText).html(endDate.toString('MMM d, yyyy'));
+                    timePeriodStartEl.html(startDate.toString('MMM d, yyyy'));
+                    timePeriodEndEl.html(endDate.toString('MMM d, yyyy'));
 
                     return false;
                 }
@@ -363,9 +369,18 @@ Zepto(function ($) {
 
             // If we didn't find a time period in the loop, clear out the text.
             if (!timePeriodFound) {
-                $(el.timePeriodStartDateText).html('-');
-                $(el.timePeriodEndDateText).html('-');
+                timePeriodStartEl.html('-');
+                timePeriodEndEl.html('-');
             }
+
+            // Add click handlers to the time period elements which open the periods slot.
+            timePeriodStartEl.on('click', function() {
+                theApp.spinningWheel.getSlot('timePeriods').show(theApp.getLastAnalysisObjectUsed().timePeriodId);
+            });
+            
+            timePeriodEndEl.on('click', function() {
+                theApp.spinningWheel.getSlot('timePeriods').show(theApp.getLastAnalysisObjectUsed().timePeriodId);
+            });            
 
             // Set and save the last used analysis object.
             theApp.setLastAnalysisObjectUsed(analysisDataObject);
@@ -685,19 +700,28 @@ Zepto(function ($) {
     });
 
     theApp.updateAnalysisInfo = function (data) {
-        var i, benchmarks, benchmarkPlaceholder;
+        var i, portfolioName, benchmarks, benchmarkPlaceholder;
 
         if (data) {
+            
+            // Get the portfolio name element.
+            portfolioName = $(el.summaryTitleName);
+            
             // Define the CSS word-break rules depending on 
             // the whitespace available in the portfolio name.
             if (data.name.indexOf(' ') === -1) {
-                $(el.summaryTitleName).attr('style', 'word-break: break-all;');
+                portfolioName.attr('style', 'word-break: break-all;');
             } else {
-                $(el.summaryTitleName).attr('style', 'word-break: normal;');
+                portfolioName.attr('style', 'word-break: normal;');
             }
 
             // Update the portfolio name.
-            $(el.summaryTitleName).html(data.name);
+            portfolioName.html(data.name);
+
+            // Add a click handler to the element to open the portfolio slot.
+            portfolioName.on('click', function() {
+                theApp.spinningWheel.getSlot('portfolios').show(theApp.getLastAnalysisObjectUsed().portfolioId);
+            });
 
             // Clear out any existing benchmarks.
             benchmarkPlaceholder = $(el.summaryTitleBenchmarkName);
@@ -809,7 +833,7 @@ Zepto(function ($) {
     });
 
     theApp.tabbar.on('onPortfoliosTap', function () {
-        theApp.spinningWheel.getSlot('portfolios').show(theApp.getLastAnalysisObjectUsed().portfolioId); //'ADVISOR');
+        theApp.spinningWheel.getSlot('portfolios').show(theApp.getLastAnalysisObjectUsed().portfolioId);
     });
 
     theApp.tabbar.on('onAnalysisTap', function () {

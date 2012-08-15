@@ -231,7 +231,7 @@ function getResource(resourceName, options, callback) {
 
                     // Use the response processor to generate an error 
                     // object if we didn't expect the JSON parsing to fail.
-                    if (resourceName !== '') {
+                    if (resourceName !== null) {
                         resource.error = processResponse(500, data);
                     }
                 }
@@ -539,7 +539,10 @@ exports.getEula = function (eulaFormat, token, callback) {
         // Generate the request configuration.
         options = getRequestOptions(eulaUri, token);
         // Attempt to get the EULA.
-        getResource('', options, function (eulaDoc) {
+        // NOTE: We pass up null here as the resourceName as we don't 
+        // expect a standard JavaScript object resource back, rather 
+        // an HTML fragment to be rendered in its entirety.
+        getResource(null, options, function (eulaDoc) {
             callback(eulaDoc);
         });
     }
