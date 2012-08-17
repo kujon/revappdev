@@ -530,6 +530,7 @@
     <Content Include="public\themes\scss\revolution.css">
       <DependentUpon>revolution.scss</DependentUpon>
     </Content>
+    <Content Include="robots.txt" />
     <Content Include="routes\web-methods.js" />
     <Content Include="web-api.js" />
     <Content Include="node_modules\socket.io\node_modules\socket.io-client\lib\vendor\web-socket-js\WebSocketMainInsecure.zip" />
