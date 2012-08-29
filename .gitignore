@@ -1,11 +1,19 @@
 obj/
 csx/
+Profiles/
+StatProRevolutionMobile/
 WebRole/obj/
 WebRole/bin/
 WebRole/public/themes/scss/.sass-cache/*
-#ignore thumbnails created by windows
+#Ignore cloud configuration files.
+*.cscfg
+*.csdef
+*.ccproj
+*.ccproj.user
+*.favdoc
+#Ignore thumbnails created by Windows.
 Thumbs.db
-#Ignore files build by Visual Studio
+#Ignore files build by Visual Studio.
 *.obj
 *.exe
 *.pdb
@@ -16,6 +24,7 @@ Thumbs.db
 *_i.c
 *_p.c
 *.ncb
+*.sln
 *.suo
 *.tlb
 *.tlh
@@ -27,38 +36,18 @@ Thumbs.db
 [Dd]ebug*/
 *.lib
 *.sbr
-obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
-WebRole/obj/Debug/WebRole.pdb
-WebRole/obj/Debug/WebRole.pdb
-WebRole/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+obj/Debug/revappdev.ccproj.FileListAbsolute.txt
+revappdev.ccproj.user
+revappdev.favdoc
 revappdev.sln.docstates.suo
-WebRole/public/themes/css/Copy of mobile.css
-WebRole/obj/Debug/WebRole.dll
 WebRole/bin/WebRole.dll
 WebRole/bin/WebRole.pdb
-WebRole/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
 WebRole/obj/Debug/WebRole.dll
 WebRole/obj/Debug/WebRole.pdb
-revappdev.sln.docstates.suo
-obj/Debug/revappdev.ccproj.FileListAbsolute.txt
-revappdev.favdoc
-revappdev.sln.docstates.suo
-obj/Debug/revappdev.ccproj.FileListAbsolute.txt
-revappdev.favdoc
-revappdev.sln.docstates.suo
+WebRole/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
 WebRole/WebRole.Publish.xml
-obj/Debug/revappdev.ccproj.FileListAbsolute.txt
-revappdev.favdoc
-revappdev.sln.docstates.suo
 WebRole/server.js.logs/0.txt
-obj/Debug/revappdev.ccproj.FileListAbsolute.txt
-WebRole/server.js.logs/0.txt
-WebRole/WebRole.csproj.user
-revappdev.ccproj.user
-revappdev.sln.docstates.suo
-WebRole/WebRole.Publish.xml
-revappdev.sln.docstates.suo
 WebRole/WebRole.csproj.user
