@@ -1,5 +1,5 @@
 echo Copying web.cloud.config to web.config...
-copy /y Web.cloud.config Web.config
+copy /y ..\Web.cloud.config ..\Web.config
 if %ERRORLEVEL% neq 0 goto error
 echo OK
 
