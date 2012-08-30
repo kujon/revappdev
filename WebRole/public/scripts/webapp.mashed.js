@@ -6222,7 +6222,14 @@ var WebAppLoader = {};
 // BASE64
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'base64', isPlugin: true}, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'base64',
+    isPlugin: true
+}, 
+
+// Constructor
+function () {
     var base64 = {},
         keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
@@ -6360,9 +6367,17 @@ WebAppLoader.addModule({ name: 'base64', isPlugin: true}, function () {
 });
 // ------------------------------------------
 // DEVICE
-// ---------------------    ---------------------
+// ------------------------------------------
 
-WebAppLoader.addModule({ name: 'device', plugins: ['helper'], isPlugin: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'device',
+    plugins: ['helper'],
+    isPlugin: true
+}, 
+
+// Constructor
+function () {
     var device          = {},
         output          = this.getConsole(),
         helper          = this.getPlugin('helper'),
@@ -6476,7 +6491,14 @@ WebAppLoader.addModule({ name: 'device', plugins: ['helper'], isPlugin: true }, 
 // HELPER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'helper', isPlugin: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'helper',
+    isPlugin: true
+}, 
+
+// Constructor
+function () {
     var helper = {};
 
     // ------------------------------------------
@@ -6749,7 +6771,15 @@ WebAppLoader.addModule({ name: 'helper', isPlugin: true }, function () {
 // LOCAL STORAGE MANAGER
 // ---------------------    ---------------------
 
-WebAppLoader.addModule({ name: 'storage', plugins: ['helper'], isPlugin: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'storage',
+    plugins: ['helper'],
+    isPlugin: true
+}, 
+
+// Constructor
+function () {
     var storage             = {},
         output              = this.getConsole(),
         helper              = this.getPlugin('helper'),
@@ -6857,7 +6887,15 @@ WebAppLoader.addModule({ name: 'storage', plugins: ['helper'], isPlugin: true },
 // DATA OBJECT
 // ------------------------------------------
 
-WebAppLoader.addExtension({ name: 'dataObject', plugins: ['helper', 'storage'], hasEvents: true }, function (module) {
+// Configuration
+WebAppLoader.addExtension({
+    name: 'dataObject',
+    plugins: ['helper', 'storage'],
+    hasEvents: true
+}, 
+
+// Constructor
+function (module) {
     var extension       = {},
         loader          = module.loader, // The loader object shared by all modules.
         output          = this.getConsole(),
@@ -6987,8 +7025,16 @@ WebAppLoader.addExtension({ name: 'dataObject', plugins: ['helper', 'storage'], 
 // PORTFOLIOS LIST
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'portfoliosList', plugins: [],
-    sharedModules: ['settings', 'pageElements', 'ajaxManager'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'portfoliosList', 
+    plugins: [],
+    sharedModules: ['settings', 'pageElements', 'ajaxManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var portfoliosList  = {},
         output          = this.getConsole(),
         eventManager    = this.getEventManager(),
@@ -7014,7 +7060,15 @@ WebAppLoader.addModule({ name: 'portfoliosList', plugins: [],
 // ISCROLL
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'scroll',
+    plugins: ['helper'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var scroll              = {},
         eventManager        = this.getEventManager(),
         helper              = this.getPlugin('helper'),
@@ -7213,7 +7267,16 @@ WebAppLoader.addModule({ name: 'scroll', plugins: ['helper'], hasEvents: true },
 // SPINNING WHEEL SLOT
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'spinningWheel', plugins: ['helper'], sharedModules: ['localizationManager'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'spinningWheel',
+    plugins: ['helper'],
+    sharedModules: ['localizationManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var spinningWheel   = {},
         slots           = [],
         slotIndices     = {},
@@ -7288,7 +7351,15 @@ WebAppLoader.addModule({ name: 'spinningWheel', plugins: ['helper'], sharedModul
 // SWIPE BUTTON
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'swipeButton', sharedModules: ['settings', 'ajaxManager'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'swipeButton',
+    sharedModules: ['settings', 'ajaxManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var swipeButton     = {},
         output          = this.getConsole(),
         eventManager    = this.getEventManager();
@@ -7316,7 +7387,15 @@ WebAppLoader.addModule({ name: 'swipeButton', sharedModules: ['settings', 'ajaxM
 // TABBAR
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'tabbar',
+    plugins: ['helper'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var tabbar          = {},
         output          = this.getConsole(),
         eventManager    = this.getEventManager(),
@@ -7481,7 +7560,16 @@ WebAppLoader.addModule({ name: 'tabbar', plugins: ['helper'], hasEvents: true },
 // TOOLBAR
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['pageElements'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'toolbar',
+    plugins: ['helper'],
+    sharedModules: ['pageElements'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var toolbar          = {},
         output           = this.getConsole(),
         eventManager     = this.getEventManager(),
@@ -7492,7 +7580,7 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
         buttonIndices    = {},
         visible          = true,
         buttonWidth      = 30,
-        buttonPadding    = 5,
+        buttonPadding    = 25,
         buttonsCount     = 0;
 
     $(el.toolbar).click(function () {
@@ -7500,7 +7588,7 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
         output.log('toolbar tapped!');
     });
     
-    // Enlarge and center the title to prevet ellispsis.
+    // Enlarge and center the title to prevent ellipsis.
     $('#jqt .toolbar > h1').width('80%').css({ 'margin': '0 0 0 -40%'});
 
     function getButton(index) {
@@ -7605,7 +7693,15 @@ WebAppLoader.addModule({ name: 'toolbar', plugins: ['helper'], sharedModules: ['
 // AJAX MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'ajaxManager', hasEvents: true, isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'ajaxManager',
+    hasEvents: true,
+    isShared: true
+}, 
+
+// Constructor
+function () {
 
     var ajaxManager  = {},
         output       = this.getConsole(),
@@ -7660,7 +7756,16 @@ WebAppLoader.addModule({ name: 'ajaxManager', hasEvents: true, isShared: true },
 // BLACKBIRD LOGGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true, isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'blackbird',
+    plugins: ['helper'],
+    hasEvents: true,
+    isShared: true
+}, 
+
+// Constructor
+function () {
 
     var blackbird    = {},
         output       = this.getConsole(),
@@ -8073,9 +8178,18 @@ WebAppLoader.addModule({ name: 'blackbird', plugins: ['helper'], hasEvents: true
 // CHARTS COMPONENTS
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedModules: ['chartManager', 'localizationManager', 'pageElements'],
-    dataObjects: ['charts'], hasEvents: true, isShared: true
-}, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'chartComponents',
+    plugins: ['helper'], 
+    sharedModules: ['chartManager', 'localizationManager', 'pageElements'],
+    dataObjects: ['charts'],
+    hasEvents: true, 
+    isShared: true
+}, 
+
+// Constructor
+function () {
 
     var chartComponents  = {},
         output           = this.getConsole(),
@@ -8346,14 +8460,6 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             measures: ['wp', 'ctp', 'rp', 'wb', 'ctb', 'rb'],
             includeMeasuresFor: ['segment', 'childSegments']
         },
-        'attributionMaster_grid': {
-            chartId: 'attributionMaster_grid',
-            title: lang.chart.attributionMasterTitle,
-            chartType: 'Table',
-            include: 'childSegments',
-            measures: ['wp', 'wb', 'ealloc', 'eselecinter', 'eallocc', 'etotal'],
-            includeMeasuresFor: ['segment', 'childSegments']
-        },
         'allocationMaster_grid': {
             chartId: 'allocationMaster_grid',
             title: lang.chart.allocationMasterTitle,
@@ -8499,6 +8605,19 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
             chartType: 'LineChart',
             measures: ['rp', 'rb'],
             seriesType: 'cumulativeIndexed'
+        },
+
+        // ------------------------------------------
+        // CUSTOM NUMBER CHARTS
+        // ------------------------------------------
+
+        'attribution_customNumber': {
+            chartId: 'attribution_customNumber',
+            title: lang.chart.attributionKeyNumbersTitle,
+            chartType: 'CustomNumber',
+            include: 'none',
+            measures: ['rp', 'ctb', 'relr', 'eselec', 'ealloc'],
+            includeMeasuresFor: ['segment']
         },
 
         // ------------------------------------------
@@ -8703,11 +8822,13 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
                 case 'TreeMap':
                     containerClass = 'treeMapContainer resizableChart';
                     break;
+                case 'CustomNumber':
+                    containerClass = 'customNumberContainer resizableChart';
+                    break;
                 default:
                     containerClass = 'chartContainer resizableChart';
             }
-            // containerClass = (chartToAdd.chartType === 'Table') ? 'gridContainer resizableChart' : 'chartContainer resizableChart';
-
+            
             // Create the chart containers according to the chart types.
             for (var i = 0; i < chartsToRender.length; i++) {
                 chart = chartsData[chartsToRender[i].chartId] || null;
@@ -8715,9 +8836,12 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
                 // Add current chart to the list of charts to load.
                 chartsToLoad.push(chart);
 
-                if (chart) {
+                if (chart) {                    
                     if (isGroup) {
                         addChartToGroup(chartsToRender[i]);
+                    } else if (chart.chartType === 'CustomNumber') {
+                        addChartToAnalysisSection(chartsToRender[i], containerClass);
+                        appendHtmlToAnalysisSection();
                     } else {
                         openAnalysisSection(chart.chartId, chart.title);
                         addChartToAnalysisSection(chartsToRender[i], containerClass);
@@ -8776,7 +8900,14 @@ WebAppLoader.addModule({ name: 'chartComponents', plugins: ['helper'], sharedMod
 // SETTINGS
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'chartDefaults',
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var chartDefaults    = {},
         commonSettings   = {},
         barChart         = {},
@@ -8988,10 +9119,16 @@ WebAppLoader.addModule({ name: 'chartDefaults', isShared: true }, function () {
 // CHART MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartManager',
+// Configuration
+WebAppLoader.addModule({ 
+    name: 'chartManager',
     sharedModules: ['settings', 'chartDefaults', 'colorManager', 'localizationManager', 'ajaxManager'],
-    isShared: true, hasEvents: true
-}, function () {
+    isShared: true, 
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var chartBase = {},
         charts = [],
         eventManager = this.getEventManager(),
@@ -9166,12 +9303,28 @@ WebAppLoader.addModule({ name: 'chartManager',
             options.maxColor = '#cc0000';
         }
 
-        // Create a new visualization wrapper instance, using the type, options and ID.
-        chart = new google.visualization.ChartWrapper({
-            chartType: type,
-            options: options,
-            containerId: id
-        });
+        // If we're creating a CustomNumber chart, we just need a basic object,
+        // rather than a full-blown Google Visualization chart wrapper.
+        if (type === 'CustomNumber') {
+
+            chart = {
+                chartType: type,
+                containerId: id
+            };
+
+        } else {
+
+            // Create a new visualization wrapper instance, using the type, options and ID.
+            chart = new google.visualization.ChartWrapper({
+                chartType: type,
+                options: options,
+                containerId: id
+            });
+
+            google.visualization.events.addListener(chart, 'error', function (errorObj) {
+                onChartReady({ errorObj: errorObj });
+            });
+        }
 
         eventManager.raiseEvent('chartReady', chart);
         eventManager.raiseEvent('showMask', config.chartId);
@@ -9190,10 +9343,6 @@ WebAppLoader.addModule({ name: 'chartManager',
         chart.timePeriods = config.timePeriods;
         chart.topBottomSplit = config.topBottomSplit;
 
-        google.visualization.events.addListener(chart, 'error', function (errorObj) {
-            onChartReady({ errorObj: errorObj });
-        });
-
         // Return the chart.
         return chart;
     }
@@ -9201,7 +9350,7 @@ WebAppLoader.addModule({ name: 'chartManager',
     // Function to load the given chart with data.
     // 'chart'  - The instance of the Google Visualization API chart object to load.
     function load(chart, newRequest) {
-        var type, params, url, formatter;
+        var type, containerId, params, url, formatter;
 
         // Don't attempt to load the chart if it doesn't exist yet.
         if (!chart) {
@@ -9217,12 +9366,13 @@ WebAppLoader.addModule({ name: 'chartManager',
         chartTotal++;
 
         // Get the current chart type.
-        type = chart.getChartType();
+        type = (chart.chartType === 'CustomNumber') ? chart.chartType : chart.getChartType();
+        containerId = (type === 'CustomNumber') ? chart.containerId : chart.getContainerId();
 
         // Create a new number formatter.
         formatter = new google.visualization.NumberFormat({
             decimalSymbol: lang.shared.decimalSymbol,
-            fractionDigits: 3,
+            fractionDigits: 2,
             groupingSymbol: lang.shared.groupingSymbol,
             negativeColor: '#cc0000',
             negativeParens: false
@@ -9247,13 +9397,13 @@ WebAppLoader.addModule({ name: 'chartManager',
         // Define the correct URL to use to retrieve data based on the chart type.
         url = (type === 'LineChart') ? siteUrls.timeSeries : siteUrls.segmentsTreeNode;
 
-        eventManager.raiseEvent('showMask', chart.getContainerId());
+        eventManager.raiseEvent('showMask', containerId);
 
         // Callback function to be invoked when data is returned from the server.
         function onDataLoaded(data) {
             var dataTable, totalRows, rangeRows, i, min, max, gaugeConfig,
                 values = [], sliceOptions = [], isAllPositiveOrNegative,
-                presentationChart, presentationContainerId;
+                template, presentationChart, presentationContainerId;
 
             output.log(data);
 
@@ -9281,108 +9431,142 @@ WebAppLoader.addModule({ name: 'chartManager',
                 }
             }
 
-            // Register the chart with the ready and error event listeners.
-            google.visualization.events.addListener(chart, 'ready', function () {
-                onChartReady({
-                    chartId: chart.getContainerId(),
-                    numRows: dataTable.getNumberOfRows() // Used to calculate the height of the chart later.
-                });
-            });
+            // If we're rendering one of our custom number charts...
+            if (type === 'CustomNumber') {
 
-            presentationChart = chart.clone();
-            presentationContainerId = 'presentation-' + chart.getContainerId();
-            presentationChart.setContainerId(presentationContainerId);
+                // Remove any existing custom number controls.
+                $('.customNumber').remove();
 
-            if (type === 'Table') {
-                chart.setOption('height', '620px'); // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
-                chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
-                presentationChart.setOption('height', '560px !important;'); // presentationChart.setOption('height', '600px !important');
-                presentationChart.setOption('width', 1000); //  chartDefaults.resizingSettings.tableWidth); //'1024 !important; min-width: 1000px !important;');
-            } else {
-                presentationChart.setOption('height', 640);
-                presentationChart.setOption('width', 1024);
-            }
+                // If we've actually got some data to display...
+                if (dataTable.getNumberOfRows() > 0) {
 
-            // If our chart is a pie chart and we're displaying it as a heatmap...
-            if (type === 'PieChart' && chart.isHeatMap) {
+                    // ...create a template.
+                    template = '';
 
-                // ...sort the data by our heatmap measure.
-                dataTable.sort([{ column: 2}]);
+                    // For each of the numbers required, create a DIV element containing the value and label.
+                    // NOTE: We start at 1 so that we avoid the 'Name' column.
+                    for (i = 1; i < dataTable.getNumberOfColumns(); i++) {
+                        template += '<div class="customNumber">' +
+                                    '    <span class="customNumberValue">' + dataTable.getFormattedValue(0, i) + '</span>' +
+                                    '    <span class="customNumberLabel">' + dataTable.getColumnLabel(i) + '</span>' +
+                                    '</div>';
+                    }
 
-                // Collate the heatmap measure from the datatable.
-                for (i = 0; i < dataTable.getNumberOfRows(); i++) {
-                    values.push(dataTable.getValue(i, 2));
-                }
+                    // Write the elements into the main chart container.
+                    $('#' + containerId).append(template);
 
-                // Get the highest and lowest values from the heatmap measure values.
-                min = Math.min.apply(Math, values);
-                max = Math.max.apply(Math, values);
-
-                // Initialise our gauge configuration object.
-                gaugeConfig = {
-                    min: min,
-                    max: max,
-                    midGradientPosition: null
-                };
-
-                // Get the formatted values for our min and max values from the dataTable,
-                // since they already have the correct decimal accuracy and localization.
-                // If the min value somehow doesn't exist in the values collection, the
-                // dataTable has given us a null value, which we take to mean zero.
-                if ($.inArray(min, values) !== -1) {
-                    gaugeConfig.minDisplay = dataTable.getFormattedValue($.inArray(min, values), 2);
-                } else {
-                    gaugeConfig.minDisplay = '0';
-                }
-
-                if ($.inArray(max, values) !== -1) {
-                    gaugeConfig.maxDisplay = dataTable.getFormattedValue($.inArray(max, values), 2);
-                } else {
-                    gaugeConfig.maxDisplay = '0';
-                }
-
-                // Determine the colours we need to use for our gauge.
-                gaugeConfig.minColor = colorManager.getColorInRange(min, min, max, chart.isGradientReversed);
-                gaugeConfig.midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
-                gaugeConfig.maxColor = colorManager.getColorInRange(max, min, max, chart.isGradientReversed);
-
-                // Determine if the values are all positive or all negative.
-                isAllPositiveOrNegative = (min >= 0 && max >= 0) || (min <= 0 && max <= 0);
-
-                // Calculate the percentage position of the mid gradient point if we'll need it.
-                if (!isAllPositiveOrNegative) {
-                    gaugeConfig.midGradientPosition = 100 - (100 * ((0 - min) / (max - min)));
-                }
-
-                // Loop round the values, and use the colorManager to generate 
-                // a colour in the gradient range for that measure value.
-                for (i = 0; i < values.length; i++) {
-                    sliceOptions.push({
-                        color: colorManager.getColorInRange(values[i], min, max, chart.isGradientReversed)
+                    // Call the onChartReady function to finish the render process.
+                    onChartReady({
+                        chartId: containerId,
+                        numRows: dataTable.getNumberOfRows() // Used to calculate the height of the chart later.
                     });
                 }
 
-                // Set the colours as part of the 'slices' chart options.
-                chart.setOption('slices', sliceOptions);
-                presentationChart.setOption('slices', sliceOptions);
+            } else {
 
-                // Attach an event handler to the 'ready' events of the chart and its presentation clone.
+                // Register the chart with the ready and error event listeners.
                 google.visualization.events.addListener(chart, 'ready', function () {
-                    renderHeatMapGauge(chart, gaugeConfig);
+                    onChartReady({
+                        chartId: containerId,
+                        numRows: dataTable.getNumberOfRows() // Used to calculate the height of the chart later.
+                    });
                 });
 
-                google.visualization.events.addListener(presentationChart, 'ready', function () {
-                    renderHeatMapGauge(presentationChart, gaugeConfig);
-                });
+                presentationChart = chart.clone();
+                presentationContainerId = 'presentation-' + chart.getContainerId();
+                presentationChart.setContainerId(presentationContainerId);
+
+                if (type === 'Table') {
+                    chart.setOption('height', '620px'); // chartDefaults.resizingSettings.calculateTableHeight(dataTable.getNumberOfRows()));
+                    chart.setOption('width', chartDefaults.resizingSettings.tableWidth);
+                    presentationChart.setOption('height', '560px !important;'); // presentationChart.setOption('height', '600px !important');
+                    presentationChart.setOption('width', 1000); //  chartDefaults.resizingSettings.tableWidth); //'1024 !important; min-width: 1000px !important;');
+                } else {
+                    presentationChart.setOption('height', 640);
+                    presentationChart.setOption('width', 1024);
+                }
+
+                // If our chart is a pie chart and we're displaying it as a heatmap...
+                if (type === 'PieChart' && chart.isHeatMap) {
+
+                    // ...sort the data by our heatmap measure.
+                    dataTable.sort([{ column: 2}]);
+
+                    // Collate the heatmap measure from the datatable.
+                    for (i = 0; i < dataTable.getNumberOfRows(); i++) {
+                        values.push(dataTable.getValue(i, 2));
+                    }
+
+                    // Get the highest and lowest values from the heatmap measure values.
+                    min = Math.min.apply(Math, values);
+                    max = Math.max.apply(Math, values);
+
+                    // Initialise our gauge configuration object.
+                    gaugeConfig = {
+                        min: min,
+                        max: max,
+                        midGradientPosition: null
+                    };
+
+                    // Get the formatted values for our min and max values from the dataTable,
+                    // since they already have the correct decimal accuracy and localization.
+                    // If the min value somehow doesn't exist in the values collection, the
+                    // dataTable has given us a null value, which we take to mean zero.
+                    if ($.inArray(min, values) !== -1) {
+                        gaugeConfig.minDisplay = dataTable.getFormattedValue($.inArray(min, values), 2);
+                    } else {
+                        gaugeConfig.minDisplay = '0';
+                    }
+
+                    if ($.inArray(max, values) !== -1) {
+                        gaugeConfig.maxDisplay = dataTable.getFormattedValue($.inArray(max, values), 2);
+                    } else {
+                        gaugeConfig.maxDisplay = '0';
+                    }
+
+                    // Determine the colours we need to use for our gauge.
+                    gaugeConfig.minColor = colorManager.getColorInRange(min, min, max, chart.isGradientReversed);
+                    gaugeConfig.midColor = colorManager.getColorInRange(0, min, max, chart.isGradientReversed);
+                    gaugeConfig.maxColor = colorManager.getColorInRange(max, min, max, chart.isGradientReversed);
+
+                    // Determine if the values are all positive or all negative.
+                    isAllPositiveOrNegative = (min >= 0 && max >= 0) || (min <= 0 && max <= 0);
+
+                    // Calculate the percentage position of the mid gradient point if we'll need it.
+                    if (!isAllPositiveOrNegative) {
+                        gaugeConfig.midGradientPosition = 100 - (100 * ((0 - min) / (max - min)));
+                    }
+
+                    // Loop round the values, and use the colorManager to generate 
+                    // a colour in the gradient range for that measure value.
+                    for (i = 0; i < values.length; i++) {
+                        sliceOptions.push({
+                            color: colorManager.getColorInRange(values[i], min, max, chart.isGradientReversed)
+                        });
+                    }
+
+                    // Set the colours as part of the 'slices' chart options.
+                    chart.setOption('slices', sliceOptions);
+                    presentationChart.setOption('slices', sliceOptions);
+
+                    // Attach an event handler to the 'ready' events of the chart and its presentation clone.
+                    google.visualization.events.addListener(chart, 'ready', function () {
+                        renderHeatMapGauge(chart, gaugeConfig);
+                    });
+
+                    google.visualization.events.addListener(presentationChart, 'ready', function () {
+                        renderHeatMapGauge(presentationChart, gaugeConfig);
+                    });
+                }
+
+                // Set the data table for the chart.
+                chart.setDataTable(dataTable);
+                presentationChart.setDataTable(dataTable);
+
+                // Draw the chart.
+                chart.draw();
+                presentationChart.draw();
             }
-
-            // Set the data table for the chart.
-            chart.setDataTable(dataTable);
-            presentationChart.setDataTable(dataTable);
-
-            // Draw the chart.
-            chart.draw();
-            presentationChart.draw();
         }
 
         // Attempt to load the data.
@@ -9401,7 +9585,14 @@ WebAppLoader.addModule({ name: 'chartManager',
 // SETTINGS
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'colorManager',
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var colorManager = {},
         output = this.getConsole();
 
@@ -9541,7 +9732,16 @@ WebAppLoader.addModule({ name: 'colorManager', isShared: true }, function () {
 // LOADING MASK MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElements'], hasEvents: true, isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'loadingMaskManager',
+    sharedModules: ['pageElements'],
+    hasEvents: true,
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var loadingMaskManager  = {},
         output              = this.getConsole(),
         eventManager        = this.getEventManager(),
@@ -9613,7 +9813,14 @@ WebAppLoader.addModule({ name: 'loadingMaskManager', sharedModules: ['pageElemen
 // LOCALIZATION MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'localizationManager', isShared: true }, function (config) {
+// Configuration
+WebAppLoader.addModule({
+    name: 'localizationManager',
+    isShared: true
+}, 
+
+// Constructor
+function (config) {
     var manager     = {},
         output      = this.getConsole(),
         language    = require('express.language');
@@ -9643,7 +9850,17 @@ WebAppLoader.addModule({ name: 'localizationManager', isShared: true }, function
 // LOCAL STORAGE MANAGER
 // ---------------------    ---------------------
 
-WebAppLoader.addModule({ name: 'localStorageManager', sharedModules: [], plugins: ['helper'], hasEvents: true, isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'localStorageManager',
+    sharedModules: [],
+    plugins: ['helper'],
+    hasEvents: true,
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var localStorageManager  = {},
         output               = this.getConsole(),
         eventManager         = this.getEventManager(),
@@ -9754,11 +9971,19 @@ WebAppLoader.addModule({ name: 'localStorageManager', sharedModules: [], plugins
 // PAGE ELEMENTS
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'pageElements',
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var pageElements = {};
 
     pageElements = {
-        // App pages.
+        
+        // App Pages
         blankPage                               : '#blank_page',
         dashboardPage                           : '#dashboard',
         homePage                                : '#home',
@@ -9774,9 +9999,8 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
         languageSettingsPages                   : '#languageSettings',
         errorPage                               : '#error',
         fullScreenPage                          : '#fullScreenPage',
-	
 
-        // Elements.
+        // Elements
         portfolioAnalysisLink                   : '.defaultAnalysisLink',
         toolbar                                 : '.toolbar',
         loginButton                             : '#loginButton',
@@ -9826,7 +10050,15 @@ WebAppLoader.addModule({ name: 'pageElements', isShared: true }, function () {
 // SETTINGS
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'settings', dataObjects: ['appSettings', 'userSettings'], isShared: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'settings',
+    dataObjects: ['appSettings', 'userSettings'],
+    isShared: true
+}, 
+
+// Constructor
+function () {
     var settings            = {},
         appSettings         = {},
         siteUrls            = {},
@@ -9917,7 +10149,16 @@ WebAppLoader.addModule({ name: 'settings', dataObjects: ['appSettings', 'userSet
 // ANALYSIS MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects: ['analysisPages'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'analysisManager',
+    sharedModules: [],
+    dataObjects: ['analysisPages'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
 
     var analysisManager         = {},
         output                  = this.getConsole(),
@@ -10022,8 +10263,9 @@ WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects
             order       : 5,
             userDefined : false,
             charts      : [{
-                    chartId : 'attributionMaster_grid',
-                    order   : 1
+                    chartId         : 'attribution_customNumber',
+                    order           : 1,
+                    noPresentation  : true
                 },{
                     chartId: 'attribution_column',
                     order   : 2
@@ -10108,7 +10350,16 @@ WebAppLoader.addModule({ name: 'analysisManager', sharedModules: [], dataObjects
 // AUTHENTICATION
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'auth', plugins: ['base64'], sharedModules: ['ajaxManager'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'auth',
+    plugins: ['base64'],
+    sharedModules: ['ajaxManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var auth            = {},
         output          = this.getConsole(),
         eventManager    = this.getEventManager(),
@@ -10122,6 +10373,7 @@ WebAppLoader.addModule({ name: 'auth', plugins: ['base64'], sharedModules: ['aja
         hash = '';
         tokenHash = base64.encode(username + ':' + password);
         token = 'Basic ' + tokenHash;
+
         // Post the created token and the user's email to the authenticate action.
         ajaxManager.post(url, { email: username, token: token, lang: language }, function (response) {
             // If our response indicates that the user has been authenticated...
@@ -10148,7 +10400,16 @@ WebAppLoader.addModule({ name: 'auth', plugins: ['base64'], sharedModules: ['aja
 // FAVOURITES MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'favouritesManager', sharedModules: [], dataObjects: ['favourites'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'favouritesManager',
+    sharedModules: [],
+    dataObjects: ['favourites'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
 
     var favouritesManager    = {},
         output               = this.getConsole(),
@@ -10239,7 +10500,14 @@ WebAppLoader.addModule({ name: 'favouritesManager', sharedModules: [], dataObjec
 // NAV
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'nav', hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'nav',
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var nav             = {},
         eventManager    = this.getEventManager();
 
@@ -10280,7 +10548,16 @@ WebAppLoader.addModule({ name: 'nav', hasEvents: true }, function () {
 // EVENT PAGE MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedModules: ['loadingMaskManager'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'pageEventsManager',
+    plugins: ['helper'],
+    sharedModules: ['loadingMaskManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var pageEventsManager   = {},
         eventManager        = this.getEventManager(),
         output              = this.getConsole(),
@@ -10359,9 +10636,17 @@ WebAppLoader.addModule({ name: 'pageEventsManager', plugins: ['helper'], sharedM
 // PORTFOLIO MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: ['settings', 'ajaxManager', 'localizationManager'],
-    dataObjects: ['portfolio'], hasEvents: true
-}, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'portfolioManager',
+    plugins: [], 
+    sharedModules: ['settings', 'ajaxManager', 'localizationManager'],
+    dataObjects: ['portfolio'], 
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var portfolioManager    = {},
         output              = this.getConsole(),
         eventManager        = this.getEventManager(),
@@ -10478,7 +10763,7 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
         }
 
         function loadPortfolioAnalysis(defaultAnalysisLink, callback) {
-            ajaxManager.post(settings.siteUrls.portfolioAnalysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (response) {
+            ajaxManager.post(settings.siteUrls.analysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (response) {
 
                 // If no analysis data was returned for the given 
                 // portfolio, or an explicit error was raised...
@@ -10544,7 +10829,16 @@ WebAppLoader.addModule({ name: 'portfolioManager', plugins: [], sharedModules: [
 // PRESENTATION MODE MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'presentationManager', plugins: ['device'], sharedModules: ['pageElements'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'presentationManager',
+    plugins: ['device'],
+    sharedModules: ['pageElements'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var presentationManager = {},
         eventManager        = this.getEventManager(),
         output              = this.getConsole(),
@@ -10656,8 +10950,15 @@ WebAppLoader.addModule({ name: 'presentationManager', plugins: ['device'], share
 // REPOSITORIES
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'repositories', sharedModules: ['settings', 'localizationManager', 'ajaxManager'],
-    hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'repositories', 
+    sharedModules: ['settings', 'localizationManager', 'ajaxManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var repositories    = {},
         eventManager    = this.getEventManager(),
         output          = this.getConsole(),
@@ -10856,8 +11157,16 @@ WebAppLoader.addModule({ name: 'repositories', sharedModules: ['settings', 'loca
 // THEMES MANAGER
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'themesManager', sharedModules: ['pageElements'], 
-    dataObjects: ['theme'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'themesManager', 
+    sharedModules: ['pageElements'],
+    dataObjects: ['theme'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var themesManager   = {},
         eventManager    = this.getEventManager(),
         output          = this.getConsole(),
@@ -10896,8 +11205,16 @@ WebAppLoader.addModule({ name: 'themesManager', sharedModules: ['pageElements'],
 // ANALYSIS SETTINGS PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'analysisSettingsPage', plugins: ['helper'], 
-    sharedModules: ['settings', 'pageElements', 'localizationManager'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'analysisSettingsPage', 
+    plugins: ['helper'],
+    sharedModules: ['settings', 'pageElements', 'localizationManager'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var analysisSettingsPage = {},
         output               = this.getConsole(),
         eventManager         = this.getEventManager(),
@@ -10957,7 +11274,7 @@ WebAppLoader.addModule({ name: 'analysisSettingsPage', plugins: ['helper'],
             }
         }
         
-        $(appendTo).append(
+        $(el.listAnalysisSettingsUserPages).append(
             $('<li>').attr('class', 'arrow').append(
                 $('<a>').attr({ 'href': '#', 'data-link' : pageId })
                 .html(lang.chartTexts.addNewPage)
@@ -10976,8 +11293,15 @@ WebAppLoader.addModule({ name: 'analysisSettingsPage', plugins: ['helper'],
 // CHART SETTINGS PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'chartSettingsPage', sharedModules: ['settings', 'pageElements', 'localizationManager'],
-    hasEvents: true}, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'chartSettingsPage', 
+    sharedModules: ['settings', 'pageElements', 'localizationManager'],
+    hasEvents: true
+},
+
+// Constructor
+function () {
     var chartSettingsPage = {},
         output            = this.getConsole(),
         eventManager      = this.getEventManager(),
@@ -11054,10 +11378,16 @@ WebAppLoader.addModule({ name: 'chartSettingsPage', sharedModules: ['settings', 
 // EXPERIMENTAL PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'experimentalPage',
-    plugins: ['helper'], sharedModules: ['settings', 'pageElements', 'localizationManager'],
+// Configuration
+WebAppLoader.addModule({ 
+    name: 'experimentalPage',
+    plugins: ['helper'], 
+    sharedModules: ['settings', 'pageElements', 'localizationManager'],
     hasEvents: true
-}, function () {
+}, 
+
+// Constructor
+function () {
     var experimentalPage  = {},
         output            = this.getConsole(),
         eventManager      = this.getEventManager(),
@@ -11457,7 +11787,15 @@ WebAppLoader.addModule({ name: 'experimentalPage',
 // LANGUAGE SETTINGS PAGE
 // ------------------------------------------
 
-WebAppLoader.addModule({ name: 'languageSettingsPage', sharedModules: ['settings', 'pageElements'], hasEvents: true }, function () {
+// Configuration
+WebAppLoader.addModule({
+    name: 'languageSettingsPage',
+    sharedModules: ['settings', 'pageElements'],
+    hasEvents: true
+}, 
+
+// Constructor
+function () {
     var languageSettingsPage    = {},
         output                  = this.getConsole(),
         eventManager            = this.getEventManager(),
@@ -11523,14 +11861,14 @@ var jQT = new $.jQTouch({
 // Main functions:
 Zepto(function ($) {
 
-    var theApp       = {},
-        loader       = WebAppLoader, // Alias
-        output       = loader.getConsole(),
-        helper       = loader.loadModule('helper'),
-        device       = loader.loadModule('device'),
-        siteUrls     = loader.getSharedModule('settings').siteUrls,
-        el           = loader.getSharedModule('pageElements'),
-        lang         = loader.getSharedModule('localizationManager').getLanguage() || {};
+    var theApp = {},
+        loader = WebAppLoader, // Alias
+        output = loader.getConsole(),
+        helper = loader.loadModule('helper'),
+        device = loader.loadModule('device'),
+        siteUrls = loader.getSharedModule('settings').siteUrls,
+        el = loader.getSharedModule('pageElements'),
+        lang = loader.getSharedModule('localizationManager').getLanguage() || {};
 
     // Test log method.
     output.log('Hello from Dan & Asa!');
@@ -11561,7 +11899,7 @@ Zepto(function ($) {
     theApp.preventAnalysisRebuilding = false;
 
     /* ----------------------- ON/OFF ----------------------- /
-       'Switch comments off changing /* in //* and viceversa'
+    'Switch comments off changing /* in //* and viceversa'
     // ------------------------------------------------------ */
 
     // ------------------------------------------
@@ -11792,15 +12130,18 @@ Zepto(function ($) {
         theApp.nav.goToPage($(el.analysisPage), 'dissolve');
 
         function renderAnalysisPage(portfolio) {
-            var chartsToRender        = [],
-                analysisPagesData     = {},
-                analysisPage          = {},
-                portfolioId           = portfolio.code,
-                portfolioName         = portfolio.name,
-                analysisPageCharts    = null,
-                analysisPageTitle     = '',
+            var chartsToRender = [],
+                analysisPagesData = {},
+                analysisPage = {},
+                portfolioId = portfolio.code,
+                portfolioName = portfolio.name,
+                analysisPageCharts = null,
+                analysisPageTitle = '',
                 presentationViewWidth = 0,
-                timePeriodFound       = false;
+                presentationChartCount = 0,
+                timePeriodStartEl = null,
+                timePeriodEndEl = null,
+                timePeriodFound = false;
 
             analysisPagesData = theApp.analysisManager.getData('analysisPages');
 
@@ -11824,6 +12165,10 @@ Zepto(function ($) {
             // Update the page title.
             $(el.analysisTitle).html(analysisPageTitle);
 
+            // Get the start and end date placeholders.
+            timePeriodStartEl = $(el.timePeriodStartDateText);
+            timePeriodEndEl = $(el.timePeriodEndDateText);
+
             // Loop around the provided time periods for the portfolio,
             // and get hold of the start and end date for that particular
             // period, breaking the loop when found.
@@ -11845,18 +12190,27 @@ Zepto(function ($) {
                     theApp.customChartTimePeriods.startDate = period.startDate;
                     theApp.customChartTimePeriods.endDate = period.endDate;
 
-                    $(el.timePeriodStartDateText).html(startDate.toString('MMM d, yyyy'));
-                    $(el.timePeriodEndDateText).html(endDate.toString('MMM d, yyyy'));
+                    timePeriodStartEl.html(startDate.toString('MMM d, yyyy'));
+                    timePeriodEndEl.html(endDate.toString('MMM d, yyyy'));
 
                     return false;
                 }
             });
 
             // If we didn't find a time period in the loop, clear out the text.
-            if (!timePeriodFound) { 
-                $(el.timePeriodStartDateText).html('-');
-                $(el.timePeriodEndDateText).html('-');
+            if (!timePeriodFound) {
+                timePeriodStartEl.html('-');
+                timePeriodEndEl.html('-');
             }
+
+            // Add click handlers to the time period elements which open the periods slot.
+            timePeriodStartEl.on('click', function() {
+                theApp.spinningWheel.getSlot('timePeriods').show(theApp.getLastAnalysisObjectUsed().timePeriodId);
+            });
+            
+            timePeriodEndEl.on('click', function() {
+                theApp.spinningWheel.getSlot('timePeriods').show(theApp.getLastAnalysisObjectUsed().timePeriodId);
+            });            
 
             // Set and save the last used analysis object.
             theApp.setLastAnalysisObjectUsed(analysisDataObject);
@@ -11886,8 +12240,14 @@ Zepto(function ($) {
                 theApp.presentationManager.enterPresentationMode(data);
             });
 
+            // Filter the charts so that we're only selecting 
+            // those which should have a presentation view.
+            presentationChartCount = jLinq.from(analysisPageCharts)
+                .notStarts('noPresentation', true)
+                .count();
+
             // Set the width of the presentation view in order to contain all charts.
-            presentationViewWidth = parseInt((chartsToRender.length || 1) * device.maxWidth(), 10);
+            presentationViewWidth = parseInt((presentationChartCount || 1) * device.maxWidth(), 10);
             $(el.presentationChartsContainer).width(presentationViewWidth);
         }
 
@@ -11921,11 +12281,10 @@ Zepto(function ($) {
         output.log('onChartsLoading', chartCount, chartTotal);
     });
 
-    theApp.chartComponents.on('onChartLoaded', function (chart) { // chartId, numRows) {
-            theApp.iOSLog.debug('rebuilt on onChartLoaded');
-            theApp.scroll.saveScrollPosition();
-            theApp.scroll.rebuild('analysis', { restorePosition: true });
-//        }
+    theApp.chartComponents.on('onChartLoaded', function (chart) {
+        theApp.iOSLog.debug('rebuilt on onChartLoaded');
+        theApp.scroll.saveScrollPosition();
+        theApp.scroll.rebuild('analysis', { restorePosition: true });
     });
 
     // ------------------------------------------
@@ -11933,11 +12292,11 @@ Zepto(function ($) {
     // ------------------------------------------
 
     theApp.updatePresentationSummaryInfo = function () {
-        var analysisTitle               = $(el.analysisTitle).html() || '',
-            timePeriodStartDateText     = $(el.timePeriodStartDateText).html() || '',
-            timePeriodEndDateText       = $(el.timePeriodEndDateText).html() || '',
-            summaryTitleName            = $(el.summaryTitleName).html() || '',
-            summaryTitleBenchmarkName   = $(el.summaryTitleBenchmarkName).html() || '';
+        var analysisTitle = $(el.analysisTitle).html() || '',
+            timePeriodStartDateText = $(el.timePeriodStartDateText).html() || '',
+            timePeriodEndDateText = $(el.timePeriodEndDateText).html() || '',
+            summaryTitleName = $(el.summaryTitleName).html() || '',
+            summaryTitleBenchmarkName = $(el.summaryTitleBenchmarkName).html() || '';
 
         // Set values from the analysis summary info to the presentation summary info.
         $(el.presentationTitle).html(analysisTitle);
@@ -11973,9 +12332,8 @@ Zepto(function ($) {
     theApp.presentationManager.on('onExit', function () {
         var deviceOrientation = device.orientation();
 
-        // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
         theApp.isFullScreen = false;
-        
+
         if (deviceOrientation === theApp.lastDeviceOrientation) {
             theApp.iOSLog.debug('rebuilt on onExit');
             theApp.scroll.rebuild('analysis', { restorePosition: true });
@@ -12172,19 +12530,28 @@ Zepto(function ($) {
     });
 
     theApp.updateAnalysisInfo = function (data) {
-        var i, benchmarks, benchmarkPlaceholder;
+        var i, portfolioName, benchmarks, benchmarkPlaceholder;
 
         if (data) {
+            
+            // Get the portfolio name element.
+            portfolioName = $(el.summaryTitleName);
+            
             // Define the CSS word-break rules depending on 
             // the whitespace available in the portfolio name.
             if (data.name.indexOf(' ') === -1) {
-                $(el.summaryTitleName).attr('style', 'word-break: break-all;');
+                portfolioName.attr('style', 'word-break: break-all;');
             } else {
-                $(el.summaryTitleName).attr('style', 'word-break: normal;');
+                portfolioName.attr('style', 'word-break: normal;');
             }
 
             // Update the portfolio name.
-            $(el.summaryTitleName).html(data.name);
+            portfolioName.html(data.name);
+
+            // Add a click handler to the element to open the portfolio slot.
+            portfolioName.on('click', function() {
+                theApp.spinningWheel.getSlot('portfolios').show(theApp.getLastAnalysisObjectUsed().portfolioId);
+            });
 
             // Clear out any existing benchmarks.
             benchmarkPlaceholder = $(el.summaryTitleBenchmarkName);
@@ -12214,13 +12581,12 @@ Zepto(function ($) {
     // ------------------------------------------
 
     var toolbarConfig = {
-        toolbarId: '#analysis .toolbar',  // TODO: Use page element instead of a hardcoded value.
+        toolbarId: el.analysisPage + ' ' + el.toolbar,
         buttonPrefix: 'toolbar_btn',
         visible: true,
         items: [
             { id: 'favourite', title: lang.tabbar.favourites, btnClass: 'favourite' },
             { id: 'console', title: 'console', btnClass: 'console' }
-            // { id: 'test', title: test, btnClass: 'favourite' } // Comment off to add a test button.
         ]
     };
 
@@ -12239,12 +12605,7 @@ Zepto(function ($) {
         }
     });
 
-    // Test
-    theApp.toolbar.on('onTestTap', function (isSelected) {
-        theApp.onTestApp();
-    });
-
-    // Hide the console button if
+    // Hide the console button if we're in development mode.
     if (serverEnvironment !== 'development') {
         theApp.toolbar.getButton('console').hide();
     }
@@ -12302,7 +12663,7 @@ Zepto(function ($) {
     });
 
     theApp.tabbar.on('onPortfoliosTap', function () {
-        theApp.spinningWheel.getSlot('portfolios').show(theApp.getLastAnalysisObjectUsed().portfolioId); //'ADVISOR');
+        theApp.spinningWheel.getSlot('portfolios').show(theApp.getLastAnalysisObjectUsed().portfolioId);
     });
 
     theApp.tabbar.on('onAnalysisTap', function () {
@@ -12316,7 +12677,7 @@ Zepto(function ($) {
     theApp.tabbar.on('onTimePeriodsTap', function () {
         theApp.spinningWheel.getSlot('timePeriods').show(theApp.getLastAnalysisObjectUsed().timePeriodId);
     });
-    
+
     theApp.tabbar.on('onSettingsTap', function (button) {
         if (button.isHighlighted) {
             theApp.nav.goToPage($(el.settingsPage));
@@ -12473,11 +12834,6 @@ Zepto(function ($) {
         output.log('onAboutEnd');
     });
 
-    theApp.pageEventsManager.on('onTestEnd', function () {
-        theApp.scroll.rebuild('test');
-        output.log('onTestEnd');
-    });
-
     theApp.pageEventsManager.on('onResetEnd', function () {
         theApp.scroll.rebuild('reset', { clickSafeMode: true }); // Pass in true to ensure form elements are clickable.
         output.log('onResetEnd');
@@ -12602,14 +12958,13 @@ Zepto(function ($) {
             favouritesData = null;
 
         favouriteToAdd = theApp.analysisDataObjectToFavourite(theApp.lastAnalysisObjectUsed);
-        if (favouriteToAdd) {
-            if (!theApp.favouriteExists(favouriteToAdd.favouriteId)) {
-                favouritesData = theApp.favouritesManager.getData('favourites');
-                favouritesData.items.push(favouriteToAdd);
-                theApp.favouritesManager.saveData('favourites', theApp.lastUsernameUsed);
-                theApp.favouritesManager.update(theApp.lastUsernameUsed);
-                theApp.setLastFavouriteSelected(favouriteToAdd.favouriteId);
-            }
+
+        if (favouriteToAdd && !theApp.favouriteExists(favouriteToAdd.favouriteId)) {
+            favouritesData = theApp.favouritesManager.getData('favourites');
+            favouritesData.items.push(favouriteToAdd);
+            theApp.favouritesManager.saveData('favourites', theApp.lastUsernameUsed);
+            theApp.favouritesManager.update(theApp.lastUsernameUsed);
+            theApp.setLastFavouriteSelected(favouriteToAdd.favouriteId);
         }
     };
 
@@ -12618,13 +12973,13 @@ Zepto(function ($) {
             favouritesData = null;
 
         favouriteToRemove = theApp.analysisDataObjectToFavourite(theApp.lastAnalysisObjectUsed);
-        if (favouriteToRemove) {
-            if (theApp.favouriteExists(favouriteToRemove.favouriteId)) {
-                favouritesData = theApp.favouritesManager.getData('favourites');
-                if (helper.removeObjectFromArray(favouritesData.items, 'favouriteId', favouriteToRemove.favouriteId)) {
-                    theApp.favouritesManager.saveData('favourites', theApp.lastUsernameUsed);
-                    theApp.favouritesManager.update(theApp.lastUsernameUsed);
-                }
+
+        if (favouriteToRemove && theApp.favouriteExists(favouriteToRemove.favouriteId)) {
+            favouritesData = theApp.favouritesManager.getData('favourites');
+            
+            if (helper.removeObjectFromArray(favouritesData.items, 'favouriteId', favouriteToRemove.favouriteId)) {
+                theApp.favouritesManager.saveData('favourites', theApp.lastUsernameUsed);
+                theApp.favouritesManager.update(theApp.lastUsernameUsed);
             }
         }
     };
@@ -12729,17 +13084,16 @@ Zepto(function ($) {
     };
 
     theApp.synchronizeOrientation = function (restorePosition) {
-        var animationSpeed  = 25,
+        var animationSpeed = 25,
             rebuildingDelay = 1000,
             restorePosition = helper.getValueAs(restorePosition, 'boolean'),
             deviceOrientation = device.orientation();
 
-        // theApp.isFullScreen = theApp.presentationManager.isFullScreen();
         if (theApp.isFullScreen) {
             theApp.iOSLog.debug('synchronizeOrientation skipped.');
             return;
         }
-        
+
         theApp.lastDeviceOrientation = deviceOrientation;
 
         animationSpeed = (theApp.settings.appSettings.animatedChartResizing)
@@ -12747,7 +13101,6 @@ Zepto(function ($) {
             : 25;
 
         theApp.preventTap(true);
-        // theApp.mask.show('preventTap');
 
         if (restorePosition) {
             theApp.scroll.saveScrollPosition();
@@ -12758,7 +13111,7 @@ Zepto(function ($) {
             containerPortraitHeight, portraitScaleRatio, landscapeScaleRatio, realHeightData;
 
             $container = $(this);
-            $component = $container.children().filter('.resizableChart'); // $container.children().filter('.resizableChart'); // $container.children().filter('.chartContainer') || $container.children().filter('.gridContainer');
+            $component = $container.children().filter('.resizableChart');
             containerHeight = $component.height();
 
             if ($component.hasClass('gridContainer')) {
@@ -12810,14 +13163,12 @@ Zepto(function ($) {
                     }
 
                     theApp.preventTap(false);
-                    // theApp.mask.hide('preventTap');
                 }
             }, animationSpeed + rebuildingDelay);
         } else {
             setTimeout(function () {
                 theApp.scroll.rebuild('analysis', { restorePosition: restorePosition });
                 theApp.preventTap(false);
-                // theApp.mask.hide('preventTap');
                 theApp.iOSLog.debug('rebuilt on synchronizeOrientation');
             }, animationSpeed + rebuildingDelay);
         }
@@ -12828,12 +13179,12 @@ Zepto(function ($) {
     theApp.synchronizeOrientation.chartToDisplay = '';
 
     theApp.getCurrentChartDisplayedInViewport = function () {
-        var approximativeHeaderHeight   = 75,
-            horizon                     = 0,
-            charts                      = [],
-            chart                       = {},
-            positions                   = [],
-            minY                        = 0;
+        var approximativeHeaderHeight = 75,
+            horizon = 0,
+            charts = [],
+            chart = {},
+            positions = [],
+            minY = 0;
 
         horizon = (device.orientation() === 'landscape')
             ? (device.maxHeight()) / 2 + approximativeHeaderHeight
@@ -12863,11 +13214,6 @@ Zepto(function ($) {
         theApp.synchronizeOrientation(true);
     });
 
-    // Generic test method.
-    theApp.onTestApp = function () {
-        // TODO: Add code here...
-    };
-
     // ------------------------------------------
     // EXPERIMENTAL PAGE
     // ------------------------------------------
@@ -12877,8 +13223,8 @@ Zepto(function ($) {
     };
 
     theApp.experimentalPage.on('onPreviewChart', function (customChart) {
-        var charts = [];
-        var chartComponentsData = theApp.chartComponents.getData('charts');
+        var charts = [],
+            chartComponentsData = theApp.chartComponents.getData('charts');
 
         // Clear previous chart.
         $('#custom_chart_partial').html('');

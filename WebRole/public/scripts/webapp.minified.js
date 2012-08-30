@@ -3398,7 +3398,7 @@ j.buttons=b;
 j.getButton=e;
 return j
 });
-WebAppLoader.addModule({name:"toolbar",plugins:["helper"],sharedModules:["pageElements"],hasEvents:true},function(){var l={},k=this.getConsole(),h=this.getEventManager(),g=this.getSharedModule("pageElements"),j=this.getPlugin("helper"),m="",c=[],a={},n=true,e=30,b=5,d=0;
+WebAppLoader.addModule({name:"toolbar",plugins:["helper"],sharedModules:["pageElements"],hasEvents:true},function(){var l={},k=this.getConsole(),h=this.getEventManager(),g=this.getSharedModule("pageElements"),j=this.getPlugin("helper"),m="",c=[],a={},n=true,e=30,b=25,d=0;
 $(g.toolbar).click(function(){h.raiseEvent("onTap");
 k.log("toolbar tapped!")
 });
@@ -3640,7 +3640,7 @@ touchScroll("scrollMe");
 return blackbird
 });
 WebAppLoader.addModule({name:"chartComponents",plugins:["helper"],sharedModules:["chartManager","localizationManager","pageElements"],dataObjects:["charts"],hasEvents:true,isShared:true},function(){var a={},k=this.getConsole(),g=this.getEventManager(),h=this.getPlugin("helper"),b=this.getSharedModule("chartManager"),i=this.getSharedModule("localizationManager").getLanguage()||{},f=this.getSharedModule("pageElements"),d=this.getDataObject("charts"),e={},c=null;
-d.define({performance_bar:{chartId:"performance_bar",title:i.chart.performanceBarTitle,chartType:"BarChart",include:"childSegments",measures:["rp"],includeMeasuresFor:["childSegments"],oData:{orderby:"rp-{timePeriod} desc"},options:{hAxis:{title:"Return"}}},risk_bar:{chartId:"risk_bar",title:i.chart.riskBarTitle,chartType:"BarChart",include:"childSegments",measures:["wp","contributionvar"],includeMeasuresFor:["childSegments"],oData:{orderby:"contributionvar-{timePeriod} desc"},options:{hAxis:{title:"Return"}}},allocation_bar:{chartId:"allocation_bar",title:i.chart.allocationbarTitle,chartType:"BarChart",include:"childSegments",measures:["wover"],includeMeasuresFor:["childSegments"],oData:{orderby:"wover-{timePeriod} desc"},options:{hAxis:{title:"Excess Weight %"}}},contribution_bar:{chartId:"contribution_bar",title:i.chart.contributionBarTitle,topBottomSplit:5,chartType:"BarChart",include:"securities",measures:["ctp"],includeMeasuresFor:["securities"],oData:{orderby:"ctp-{timePeriod} desc"},options:{hAxis:{title:"Contribution"}}},attribution_bar:{chartId:"attribution_bar",title:i.chart.attributionBarTitle,chartType:"BarChart",include:"childSegments",measures:["wendover","etotal"],oData:{orderby:"etotal-{timePeriod} desc"},includeMeasuresFor:["childSegments"]},fixedIncomeContribution_bar:{chartId:"fixedIncomeContribution_bar",title:i.chart.fixedIncomeContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpyc","ctpspread","ctpcur"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#FF6600","#CC0000","#FFCC00"]}},carryContribution_bar:{chartId:"carryContribution_bar",title:i.chart.carryContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpsystcarry","ctpspeccarry"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#336600","#990000"]}},yieldCurveContribution_bar:{chartId:"yieldCurveContribution_bar",title:i.chart.yieldCurveContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpshift","ctptwist","ctpbutterfly","ctprolldown"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#CD66CD","#339900","#FF9900","#660000"]}},riskNumbers_bar:{chartId:"riskNumbers_bar",title:i.chart.riskNumbersBarTitle,chartType:"BarChart",include:"none",measures:["ytmpend","mdpend"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#336699","#530066"]}},performance_bubble:{chartId:"performance_bubble",title:i.chart.performanceBubbleTitle,chartType:"BubbleChart",include:"childSegments",measures:["stddevann","returnannifgtyr","wpabsolute"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"Annualized Volatility"},vAxis:{title:"Annualized Return"}}},risk_bubble:{chartId:"risk_bubble",title:i.chart.riskBubbleTitle,chartType:"BubbleChart",include:"childSegments",measures:["valueatriskpercent","rp","wpabsolute"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"% Value at Risk"},vAxis:{title:"Return"}}},contribution_column:{chartId:"contribution_column",title:i.chart.contributionColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["ctp","ctb"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Return %"}}},interestRatesExposure_column:{chartId:"interestRatesExposure_column",title:i.chart.interestRatesExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["interestratesdown100percent","interestratesdown50percent","interestratesup50percent","interestratesup100percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#CC0000","#CD66CD","#FFCC00","#3399CC"]}},creditSpreadsExposure_column:{chartId:"creditSpreadsExposure_column",title:i.chart.creditSpreadsExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["creditspreadsdown100percent","creditspreadsdown50percent","creditspreadsup50percent","creditspreadsup100percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#CC0000","#CD66CD","#FFCC00","#3399CC"]}},dv01Exposure_column:{chartId:"dv01Exposure_column",title:i.chart.dv01ExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["interestratesdv01percent","creditspreadsdv01percent","inflationratesdv01percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#3399CC","#336699","#003366"]}},attribution_column:{chartId:"attribution_column",title:i.chart.attributionColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["etotal","ealloc","eselecinter"],oData:{orderby:"etotal-{timePeriod} desc"},includeMeasuresFor:["childSegments"],options:{colors:["#003366","#FF6600","#990066"]}},allocation_pie:{chartId:"allocation_pie",title:i.chart.allocationPieTitle,chartType:"PieChart",include:"childSegments",measures:["wpabsoluteend"],includeMeasuresFor:["childSegments"]},contribution_pie:{chartId:"contribution_pie",title:i.chart.contributionPieTitle,chartType:"PieChart",include:"childSegments",isHeatMap:true,isGradientReversed:false,measures:["wpabsoluteend","ctp"],includeMeasuresFor:["childSegments"]},risk_pie:{chartId:"risk_pie",title:i.chart.riskPietitle,chartType:"PieChart",include:"childSegments",isHeatMap:true,isGradientReversed:true,measures:["wpabsoluteend","contributionvar"],includeMeasuresFor:["childSegments"]},performanceMaster_grid:{chartId:"performanceMaster_grid",title:i.chart.performanceMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","rp","rb","relr","ctp"],includeMeasuresFor:["segment","childSegments"]},contributionMaster_grid:{chartId:"contributionMaster_grid",title:i.chart.contributionMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","ctp","rp","wb","ctb","rb"],includeMeasuresFor:["segment","childSegments"]},attributionMaster_grid:{chartId:"attributionMaster_grid",title:i.chart.attributionMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","wb","ealloc","eselecinter","eallocc","etotal"],includeMeasuresFor:["segment","childSegments"]},allocationMaster_grid:{chartId:"allocationMaster_grid",title:i.chart.allocationMasterTitle,chartType:"Table",include:"childSegments",measures:["wpend","wpbeg","mvend"],includeMeasuresFor:["segment","childSegments"]},riskMaster_grid:{chartId:"riskMaster_grid",title:i.chart.riskMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","valueatrisk","valueatriskpercent","contributionvar","expectedvolatilitypercent"],includeMeasuresFor:["segment","childSegments"]},performance_grid:{chartId:"performance_grid",title:i.chart.performanceGridTitle,chartType:"Table",include:"none",measures:["rp","returnann","stddevann","relr","periodaverage","oneperiodhigh","oneperiodlow","maxloss","percentpositiveperiods","correlation","alpha","beta","rsquared","sharperatio","treynorratio","inforatioxs"],includeMeasuresFor:["segment"]},attribution_grid:{chartId:"attribution_grid",title:i.chart.attributionGridTitle,chartType:"Table",include:"childSegments",measures:["ctp","ctb","ealloclocal","eselecinterlocal","etotalc","etotalmca"],includeMeasuresFor:["segment","childSegments"]},allocationLongShort_grid:{chartId:"allocationLongShort_grid",title:i.chart.allocationLongShortGridTitle,chartType:"Table",include:"childSegments",measures:["wp","wpgross","shortexposureend","longexposureend","leverageend"],includeMeasuresFor:["segment","childSegments"]},fixedIncome_grid:{chartId:"fixedIncome_grid",title:i.chart.fixedIncomeGridTitle,chartType:"Table",include:"childSegments",measures:["ttmpend","ytmpend","mdpend","durwpend","spreadpend"],includeMeasuresFor:["segment","childSegments"]},fixedIncomeContribution_grid:{chartId:"fixedIncomeContribution_grid",title:i.chart.fixedIncomeContributionGridTitle,chartType:"Table",include:"childSegments",measures:["ctp","ctpyc","ctpcarry","ctpspread","ctpcur","ctpother","ctpresidual"],includeMeasuresFor:["segment","childSegments"]},fixedIncomeExposure_grid:{chartId:"fixedIncomeExposure_grid",title:i.chart.fixedIncomeExposureGridTitle,chartType:"Table",include:"childSegments",measures:["wpend","interestratesdv01percent","creditspreadsdv01percent","inflationratesdv01percent"],includeMeasuresFor:["segment","childSegments"]},performanceTopTen_grid:{chartId:"performanceTopTen_grid",title:i.chart.performanceTopTenGridTitle,chartType:"Table",include:"securities",measures:["wpend","rp","ctp"],oData:{orderby:"wpend-{timePeriod} desc",top:10},includeMeasuresFor:["securities"]},contributionTopTen_grid:{chartId:"contributionTopTen_grid",title:i.chart.contributionTopTenGridTitle,topBottomSplit:5,chartType:"Table",include:"securities",measures:["wpend","rp","ctp"],oData:{orderby:"ctp-{timePeriod} desc"},includeMeasuresFor:["securities"]},riskTopTen_grid:{chartId:"riskTopTen_grid",title:i.chart.riskTopTenGridTitle,chartType:"Table",include:"securities",measures:["wpend","expectedshortfallpercent","valueatriskpercent","expectedvolatilitypercent"],oData:{orderby:"valueatriskpercent-{timePeriod} desc",top:10},includeMeasuresFor:["securities"]},performance_treemap:{chartId:"performance_treemap",title:i.chart.performanceTreemapTitle,isGradientReversed:false,chartType:"TreeMap",include:"securities",measures:["wpabsoluteend","rp"],includeMeasuresFor:["securities"]},risk_treemap:{chartId:"risk_treemap",title:i.chart.riskTreemapTitle,isGradientReversed:true,chartType:"TreeMap",include:"childSegments",measures:["wpabsoluteend","contributionvar"],includeMeasuresFor:["childSegments"]},performance_line:{chartId:"performance_line",title:i.chart.performanceLineTitle,chartType:"LineChart",measures:["rp","rb"],seriesType:"cumulativeIndexed"},fi_contribution_group:{chartId:"fi_contribution_group",title:i.chart.fixedIncomeContributionsGroupTitle,chartType:"Group",charts:[{chartId:"fixedIncomeContribution_bar",width:"50%",height:"100%"},{chartId:"carryContribution_bar",width:"50%",height:"100%"},{chartId:"yieldCurveContribution_bar",width:"50%",height:"100%"},{chartId:"riskNumbers_bar",width:"50%",height:"100%"}]},fi_exposures_group:{chartId:"fi_exposures_group",title:i.chart.fixedIncomeExposuresGroupTitle,chartType:"Group",charts:[{chartId:"interestRatesExposure_column",width:"50%",height:"100%"},{chartId:"creditSpreadsExposure_column",width:"50%",height:"100%"},{chartId:"dv01Exposure_column",width:"50%",height:"100%"}]},fi_gridRiskNumber_group:{chartId:"fi_gridRiskNumber_group",title:i.chart.fixedIncomeRiskNumbersGroupTitle,chartType:"Group",charts:[{chartId:"fixedIncome_grid",width:"100%",height:"100%"},{chartId:"fixedIncomeContribution_grid",width:"100%",height:"100%"}]}});
+d.define({performance_bar:{chartId:"performance_bar",title:i.chart.performanceBarTitle,chartType:"BarChart",include:"childSegments",measures:["rp"],includeMeasuresFor:["childSegments"],oData:{orderby:"rp-{timePeriod} desc"},options:{hAxis:{title:"Return"}}},risk_bar:{chartId:"risk_bar",title:i.chart.riskBarTitle,chartType:"BarChart",include:"childSegments",measures:["wp","contributionvar"],includeMeasuresFor:["childSegments"],oData:{orderby:"contributionvar-{timePeriod} desc"},options:{hAxis:{title:"Return"}}},allocation_bar:{chartId:"allocation_bar",title:i.chart.allocationbarTitle,chartType:"BarChart",include:"childSegments",measures:["wover"],includeMeasuresFor:["childSegments"],oData:{orderby:"wover-{timePeriod} desc"},options:{hAxis:{title:"Excess Weight %"}}},contribution_bar:{chartId:"contribution_bar",title:i.chart.contributionBarTitle,topBottomSplit:5,chartType:"BarChart",include:"securities",measures:["ctp"],includeMeasuresFor:["securities"],oData:{orderby:"ctp-{timePeriod} desc"},options:{hAxis:{title:"Contribution"}}},attribution_bar:{chartId:"attribution_bar",title:i.chart.attributionBarTitle,chartType:"BarChart",include:"childSegments",measures:["wendover","etotal"],oData:{orderby:"etotal-{timePeriod} desc"},includeMeasuresFor:["childSegments"]},fixedIncomeContribution_bar:{chartId:"fixedIncomeContribution_bar",title:i.chart.fixedIncomeContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpyc","ctpspread","ctpcur"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#FF6600","#CC0000","#FFCC00"]}},carryContribution_bar:{chartId:"carryContribution_bar",title:i.chart.carryContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpsystcarry","ctpspeccarry"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#336600","#990000"]}},yieldCurveContribution_bar:{chartId:"yieldCurveContribution_bar",title:i.chart.yieldCurveContributionBarTitle,chartType:"BarChart",include:"none",measures:["ctpshift","ctptwist","ctpbutterfly","ctprolldown"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#CD66CD","#339900","#FF9900","#660000"]}},riskNumbers_bar:{chartId:"riskNumbers_bar",title:i.chart.riskNumbersBarTitle,chartType:"BarChart",include:"none",measures:["ytmpend","mdpend"],includeMeasuresFor:["segment"],options:{chartArea:{left:10,width:"60%",height:"80%"},colors:["#336699","#530066"]}},performance_bubble:{chartId:"performance_bubble",title:i.chart.performanceBubbleTitle,chartType:"BubbleChart",include:"childSegments",measures:["stddevann","returnannifgtyr","wpabsolute"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"Annualized Volatility"},vAxis:{title:"Annualized Return"}}},risk_bubble:{chartId:"risk_bubble",title:i.chart.riskBubbleTitle,chartType:"BubbleChart",include:"childSegments",measures:["valueatriskpercent","rp","wpabsolute"],includeMeasuresFor:["childSegments"],options:{hAxis:{title:"% Value at Risk"},vAxis:{title:"Return"}}},contribution_column:{chartId:"contribution_column",title:i.chart.contributionColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["ctp","ctb"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Return %"}}},interestRatesExposure_column:{chartId:"interestRatesExposure_column",title:i.chart.interestRatesExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["interestratesdown100percent","interestratesdown50percent","interestratesup50percent","interestratesup100percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#CC0000","#CD66CD","#FFCC00","#3399CC"]}},creditSpreadsExposure_column:{chartId:"creditSpreadsExposure_column",title:i.chart.creditSpreadsExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["creditspreadsdown100percent","creditspreadsdown50percent","creditspreadsup50percent","creditspreadsup100percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#CC0000","#CD66CD","#FFCC00","#3399CC"]}},dv01Exposure_column:{chartId:"dv01Exposure_column",title:i.chart.dv01ExposureColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["interestratesdv01percent","creditspreadsdv01percent","inflationratesdv01percent"],includeMeasuresFor:["childSegments"],options:{vAxis:{title:"Exposure %"},colors:["#3399CC","#336699","#003366"]}},attribution_column:{chartId:"attribution_column",title:i.chart.attributionColumnTitle,chartType:"ColumnChart",include:"childSegments",measures:["etotal","ealloc","eselecinter"],oData:{orderby:"etotal-{timePeriod} desc"},includeMeasuresFor:["childSegments"],options:{colors:["#003366","#FF6600","#990066"]}},allocation_pie:{chartId:"allocation_pie",title:i.chart.allocationPieTitle,chartType:"PieChart",include:"childSegments",measures:["wpabsoluteend"],includeMeasuresFor:["childSegments"]},contribution_pie:{chartId:"contribution_pie",title:i.chart.contributionPieTitle,chartType:"PieChart",include:"childSegments",isHeatMap:true,isGradientReversed:false,measures:["wpabsoluteend","ctp"],includeMeasuresFor:["childSegments"]},risk_pie:{chartId:"risk_pie",title:i.chart.riskPietitle,chartType:"PieChart",include:"childSegments",isHeatMap:true,isGradientReversed:true,measures:["wpabsoluteend","contributionvar"],includeMeasuresFor:["childSegments"]},performanceMaster_grid:{chartId:"performanceMaster_grid",title:i.chart.performanceMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","rp","rb","relr","ctp"],includeMeasuresFor:["segment","childSegments"]},contributionMaster_grid:{chartId:"contributionMaster_grid",title:i.chart.contributionMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","ctp","rp","wb","ctb","rb"],includeMeasuresFor:["segment","childSegments"]},allocationMaster_grid:{chartId:"allocationMaster_grid",title:i.chart.allocationMasterTitle,chartType:"Table",include:"childSegments",measures:["wpend","wpbeg","mvend"],includeMeasuresFor:["segment","childSegments"]},riskMaster_grid:{chartId:"riskMaster_grid",title:i.chart.riskMasterTitle,chartType:"Table",include:"childSegments",measures:["wp","valueatrisk","valueatriskpercent","contributionvar","expectedvolatilitypercent"],includeMeasuresFor:["segment","childSegments"]},performance_grid:{chartId:"performance_grid",title:i.chart.performanceGridTitle,chartType:"Table",include:"none",measures:["rp","returnann","stddevann","relr","periodaverage","oneperiodhigh","oneperiodlow","maxloss","percentpositiveperiods","correlation","alpha","beta","rsquared","sharperatio","treynorratio","inforatioxs"],includeMeasuresFor:["segment"]},attribution_grid:{chartId:"attribution_grid",title:i.chart.attributionGridTitle,chartType:"Table",include:"childSegments",measures:["ctp","ctb","ealloclocal","eselecinterlocal","etotalc","etotalmca"],includeMeasuresFor:["segment","childSegments"]},allocationLongShort_grid:{chartId:"allocationLongShort_grid",title:i.chart.allocationLongShortGridTitle,chartType:"Table",include:"childSegments",measures:["wp","wpgross","shortexposureend","longexposureend","leverageend"],includeMeasuresFor:["segment","childSegments"]},fixedIncome_grid:{chartId:"fixedIncome_grid",title:i.chart.fixedIncomeGridTitle,chartType:"Table",include:"childSegments",measures:["ttmpend","ytmpend","mdpend","durwpend","spreadpend"],includeMeasuresFor:["segment","childSegments"]},fixedIncomeContribution_grid:{chartId:"fixedIncomeContribution_grid",title:i.chart.fixedIncomeContributionGridTitle,chartType:"Table",include:"childSegments",measures:["ctp","ctpyc","ctpcarry","ctpspread","ctpcur","ctpother","ctpresidual"],includeMeasuresFor:["segment","childSegments"]},fixedIncomeExposure_grid:{chartId:"fixedIncomeExposure_grid",title:i.chart.fixedIncomeExposureGridTitle,chartType:"Table",include:"childSegments",measures:["wpend","interestratesdv01percent","creditspreadsdv01percent","inflationratesdv01percent"],includeMeasuresFor:["segment","childSegments"]},performanceTopTen_grid:{chartId:"performanceTopTen_grid",title:i.chart.performanceTopTenGridTitle,chartType:"Table",include:"securities",measures:["wpend","rp","ctp"],oData:{orderby:"wpend-{timePeriod} desc",top:10},includeMeasuresFor:["securities"]},contributionTopTen_grid:{chartId:"contributionTopTen_grid",title:i.chart.contributionTopTenGridTitle,topBottomSplit:5,chartType:"Table",include:"securities",measures:["wpend","rp","ctp"],oData:{orderby:"ctp-{timePeriod} desc"},includeMeasuresFor:["securities"]},riskTopTen_grid:{chartId:"riskTopTen_grid",title:i.chart.riskTopTenGridTitle,chartType:"Table",include:"securities",measures:["wpend","expectedshortfallpercent","valueatriskpercent","expectedvolatilitypercent"],oData:{orderby:"valueatriskpercent-{timePeriod} desc",top:10},includeMeasuresFor:["securities"]},performance_treemap:{chartId:"performance_treemap",title:i.chart.performanceTreemapTitle,isGradientReversed:false,chartType:"TreeMap",include:"securities",measures:["wpabsoluteend","rp"],includeMeasuresFor:["securities"]},risk_treemap:{chartId:"risk_treemap",title:i.chart.riskTreemapTitle,isGradientReversed:true,chartType:"TreeMap",include:"childSegments",measures:["wpabsoluteend","contributionvar"],includeMeasuresFor:["childSegments"]},performance_line:{chartId:"performance_line",title:i.chart.performanceLineTitle,chartType:"LineChart",measures:["rp","rb"],seriesType:"cumulativeIndexed"},attribution_customNumber:{chartId:"attribution_customNumber",title:i.chart.attributionKeyNumbersTitle,chartType:"CustomNumber",include:"none",measures:["rp","ctb","relr","eselec","ealloc"],includeMeasuresFor:["segment"]},fi_contribution_group:{chartId:"fi_contribution_group",title:i.chart.fixedIncomeContributionsGroupTitle,chartType:"Group",charts:[{chartId:"fixedIncomeContribution_bar",width:"50%",height:"100%"},{chartId:"carryContribution_bar",width:"50%",height:"100%"},{chartId:"yieldCurveContribution_bar",width:"50%",height:"100%"},{chartId:"riskNumbers_bar",width:"50%",height:"100%"}]},fi_exposures_group:{chartId:"fi_exposures_group",title:i.chart.fixedIncomeExposuresGroupTitle,chartType:"Group",charts:[{chartId:"interestRatesExposure_column",width:"50%",height:"100%"},{chartId:"creditSpreadsExposure_column",width:"50%",height:"100%"},{chartId:"dv01Exposure_column",width:"50%",height:"100%"}]},fi_gridRiskNumber_group:{chartId:"fi_gridRiskNumber_group",title:i.chart.fixedIncomeRiskNumbersGroupTitle,chartType:"Group",charts:[{chartId:"fixedIncome_grid",width:"100%",height:"100%"},{chartId:"fixedIncomeContribution_grid",width:"100%",height:"100%"}]}});
 c=d.getData();
 function j(o){var p,n,s=true;
 for(var q=0;
@@ -3683,17 +3683,21 @@ H=true
 break;
 case"TreeMap":F="treeMapContainer resizableChart";
 break;
+case"CustomNumber":F="customNumberContainer resizableChart";
+break;
 default:F="chartContainer resizableChart"
 }for(var G=0;
 G<D.length;
 G++){C=c[D[G].chartId]||null;
 v.push(C);
 if(C){if(H){p(D[G])
+}else{if(C.chartType==="CustomNumber"){n(D[G],F);
+s()
 }else{A(C.chartId,C.title);
 n(D[G],F);
 x();
 s()
-}}}if(H){x();
+}}}}if(H){x();
 s()
 }}for(var z=0;
 z<u.length;
@@ -3794,8 +3798,11 @@ y.backgroundColor={fill:"transparent"};
 if(z==="TreeMap"&&v.isGradientReversed){y.minColor="#6699cc";
 y.midColor="#ffffff";
 y.maxColor="#cc0000"
-}u=new google.visualization.ChartWrapper({chartType:z,options:y,containerId:x});
-i.raiseEvent("chartReady",u);
+}if(z==="CustomNumber"){u={chartType:z,containerId:x}
+}else{u=new google.visualization.ChartWrapper({chartType:z,options:y,containerId:x});
+google.visualization.events.addListener(u,"error",function(A){m({errorObj:A})
+})
+}i.raiseEvent("chartReady",u);
 i.raiseEvent("showMask",v.chartId);
 u.endDate=v.endDate;
 u.include=v.include;
@@ -3808,78 +3815,84 @@ u.seriesType=v.seriesType;
 u.startDate=v.startDate;
 u.timePeriods=v.timePeriods;
 u.topBottomSplit=v.topBottomSplit;
-google.visualization.events.addListener(u,"error",function(A){m({errorObj:A})
-});
 return u
-}function l(u,w){var z,y,A,v;
+}function l(u,x){var A,v,z,B,w;
 if(!u){return
-}if(w){s()
+}if(x){s()
 }f++;
-z=u.getChartType();
-v=new google.visualization.NumberFormat({decimalSymbol:k.shared.decimalSymbol,fractionDigits:3,groupingSymbol:k.shared.groupingSymbol,negativeColor:"#cc0000",negativeParens:false});
-y={type:z};
-if(u.endDate){y.endDate=u.endDate
-}if(u.include){y.include=u.include
-}if(u.includeMeasuresFor){y.includeMeasuresFor=u.includeMeasuresFor
-}if(u.measures){y.measures=u.measures
-}if(u.oData){y.oData=u.oData
-}if(u.startDate){y.startDate=u.startDate
-}if(u.seriesType){y.seriesType=u.seriesType
-}if(u.timePeriods){y.timePeriods=u.timePeriods
-}if(u.topBottomSplit){y.topBottomSplit=u.topBottomSplit
-}A=(z==="LineChart")?q.timeSeries:q.segmentsTreeNode;
-i.raiseEvent("showMask",u.getContainerId());
-function x(B){var C,M,K,E,H,G,D,N=[],L=[],F,I,J;
-n.log(B);
-C=new google.visualization.DataTable(B);
-if(u.topBottomSplit){M=C.getNumberOfRows();
+A=(u.chartType==="CustomNumber")?u.chartType:u.getChartType();
+v=(A==="CustomNumber")?u.containerId:u.getContainerId();
+w=new google.visualization.NumberFormat({decimalSymbol:k.shared.decimalSymbol,fractionDigits:2,groupingSymbol:k.shared.groupingSymbol,negativeColor:"#cc0000",negativeParens:false});
+z={type:A};
+if(u.endDate){z.endDate=u.endDate
+}if(u.include){z.include=u.include
+}if(u.includeMeasuresFor){z.includeMeasuresFor=u.includeMeasuresFor
+}if(u.measures){z.measures=u.measures
+}if(u.oData){z.oData=u.oData
+}if(u.startDate){z.startDate=u.startDate
+}if(u.seriesType){z.seriesType=u.seriesType
+}if(u.timePeriods){z.timePeriods=u.timePeriods
+}if(u.topBottomSplit){z.topBottomSplit=u.topBottomSplit
+}B=(A==="LineChart")?q.timeSeries:q.segmentsTreeNode;
+i.raiseEvent("showMask",v);
+function y(C){var D,O,L,F,I,H,E,P=[],M=[],G,N,J,K;
+n.log(C);
+D=new google.visualization.DataTable(C);
+if(u.topBottomSplit){O=D.getNumberOfRows();
 requiredRows=(u.topBottomSplit*2);
-if(M>requiredRows){K=M-requiredRows;
-C.removeRows(u.topBottomSplit,K)
-}}for(E=0;
-E<C.getNumberOfColumns();
-E++){if(C.getColumnType(E)==="number"){v.format(C,E)
-}}google.visualization.events.addListener(u,"ready",function(){m({chartId:u.getContainerId(),numRows:C.getNumberOfRows()})
+if(O>requiredRows){L=O-requiredRows;
+D.removeRows(u.topBottomSplit,L)
+}}for(F=0;
+F<D.getNumberOfColumns();
+F++){if(D.getColumnType(F)==="number"){w.format(D,F)
+}}if(A==="CustomNumber"){$(".customNumber").remove();
+if(D.getNumberOfRows()>0){N="";
+for(F=1;
+F<D.getNumberOfColumns();
+F++){N+='<div class="customNumber">    <span class="customNumberValue">'+D.getFormattedValue(0,F)+'</span>    <span class="customNumberLabel">'+D.getColumnLabel(F)+"</span></div>"
+}$("#"+v).append(N);
+m({chartId:v,numRows:D.getNumberOfRows()})
+}}else{google.visualization.events.addListener(u,"ready",function(){m({chartId:v,numRows:D.getNumberOfRows()})
 });
-I=u.clone();
-J="presentation-"+u.getContainerId();
-I.setContainerId(J);
-if(z==="Table"){u.setOption("height","620px");
+J=u.clone();
+K="presentation-"+u.getContainerId();
+J.setContainerId(K);
+if(A==="Table"){u.setOption("height","620px");
 u.setOption("width",d.resizingSettings.tableWidth);
-I.setOption("height","560px !important;");
-I.setOption("width",1000)
-}else{I.setOption("height",640);
-I.setOption("width",1024)
-}if(z==="PieChart"&&u.isHeatMap){C.sort([{column:2}]);
-for(E=0;
-E<C.getNumberOfRows();
-E++){N.push(C.getValue(E,2))
-}H=Math.min.apply(Math,N);
-G=Math.max.apply(Math,N);
-D={min:H,max:G,midGradientPosition:null};
-if($.inArray(H,N)!==-1){D.minDisplay=C.getFormattedValue($.inArray(H,N),2)
-}else{D.minDisplay="0"
-}if($.inArray(G,N)!==-1){D.maxDisplay=C.getFormattedValue($.inArray(G,N),2)
-}else{D.maxDisplay="0"
-}D.minColor=g.getColorInRange(H,H,G,u.isGradientReversed);
-D.midColor=g.getColorInRange(0,H,G,u.isGradientReversed);
-D.maxColor=g.getColorInRange(G,H,G,u.isGradientReversed);
-F=(H>=0&&G>=0)||(H<=0&&G<=0);
-if(!F){D.midGradientPosition=100-(100*((0-H)/(G-H)))
-}for(E=0;
-E<N.length;
-E++){L.push({color:g.getColorInRange(N[E],H,G,u.isGradientReversed)})
-}u.setOption("slices",L);
-I.setOption("slices",L);
-google.visualization.events.addListener(u,"ready",function(){o(u,D)
+J.setOption("height","560px !important;");
+J.setOption("width",1000)
+}else{J.setOption("height",640);
+J.setOption("width",1024)
+}if(A==="PieChart"&&u.isHeatMap){D.sort([{column:2}]);
+for(F=0;
+F<D.getNumberOfRows();
+F++){P.push(D.getValue(F,2))
+}I=Math.min.apply(Math,P);
+H=Math.max.apply(Math,P);
+E={min:I,max:H,midGradientPosition:null};
+if($.inArray(I,P)!==-1){E.minDisplay=D.getFormattedValue($.inArray(I,P),2)
+}else{E.minDisplay="0"
+}if($.inArray(H,P)!==-1){E.maxDisplay=D.getFormattedValue($.inArray(H,P),2)
+}else{E.maxDisplay="0"
+}E.minColor=g.getColorInRange(I,I,H,u.isGradientReversed);
+E.midColor=g.getColorInRange(0,I,H,u.isGradientReversed);
+E.maxColor=g.getColorInRange(H,I,H,u.isGradientReversed);
+G=(I>=0&&H>=0)||(I<=0&&H<=0);
+if(!G){E.midGradientPosition=100-(100*((0-I)/(H-I)))
+}for(F=0;
+F<P.length;
+F++){M.push({color:g.getColorInRange(P[F],I,H,u.isGradientReversed)})
+}u.setOption("slices",M);
+J.setOption("slices",M);
+google.visualization.events.addListener(u,"ready",function(){o(u,E)
 });
-google.visualization.events.addListener(I,"ready",function(){o(I,D)
+google.visualization.events.addListener(J,"ready",function(){o(J,E)
 })
-}u.setDataTable(C);
-I.setDataTable(C);
+}u.setDataTable(D);
+J.setDataTable(D);
 u.draw();
-I.draw()
-}a.post(A,y,x,"text")
+J.draw()
+}}a.post(B,z,y,"text")
 }b.create=h;
 b.load=l;
 return b
@@ -4008,7 +4021,7 @@ h.languages=f;
 return h
 });
 WebAppLoader.addModule({name:"analysisManager",sharedModules:[],dataObjects:["analysisPages"],hasEvents:true},function(){var a={},g=this.getConsole(),e=this.getEventManager(),c=this.getDataObject("analysisPages"),b={};
-c.define({items:[{name:"Performance",id:"performance",order:1,userDefined:false,charts:[{chartId:"performance_grid",order:1},{chartId:"performance_line",order:2},{chartId:"performance_bubble",order:3},{chartId:"performanceMaster_grid",order:4},{chartId:"performance_bar",order:5},{chartId:"performance_treemap",order:6},{chartId:"performanceTopTen_grid",order:7}]},{name:"Risk",id:"risk",order:2,userDefined:false,charts:[{chartId:"riskMaster_grid",order:1},{chartId:"risk_treemap",order:2},{chartId:"risk_bar",order:3},{chartId:"risk_bubble",order:4},{chartId:"risk_pie",order:5},{chartId:"riskTopTen_grid",order:6}]},{name:"Asset Allocation",id:"assetAllocation",order:3,userDefined:false,charts:[{chartId:"allocationMaster_grid",order:1},{chartId:"allocation_pie",order:2},{chartId:"allocation_bar",order:3},{chartId:"allocationLongShort_grid",order:4}]},{name:"Contribution",id:"contribution",order:4,userDefined:false,charts:[{chartId:"contributionMaster_grid",order:1},{chartId:"contribution_pie",order:2},{chartId:"contribution_column",order:3},{chartId:"contribution_bar",order:4},{chartId:"contributionTopTen_grid",order:5}]},{name:"Attribution",id:"attribution",order:5,userDefined:false,charts:[{chartId:"attributionMaster_grid",order:1},{chartId:"attribution_column",order:2},{chartId:"attribution_bar",order:3},{chartId:"attribution_grid",order:4}]},{name:"Fixed Income",id:"fixedIncome",order:6,userDefined:false,charts:[{chartId:"fixedIncomeContribution_grid",order:1},{chartId:"fixedIncomeContribution_bar",order:2},{chartId:"carryContribution_bar",order:3},{chartId:"yieldCurveContribution_bar",order:4},{chartId:"riskNumbers_bar",order:5},{chartId:"interestRatesExposure_column",order:6},{chartId:"creditSpreadsExposure_column",order:7},{chartId:"dv01Exposure_column",order:8},{chartId:"fixedIncome_grid",order:9},{chartId:"fixedIncomeExposure_grid",order:10}]},{name:"User Defined Test Page",id:"test1",order:100,userDefined:true,charts:[{chartId:"fi_contribution_group",order:1}]}]});
+c.define({items:[{name:"Performance",id:"performance",order:1,userDefined:false,charts:[{chartId:"performance_grid",order:1},{chartId:"performance_line",order:2},{chartId:"performance_bubble",order:3},{chartId:"performanceMaster_grid",order:4},{chartId:"performance_bar",order:5},{chartId:"performance_treemap",order:6},{chartId:"performanceTopTen_grid",order:7}]},{name:"Risk",id:"risk",order:2,userDefined:false,charts:[{chartId:"riskMaster_grid",order:1},{chartId:"risk_treemap",order:2},{chartId:"risk_bar",order:3},{chartId:"risk_bubble",order:4},{chartId:"risk_pie",order:5},{chartId:"riskTopTen_grid",order:6}]},{name:"Asset Allocation",id:"assetAllocation",order:3,userDefined:false,charts:[{chartId:"allocationMaster_grid",order:1},{chartId:"allocation_pie",order:2},{chartId:"allocation_bar",order:3},{chartId:"allocationLongShort_grid",order:4}]},{name:"Contribution",id:"contribution",order:4,userDefined:false,charts:[{chartId:"contributionMaster_grid",order:1},{chartId:"contribution_pie",order:2},{chartId:"contribution_column",order:3},{chartId:"contribution_bar",order:4},{chartId:"contributionTopTen_grid",order:5}]},{name:"Attribution",id:"attribution",order:5,userDefined:false,charts:[{chartId:"attribution_customNumber",order:1,noPresentation:true},{chartId:"attribution_column",order:2},{chartId:"attribution_bar",order:3},{chartId:"attribution_grid",order:4}]},{name:"Fixed Income",id:"fixedIncome",order:6,userDefined:false,charts:[{chartId:"fixedIncomeContribution_grid",order:1},{chartId:"fixedIncomeContribution_bar",order:2},{chartId:"carryContribution_bar",order:3},{chartId:"yieldCurveContribution_bar",order:4},{chartId:"riskNumbers_bar",order:5},{chartId:"interestRatesExposure_column",order:6},{chartId:"creditSpreadsExposure_column",order:7},{chartId:"dv01Exposure_column",order:8},{chartId:"fixedIncome_grid",order:9},{chartId:"fixedIncomeExposure_grid",order:10}]},{name:"User Defined Test Page",id:"test1",order:100,userDefined:true,charts:[{chartId:"fi_contribution_group",order:1}]}]});
 function h(){b=c.getData()
 }function d(){e.raiseEvent("onUpdated",c.getData())
 }function f(i){if(i){c.loadData(i)
@@ -4130,7 +4143,7 @@ v({defaultAnalysisLink:w})
 },"json")
 }function s(v){if(v.defaultAnalysisLink){t.analysisLink=v.defaultAnalysisLink;
 o(v.defaultAnalysisLink,q)
-}}function o(w,v){a.post(l.siteUrls.portfolioAnalysis,{uri:w,datatype:"json"},function(x){if(!x||!x.data||!x.data.analysis||x.error){b.raiseEvent("onFailed",d.errors.analysisFailedText,d.errors.analysisFailedReasonText);
+}}function o(w,v){a.post(l.siteUrls.analysis,{uri:w,datatype:"json"},function(x){if(!x||!x.data||!x.data.analysis||x.error){b.raiseEvent("onFailed",d.errors.analysisFailedText,d.errors.analysisFailedReasonText);
 return
 }t.name=x.data.name||"";
 t.type=x.data.type||"";
@@ -4301,7 +4314,7 @@ n=j.userDefined;
 l=(n)?c.listAnalysisSettingsUserPages:c.listAnalysisSettingsDefaultPages;
 if(n){$(l).append($("<li>").attr("class","arrow").append($("<a>").attr({href:"#","data-link":o,"data-swipe":true}).html(p).on("click",g)))
 }else{$(l).append($("<li>").attr("class","").append($("<a>").attr({href:"#","data-link":o}).html(p)))
-}}$(l).append($("<li>").attr("class","arrow").append($("<a>").attr({href:"#","data-link":o}).html(f.chartTexts.addNewPage).on("click",h)));
+}}$(c.listAnalysisSettingsUserPages).append($("<li>").attr("class","arrow").append($("<a>").attr({href:"#","data-link":o}).html(f.chartTexts.addNewPage).on("click",h)));
 d.raiseEvent("onPageLoaded")
 }a.create=b;
 return a
@@ -4476,7 +4489,7 @@ m.updateAnalysisPage(q)
 m.updateAnalysisPage=function(p){var o=p||m.getLastAnalysisObjectUsed();
 m.settingsButton.setHighlight(false);
 m.nav.goToPage(a(c.analysisPage),"dissolve");
-function s(y){var x=[],v={},t={},z=y.code,A=y.name,u=null,w="",B=0,C=false;
+function s(y){var x=[],v={},t={},z=y.code,A=y.name,u=null,w="",C=0,B=0,F=null,D=null,E=false;
 v=m.analysisManager.getData("analysisPages");
 t=jLinq.from(v.items).equals("id",o.analysisId).select();
 if(t[0]&&t[0].charts){u=t[0].charts;
@@ -4485,21 +4498,27 @@ w=t[0].name
 w=v.items[0].name
 }x=jLinq.from(u).sort("order").select();
 a(c.analysisTitle).html(w);
-a.each(y.timePeriods,function(E,F){var G,D;
-if(F.code===o.timePeriodId){C=true;
-m.chartComponents.setTimePeriod(x,F);
-G=Date.parse(F.startDate);
-D=Date.parse(F.endDate);
-m.customChartTimePeriods.timePeriods=F.code;
-m.customChartTimePeriods.startDate=F.startDate;
-m.customChartTimePeriods.endDate=F.endDate;
-a(c.timePeriodStartDateText).html(G.toString("MMM d, yyyy"));
-a(c.timePeriodEndDateText).html(D.toString("MMM d, yyyy"));
+F=a(c.timePeriodStartDateText);
+D=a(c.timePeriodEndDateText);
+a.each(y.timePeriods,function(H,I){var J,G;
+if(I.code===o.timePeriodId){E=true;
+m.chartComponents.setTimePeriod(x,I);
+J=Date.parse(I.startDate);
+G=Date.parse(I.endDate);
+m.customChartTimePeriods.timePeriods=I.code;
+m.customChartTimePeriods.startDate=I.startDate;
+m.customChartTimePeriods.endDate=I.endDate;
+F.html(J.toString("MMM d, yyyy"));
+D.html(G.toString("MMM d, yyyy"));
 return false
 }});
-if(!C){a(c.timePeriodStartDateText).html("-");
-a(c.timePeriodEndDateText).html("-")
-}m.setLastAnalysisObjectUsed(o);
+if(!E){F.html("-");
+D.html("-")
+}F.on("click",function(){m.spinningWheel.getSlot("timePeriods").show(m.getLastAnalysisObjectUsed().timePeriodId)
+});
+D.on("click",function(){m.spinningWheel.getSlot("timePeriods").show(m.getLastAnalysisObjectUsed().timePeriodId)
+});
+m.setLastAnalysisObjectUsed(o);
 m.setLastAnalysisObjectUsed({portfolioId:z,portfolioName:A});
 m.saveLastAnalysisObjectUsed();
 m.settingsButton.setHighlight(false);
@@ -4507,11 +4526,12 @@ m.synchronizeFavouriteButton();
 m.synchronizeConsoleButton();
 m.chartComponents.render(x,c.analysisPage+"_partial");
 m.synchronizeOrientation(false);
-a(c.analysisComponentFullScreenButton).on("click",function(E,F){var D={chartId:a(this).attr("data-chartId"),chartOrder:a(this).attr("data-order")};
-m.presentationManager.enterPresentationMode(D)
+a(c.analysisComponentFullScreenButton).on("click",function(H,I){var G={chartId:a(this).attr("data-chartId"),chartOrder:a(this).attr("data-order")};
+m.presentationManager.enterPresentationMode(G)
 });
-B=parseInt((x.length||1)*b.maxWidth(),10);
-a(c.presentationChartsContainer).width(B)
+B=jLinq.from(u).notStarts("noPresentation",true).count();
+C=parseInt((B||1)*b.maxWidth(),10);
+a(c.presentationChartsContainer).width(C)
 }function q(t){s(t)
 }a(c.analysisPage+"_partial").html("");
 m.scroll.scrollToPage(1);
@@ -4615,10 +4635,13 @@ a(c.errorMessageText).html(o);
 a(c.errorReasonText).html(p);
 m.nav.goToPage(a(c.errorPage))
 });
-m.updateAnalysisInfo=function(q){var s,p,o;
-if(q){if(q.name.indexOf(" ")===-1){a(c.summaryTitleName).attr("style","word-break: break-all;")
-}else{a(c.summaryTitleName).attr("style","word-break: normal;")
-}a(c.summaryTitleName).html(q.name);
+m.updateAnalysisInfo=function(q){var s,t,p,o;
+if(q){t=a(c.summaryTitleName);
+if(q.name.indexOf(" ")===-1){t.attr("style","word-break: break-all;")
+}else{t.attr("style","word-break: normal;")
+}t.html(q.name);
+t.on("click",function(){m.spinningWheel.getSlot("portfolios").show(m.getLastAnalysisObjectUsed().portfolioId)
+});
 o=a(c.summaryTitleBenchmarkName);
 o.html("");
 p=q.analysis.benchmarks||[];
@@ -4629,7 +4652,7 @@ s++){if(s>0){o.append(", ")
 }a(c.analysisPage+"_partial").html("");
 a(c.presentationChartsContainer).html("")
 }};
-var n={toolbarId:"#analysis .toolbar",buttonPrefix:"toolbar_btn",visible:true,items:[{id:"favourite",title:e.tabbar.favourites,btnClass:"favourite"},{id:"console",title:"console",btnClass:"console"}]};
+var n={toolbarId:c.analysisPage+" "+c.toolbar,buttonPrefix:"toolbar_btn",visible:true,items:[{id:"favourite",title:e.tabbar.favourites,btnClass:"favourite"},{id:"console",title:"console",btnClass:"console"}]};
 m.toolbar=f.loadModule("toolbar");
 m.toolbar.create(n);
 m.toolbar.on("onTap",function(){m.scroll.goUp()
@@ -4637,8 +4660,6 @@ m.toolbar.on("onTap",function(){m.scroll.goUp()
 m.toolbar.on("onFavouriteTap",function(o){if(o){m.addToFavourites()
 }else{m.removeFromFavourites()
 }});
-m.toolbar.on("onTestTap",function(o){m.onTestApp()
-});
 if(h!=="development"){m.toolbar.getButton("console").hide()
 }m.synchronizeConsoleButton=function(){if(h==="development"&&m.iOSLog.isVisible()){m.toolbar.getButton("console").select()
 }};
@@ -4735,9 +4756,6 @@ g.log("onChartSettingsStart")
 m.pageEventsManager.on("onAboutEnd",function(){m.scroll.rebuild("about",{clickSafeMode:true});
 g.log("onAboutEnd")
 });
-m.pageEventsManager.on("onTestEnd",function(){m.scroll.rebuild("test");
-g.log("onTestEnd")
-});
 m.pageEventsManager.on("onResetEnd",function(){m.scroll.rebuild("reset",{clickSafeMode:true});
 g.log("onResetEnd")
 });
@@ -4786,18 +4804,18 @@ return(s)
 };
 m.addToFavourites=function(){var p={},o=null;
 p=m.analysisDataObjectToFavourite(m.lastAnalysisObjectUsed);
-if(p){if(!m.favouriteExists(p.favouriteId)){o=m.favouritesManager.getData("favourites");
+if(p&&!m.favouriteExists(p.favouriteId)){o=m.favouritesManager.getData("favourites");
 o.items.push(p);
 m.favouritesManager.saveData("favourites",m.lastUsernameUsed);
 m.favouritesManager.update(m.lastUsernameUsed);
 m.setLastFavouriteSelected(p.favouriteId)
-}}};
+}};
 m.removeFromFavourites=function(){var p={},o=null;
 p=m.analysisDataObjectToFavourite(m.lastAnalysisObjectUsed);
-if(p){if(m.favouriteExists(p.favouriteId)){o=m.favouritesManager.getData("favourites");
+if(p&&m.favouriteExists(p.favouriteId)){o=m.favouritesManager.getData("favourites");
 if(d.removeObjectFromArray(o.items,"favouriteId",p.favouriteId)){m.favouritesManager.saveData("favourites",m.lastUsernameUsed);
 m.favouritesManager.update(m.lastUsernameUsed)
-}}}};
+}}};
 m.synchronizeFavouriteButton=function(q){var o=m.getFavouriteById(q),p=m.toolbar.getButton("favourite");
 if(o&&p){m.setLastFavouriteSelected(o.favouriteId);
 p.select()
@@ -4903,11 +4921,9 @@ return p.chartId
 a("body").bind("turn",function(o,p){m.synchronizeOrientation.chartToDisplay=m.getCurrentChartDisplayedInViewport();
 m.synchronizeOrientation(true)
 });
-m.onTestApp=function(){};
 m.initExperimentalPage=function(){m.experimentalPage.create()
 };
-m.experimentalPage.on("onPreviewChart",function(q){var p=[];
-var o=m.chartComponents.getData("charts");
+m.experimentalPage.on("onPreviewChart",function(q){var p=[],o=m.chartComponents.getData("charts");
 a("#custom_chart_partial").html("");
 q.timePeriods=m.customChartTimePeriods.timePeriods;
 q.startDate=m.customChartTimePeriods.startDate;
