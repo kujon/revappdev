@@ -250,27 +250,34 @@ function getResource(resourceName, attempts, options, callback) {
 
     // Attach an error event handler in the event that the request fails entirely.
     request.on('error', function (e) {
-        var isTimeoutError;
-
-        // Determine whether we're looking at a timeout error.
-        isTimeoutError = (e && e.code && e.code.indexOf('10060') !== -1);
-
-        // If we're out of attempts, or the error isn't a timeout...
-        if (attempts === 0 || !isTimeoutError) {                    
+        
+        // Add an error to the resource.
+        resource.error = true;
             
-            // Add an error to the resource.
-            resource.error = true;
-            
-            // Return early with the error resource.
-            callback(resource);
-            return;
-        }
+        // Return early with the error resource.
+        callback(resource);
+        
+//        var isTimeoutError;
 
-        // In the event of a timeout, educe the number of attempts remaining.
-        attempts -= 1;
+//        // Determine whether we're looking at a timeout error.
+//        isTimeoutError = (e && e.code && e.code.indexOf('10060') !== -1);
 
-        // Attempt to get the resource again.
-        getResource(resourceName, attempts, options, callback);
+//        // If we're out of attempts, or the error isn't a timeout...
+//        if (attempts === 0 || !isTimeoutError) {                    
+//            
+//            // Add an error to the resource.
+//            resource.error = true;
+//            
+//            // Return early with the error resource.
+//            callback(resource);
+//            return;
+//        }
+
+//        // In the event of a timeout, educe the number of attempts remaining.
+//        attempts -= 1;
+
+//        // Attempt to get the resource again.
+//        getResource(resourceName, attempts, options, callback);
     });
 
     // Post the data.
