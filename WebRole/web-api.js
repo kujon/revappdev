@@ -10,7 +10,8 @@ var https           = require('https'),
     defaultLanguage = 'en-US',
     currentLanguage = {},
     currentAnalysis = {},
-    MAX_ATTEMPTS    = 1;
+    RETRY_ATTEMPTS  = 3,
+    MAX_ATTEMPTS    = 3;
 
 // ------------------------------------------
 // LANGUAGE HELPER FUNCTIONS
@@ -168,6 +169,8 @@ function processResponse(statusCode, data) {
 // Constructs, sends, and attempts to parse the response from an HTTP request
 // for a particular resource.
 // 'resourceName'   - A string defining the JSON root property for the data requested.
+// 'attempts'       - A number indicating how many attempts at calling this function 
+//                    after a timeout remain before we should give up.
 // 'options'        - An object created by the getRequestOptions function, containing
 //                    the required parameters to make a resource request.
 // 'callback'       - A JavaScript function to be called when the response has arrived.
@@ -176,7 +179,7 @@ function processResponse(statusCode, data) {
 //                    may be null, and an error property, which will either be boolean false 
 //                    (indicating that the request was successful), a boolean true, or a 
 //                    complete error object (both indicating that the request failed).
-function getResource(resourceName, options, callback) {
+function getResource(resourceName, attempts, options, callback) {
     var request, data = '', resource;
 
     // Define an empty resource object.
@@ -184,6 +187,9 @@ function getResource(resourceName, options, callback) {
         data: null,
         error: false
     };
+
+    // Define the current attempt limit.
+    attempts = (attempts > MAX_ATTEMPTS) ? MAX_ATTEMPTS : attempts;
 
     // Set up the request.
     request = https.request(options, function (response) {
@@ -244,10 +250,27 @@ function getResource(resourceName, options, callback) {
 
     // Attach an error event handler in the event that the request fails entirely.
     request.on('error', function (e) {
-        // Assign the error object to the resource.
-        resource.error = e;
-        // Invoke the callback function, passing the resource object.
-        callback(resource);
+        var isTimeoutError;
+
+        // Determine whether we're looking at a timeout error.
+        isTimeoutError = (e && e.code && e.code.indexOf('10060') !== -1);
+
+        // If we're out of attempts, or the error isn't a timeout...
+        if (attempts === 0 || !isTimeoutError) {                    
+            
+            // Add an error to the resource.
+            resource.error = true;
+            
+            // Return early with the error resource.
+            callback(resource);
+            return;
+        }
+
+        // In the event of a timeout, educe the number of attempts remaining.
+        attempts -= 1;
+
+        // Attempt to get the resource again.
+        getResource(resourceName, attempts, options, callback);
     });
 
     // Post the data.
@@ -330,7 +353,7 @@ exports.initService = function (email, token, uri, language, callback) {
     setCurrentLanguage(language);
 
     // Attempt to get the service's entry point resource.
-    getResource('service', options, function (resource) {
+    getResource('service', RETRY_ATTEMPTS, options, function (resource) {
         
         if (!resource.error && resource.data) {
             // Populate the resources object.
@@ -368,7 +391,7 @@ exports.getPortfolios = function (oData, datatype, token, callback) {
         options = getRequestOptions(portfoliosQuery, token);
 
         // Attempt to get a list of the user's portfolios, filtered by the query.
-        getResource('portfolios', options, function (resource) {
+        getResource('portfolios', RETRY_ATTEMPTS, options, function (resource) {
             callback(resource, datatype);
         });
 
@@ -394,12 +417,14 @@ exports.getPortfolioAnalysis = function (uri, attempts, token, callback) {
     // Generate the request configuration.
     options = getRequestOptions(uri, token);
 
-    attempts = (attempts > MAX_ATTEMPTS)
-        ? MAX_ATTEMPTS
-        : attempts;
+    attempts = (attempts > MAX_ATTEMPTS) ? MAX_ATTEMPTS : attempts;
 
     // Attempt to get the portfolio analysis for the requested portfolio.
-    getResource('portfolioAnalysis', options, function (resource) {
+    // NOTE: The RETRY_ATTEMPTS parameter passed here has nothing to do with 
+    // the additional retry logic in the callback, which deals with retrying 
+    // to retrieve portfolio analyses which have either not finished calculating, 
+    // or have failed to calculate for some reason.
+    getResource('portfolioAnalysis', RETRY_ATTEMPTS, options, function (resource) {
         var status, dictionary;
 
         if (!resource.error && resource.data) {
@@ -478,7 +503,7 @@ exports.getSegmentsTreeNode = function (oData, params, token, callback) {
         options = getRequestOptions(segmentsTreeNodeQuery, token);
 
         // Attempt to get the specified segment tree nodes.
-        getResource('segmentsTreeNode', options, function (resource) {
+        getResource('segmentsTreeNode', RETRY_ATTEMPTS, options, function (resource) {
             callback(resource, getCurrentAnalysis(token), getCurrentLanguage());
         });
 
@@ -511,7 +536,7 @@ exports.getTimeSeries = function (params, token, callback) {
         options = getRequestOptions(timeSeriesQuery, token);
 
         // Attempt to get the specified time series.
-        getResource('timeSeries', options, function (resource) {
+        getResource('timeSeries', RETRY_ATTEMPTS, options, function (resource) {
             callback(resource, getCurrentAnalysis(token), getCurrentLanguage());
         });
 
@@ -542,7 +567,7 @@ exports.getEula = function (eulaFormat, token, callback) {
         // NOTE: We pass up null here as the resourceName as we don't 
         // expect a standard JavaScript object resource back, rather 
         // an HTML fragment to be rendered in its entirety.
-        getResource(null, options, function (eulaDoc) {
+        getResource(null, RETRY_ATTEMPTS, options, function (eulaDoc) {
             callback(eulaDoc);
         });
     }
@@ -551,7 +576,7 @@ exports.getEula = function (eulaFormat, token, callback) {
     options = getRequestOptions(getResourceLink(token, 'eula'), token);
 
     // Attempt to get the EULA link dependent on the format requested.
-    getResource('eula', options, function (resource) {
+    getResource('eula', RETRY_ATTEMPTS, options, function (resource) {
         var eulaUri = '';
         
         switch (eulaFormat) {
