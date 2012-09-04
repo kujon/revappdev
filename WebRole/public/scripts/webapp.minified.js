@@ -4021,7 +4021,7 @@ h.languages=f;
 return h
 });
 WebAppLoader.addModule({name:"analysisManager",sharedModules:[],dataObjects:["analysisPages"],hasEvents:true},function(){var a={},g=this.getConsole(),e=this.getEventManager(),c=this.getDataObject("analysisPages"),b={};
-c.define({items:[{name:"Performance",id:"performance",order:1,userDefined:false,charts:[{chartId:"performance_grid",order:1},{chartId:"performance_line",order:2},{chartId:"performance_bubble",order:3},{chartId:"performanceMaster_grid",order:4},{chartId:"performance_bar",order:5},{chartId:"performance_treemap",order:6},{chartId:"performanceTopTen_grid",order:7}]},{name:"Risk",id:"risk",order:2,userDefined:false,charts:[{chartId:"riskMaster_grid",order:1},{chartId:"risk_treemap",order:2},{chartId:"risk_bar",order:3},{chartId:"risk_bubble",order:4},{chartId:"risk_pie",order:5},{chartId:"riskTopTen_grid",order:6}]},{name:"Asset Allocation",id:"assetAllocation",order:3,userDefined:false,charts:[{chartId:"allocationMaster_grid",order:1},{chartId:"allocation_pie",order:2},{chartId:"allocation_bar",order:3},{chartId:"allocationLongShort_grid",order:4}]},{name:"Contribution",id:"contribution",order:4,userDefined:false,charts:[{chartId:"contributionMaster_grid",order:1},{chartId:"contribution_pie",order:2},{chartId:"contribution_column",order:3},{chartId:"contribution_bar",order:4},{chartId:"contributionTopTen_grid",order:5}]},{name:"Attribution",id:"attribution",order:5,userDefined:false,charts:[{chartId:"attribution_customNumber",order:1,noPresentation:true},{chartId:"attribution_column",order:2},{chartId:"attribution_bar",order:3},{chartId:"attribution_grid",order:4}]},{name:"Fixed Income",id:"fixedIncome",order:6,userDefined:false,charts:[{chartId:"fixedIncomeContribution_grid",order:1},{chartId:"fixedIncomeContribution_bar",order:2},{chartId:"carryContribution_bar",order:3},{chartId:"yieldCurveContribution_bar",order:4},{chartId:"riskNumbers_bar",order:5},{chartId:"interestRatesExposure_column",order:6},{chartId:"creditSpreadsExposure_column",order:7},{chartId:"dv01Exposure_column",order:8},{chartId:"fixedIncome_grid",order:9},{chartId:"fixedIncomeExposure_grid",order:10}]},{name:"User Defined Test Page",id:"test1",order:100,userDefined:true,charts:[{chartId:"fi_contribution_group",order:1}]}]});
+c.define({items:[{name:"Performance",id:"performance",order:1,userDefined:false,charts:[{chartId:"performance_grid",order:1},{chartId:"performance_line",order:2},{chartId:"performance_bubble",order:3},{chartId:"performanceMaster_grid",order:4},{chartId:"performance_bar",order:5},{chartId:"performance_treemap",order:6},{chartId:"performanceTopTen_grid",order:7}]},{name:"Risk",id:"risk",order:2,userDefined:false,charts:[{chartId:"riskMaster_grid",order:1},{chartId:"risk_treemap",order:2},{chartId:"risk_bar",order:3},{chartId:"risk_bubble",order:4},{chartId:"risk_pie",order:5},{chartId:"riskTopTen_grid",order:6}]},{name:"Asset Allocation",id:"assetAllocation",order:3,userDefined:false,charts:[{chartId:"allocationMaster_grid",order:1},{chartId:"allocation_pie",order:2},{chartId:"allocation_bar",order:3},{chartId:"allocationLongShort_grid",order:4}]},{name:"Contribution",id:"contribution",order:4,userDefined:false,charts:[{chartId:"contributionMaster_grid",order:1},{chartId:"contribution_pie",order:2},{chartId:"contribution_column",order:3},{chartId:"contribution_bar",order:4},{chartId:"contributionTopTen_grid",order:5}]},{name:"Attribution",id:"attribution",order:5,userDefined:false,charts:[{chartId:"attribution_customNumber",order:1,noPresentation:true},{chartId:"attribution_column",order:2},{chartId:"attribution_bar",order:3},{chartId:"attribution_grid",order:4}]},{name:"Fixed Income",id:"fixedIncome",order:6,userDefined:false,charts:[{chartId:"fixedIncomeContribution_grid",order:1},{chartId:"fi_contribution_group",order:2},{chartId:"interestRatesExposure_column",order:3},{chartId:"creditSpreadsExposure_column",order:4},{chartId:"dv01Exposure_column",order:5},{chartId:"fixedIncome_grid",order:6},{chartId:"fixedIncomeExposure_grid",order:7}]}]});
 function h(){b=c.getData()
 }function d(){e.raiseEvent("onUpdated",c.getData())
 }function f(i){if(i){c.loadData(i)
@@ -4117,54 +4117,43 @@ try{j=JSON.parse(k.response)
 $(document).on("ajaxComplete",d);
 return g
 });
-WebAppLoader.addModule({name:"portfolioManager",plugins:[],sharedModules:["settings","ajaxManager","localizationManager"],dataObjects:["portfolio"],hasEvents:true},function(){var k={},i=this.getConsole(),b=this.getEventManager(),l=this.getSharedModule("settings"),j=this.getDataObject("portfolio"),d=this.getSharedModule("localizationManager").getLanguage()||{},a=this.getSharedModule("ajaxManager"),e="",f={};
-j.define({code:"",name:"",type:"",analysisLink:"",currency:"",version:"",timeStamp:"",timePeriods:[]});
-function c(n,m){a.post(l.siteUrls.analysis,{uri:n,datatype:"json"},function(o){if(!o||!o.data||o.error){b.raiseEvent("onFailed",d.errors.analysisFailedText,d.errors.analysisFailedReasonText);
-return
-}b.raiseEvent("onAnalysisLoaded",o.data);
-m()
-},"json")
-}function g(u,m){var t={code:"",name:"",type:"",analysisLink:"",currency:"",version:"",timeStamp:"",timePeriods:[]};
-function n(){if(u){return u
+WebAppLoader.addModule({name:"portfolioManager",plugins:[],sharedModules:["settings","ajaxManager","localizationManager"],dataObjects:["portfolio"],hasEvents:true},function(){var i={},g=this.getConsole(),b=this.getEventManager(),j=this.getSharedModule("settings"),h=this.getDataObject("portfolio"),c=this.getSharedModule("localizationManager").getLanguage()||{},a=this.getSharedModule("ajaxManager"),d={};
+h.define({code:"",name:"",type:"",analysisLink:"",currency:"",version:"",timeStamp:"",timePeriods:[]});
+function e(p,k){var o={code:"",name:"",type:"",analysisLink:"",currency:"",version:"",timeStamp:"",timePeriods:[]};
+function l(){if(p){return p
 }else{return""
-}}e=t.code=n();
-p(s);
-function p(v){var x={},w=null;
-if(t.code){x.filter="Code eq '"+t.code+"'"
-}else{x.start=0;
-x.top=1
-}a.post(l.siteUrls.portfolios,{oData:x,datatype:"json"},function(y){if(!y||!y.data||!y.data.items||y.data.items.length<1){t.code="";
-w=null;
-b.raiseEvent("onFailed",d.errors.portfolioNotFoundText,d.errors.portfolioNotFoundReasonText);
+}}o.code=l();
+n(m);
+function n(q){var s={};
+if(o.code){s.filter="Code eq '"+o.code+"'"
+}else{s.start=0;
+s.top=1
+}a.post(j.siteUrls.portfolios,{oData:s,datatype:"json"},function(t){if(!t||!t.data||!t.data.items||t.data.items.length<1){o.code="";
+b.raiseEvent("onFailed",c.errors.portfolioNotFoundText,c.errors.portfolioNotFoundReasonText);
 return
-}t.code=y.data.items[0].code;
-w=y.data.items[0].links.defaultAnalysis.href;
-v({defaultAnalysisLink:w})
+}q(t.data.items[0].links.defaultAnalysis.href)
 },"json")
-}function s(v){if(v.defaultAnalysisLink){t.analysisLink=v.defaultAnalysisLink;
-o(v.defaultAnalysisLink,q)
-}}function o(w,v){a.post(l.siteUrls.analysis,{uri:w,datatype:"json"},function(x){if(!x||!x.data||!x.data.analysis||x.error){b.raiseEvent("onFailed",d.errors.analysisFailedText,d.errors.analysisFailedReasonText);
+}function m(q){if(!q){return
+}a.post(j.siteUrls.analysis,{uri:q,datatype:"json"},function(s){if(!s||!s.data||!s.data.analysis||s.error){b.raiseEvent("onFailed",c.errors.analysisFailedText,c.errors.analysisFailedReasonText);
 return
-}t.name=x.data.name||"";
-t.type=x.data.type||"";
-t.currency=x.data.analysis.currency||"";
-t.version=x.data.analysis.version||"";
-if(x.data.analysis.results){t.timeStamp=x.data.analysis.results.timeStamp||"";
-t.timePeriods=x.data.analysis.results.timePeriods||[]
-}v()
+}o.name=s.data.name||"";
+o.type=s.data.type||"";
+o.currency=s.data.analysis.currency||"";
+o.version=s.data.analysis.version||"";
+o.analysisLink=q;
+if(s.data.analysis.results){o.timeStamp=s.data.analysis.results.timeStamp||"";
+o.timePeriods=s.data.analysis.results.timePeriods||[]
+}h.setData(o);
+d=o;
+b.raiseEvent("onPortfolioLoaded",o);
+b.raiseEvent("onTimePeriodsLoaded",o.timePeriods);
+b.raiseEvent("onAnalysisLoaded",s.data);
+k(q)
 },"json")
-}function q(){j.setData(t);
-f=t;
-b.raiseEvent("onPortfolioLoaded",t);
-b.raiseEvent("onTimePeriodsLoaded",t.timePeriods);
-m(t.analysisLink)
-}}function h(p,m){function n(){m(f)
-}function o(q){c(q,n)
-}g(p,o)
-}k.loadPortfolio=g;
-k.getAnalysis=c;
-k.loadPortfolioAnalysis=h;
-return k
+}}function f(m,k){function l(){k(d)
+}e(m,l)
+}i.loadPortfolioAnalysis=f;
+return i
 });
 WebAppLoader.addModule({name:"presentationManager",plugins:["device"],sharedModules:["pageElements"],hasEvents:true},function(){var i={},d=this.getEventManager(),h=this.getConsole(),a=this.getPlugin("device"),b=this.getSharedModule("pageElements"),f=false;
 function j(){var n=Math.abs(window.orientation-90),m="0",p="0",l="0",k=false;

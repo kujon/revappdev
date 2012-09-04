@@ -10285,42 +10285,24 @@ function () {
                     chartId : 'fixedIncomeContribution_grid',
                     order   : 1
                 },{
-                    chartId: 'fixedIncomeContribution_bar',
+                    chartId: 'fi_contribution_group',
                     order   : 2
                 },{
-                    chartId: 'carryContribution_bar',
+                    chartId: 'interestRatesExposure_column',
                     order   : 3
                 },{
-                    chartId: 'yieldCurveContribution_bar',
+                    chartId: 'creditSpreadsExposure_column',
                     order   : 4
                 },{
-                    chartId: 'riskNumbers_bar',
+                    chartId: 'dv01Exposure_column',
                     order   : 5
                 },{
-                    chartId: 'interestRatesExposure_column',
+                    chartId: 'fixedIncome_grid',
                     order   : 6
                 },{
-                    chartId: 'creditSpreadsExposure_column',
-                    order   : 7
-                },{
-                    chartId: 'dv01Exposure_column',
-                    order   : 8
-                },{
-                    chartId: 'fixedIncome_grid',
-                    order   : 9
-                },{
                     chartId: 'fixedIncomeExposure_grid',
-                    order   : 10
+                    order   : 7
                 }]   
-        },{
-            name        : 'User Defined Test Page',
-            id          : 'test1',
-            order       : 100,
-            userDefined : true,
-            charts      : [{
-                    chartId: 'fi_contribution_group',
-                    order   : 1
-                }]             
         }]
     });
 
@@ -10654,7 +10636,6 @@ function () {
         portfolioDataObj    = this.getDataObject('portfolio'),
         lang                = this.getSharedModule('localizationManager').getLanguage() || {},
         ajaxManager         = this.getSharedModule('ajaxManager'),
-        lastPortfolioIdUsed = '',
         lastPortfolioUsed   = {};
 
     portfolioDataObj.define({
@@ -10668,26 +10649,7 @@ function () {
         timePeriods: []
     });
 
-    // Public
-    function getAnalysis(uri, callback) {
-        ajaxManager.post(settings.siteUrls.analysis, { uri: uri, datatype: 'json' }, function (response) {
-
-            // If no analysis HTML template data was returned for 
-            // the given portfolio, or an error was raised...
-            if (!response || !response.data || response.error) {
-                // ...raise a failure event and return.
-                eventManager.raiseEvent('onFailed', lang.errors.analysisFailedText, lang.errors.analysisFailedReasonText);
-                return;
-            }
-
-            // Raise notification events.
-            eventManager.raiseEvent('onAnalysisLoaded', response.data);
-
-            // Call the callback.
-            callback();
-        }, 'json');
-    }
-
+    // Private
     function loadPortfolio(portfolioCode, callback) {
         var portfolio = {                
                 code: '',
@@ -10715,12 +10677,15 @@ function () {
             }
         }
 
-        lastPortfolioIdUsed = portfolio.code = getPortfolioCode();
-        loadPortfolioData(onLoadPortfolioDataCompleted);
+        // Define our portfolio code.
+        portfolio.code = getPortfolioCode();
+
+        // Load the portfolio data, passing the callback 
+        // to load the portfolio's analysis when done.
+        loadPortfolioData(loadPortfolioAnalysis);
 
         function loadPortfolioData(callback) {
-            var oData = {},
-                defaultAnalysisLink = null;
+            var oData = {};
 
             // Filter on the portfolio code if provided, otherwise just
             // retrieve the first portfolio in the default list.
@@ -10738,31 +10703,24 @@ function () {
 
                     // ...clear out the portfolio and links...
                     portfolio.code = '';
-                    defaultAnalysisLink = null;
 
                     // ...and raise a failure event and return.
                     eventManager.raiseEvent('onFailed', lang.errors.portfolioNotFoundText, lang.errors.portfolioNotFoundReasonText);
                     return;
                 }
 
-                // Persist the portfolio code and the link to its default analysis.
-                portfolio.code = response.data.items[0].code;
-                defaultAnalysisLink = response.data.items[0].links.defaultAnalysis.href;
-
-                // Call the callback.
-                callback({ defaultAnalysisLink: defaultAnalysisLink });
+                // Call the callback with a link to the default analysis.
+                callback(response.data.items[0].links.defaultAnalysis.href);
 
             }, 'json');
         }
 
-        function onLoadPortfolioDataCompleted(data) {
-            if (data.defaultAnalysisLink) {
-                portfolio.analysisLink = data.defaultAnalysisLink;
-                loadPortfolioAnalysis(data.defaultAnalysisLink, onLoadPortfolioAnalysisCompleted);
+        function loadPortfolioAnalysis(defaultAnalysisLink) {
+            
+            if (!defaultAnalysisLink) {
+                return;
             }
-        }
-
-        function loadPortfolioAnalysis(defaultAnalysisLink, callback) {
+            
             ajaxManager.post(settings.siteUrls.analysis, { uri: defaultAnalysisLink, datatype: 'json' }, function (response) {
 
                 // If no analysis data was returned for the given 
@@ -10778,6 +10736,7 @@ function () {
                 portfolio.type = response.data.type || '';
                 portfolio.currency = response.data.analysis.currency || '';
                 portfolio.version = response.data.analysis.version || '';
+                portfolio.analysisLink = defaultAnalysisLink;
 
                 // If we have results, persist their basic details also.
                 if (response.data.analysis.results) {
@@ -10785,42 +10744,31 @@ function () {
                     portfolio.timePeriods = response.data.analysis.results.timePeriods || [];
                 }
 
-                // Call the callback.
-                callback();
+                // Persist the currently selected portfolio.
+                portfolioDataObj.setData(portfolio);
+                lastPortfolioUsed = portfolio;
+
+                // Raise notification events.
+                eventManager.raiseEvent('onPortfolioLoaded', portfolio);
+                eventManager.raiseEvent('onTimePeriodsLoaded', portfolio.timePeriods);
+                eventManager.raiseEvent('onAnalysisLoaded', response.data);
+
+                // Call the callback, passing the analysis link.
+                callback(defaultAnalysisLink);
 
             }, 'json');
-        }
-
-        function onLoadPortfolioAnalysisCompleted() {
-
-            // Persist the currently selected portfolio.
-            portfolioDataObj.setData(portfolio);
-            lastPortfolioUsed = portfolio;
-
-            // Raise notification events.
-            eventManager.raiseEvent('onPortfolioLoaded', portfolio);
-            eventManager.raiseEvent('onTimePeriodsLoaded', portfolio.timePeriods);
-
-            // Call the callback, passing the analysis link.
-            callback(portfolio.analysisLink);
         }
     }
 
     function loadPortfolioAnalysis(portfolioCode, callback) {
 
-        function onGetAnalysisCompleted() {
+        function onLoadPortfolioCompleted() {
             callback(lastPortfolioUsed);
-        }
-
-        function onLoadPortfolioCompleted(defaultAnalysisLink) {
-            getAnalysis(defaultAnalysisLink, onGetAnalysisCompleted);
         }
 
         loadPortfolio(portfolioCode, onLoadPortfolioCompleted);
     }
 
-    portfolioManager.loadPortfolio = loadPortfolio;
-    portfolioManager.getAnalysis = getAnalysis;
     portfolioManager.loadPortfolioAnalysis = loadPortfolioAnalysis;
 
     return portfolioManager;

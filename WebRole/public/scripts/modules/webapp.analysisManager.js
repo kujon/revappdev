@@ -138,42 +138,24 @@ function () {
                     chartId : 'fixedIncomeContribution_grid',
                     order   : 1
                 },{
-                    chartId: 'fixedIncomeContribution_bar',
+                    chartId: 'fi_contribution_group',
                     order   : 2
                 },{
-                    chartId: 'carryContribution_bar',
+                    chartId: 'interestRatesExposure_column',
                     order   : 3
                 },{
-                    chartId: 'yieldCurveContribution_bar',
+                    chartId: 'creditSpreadsExposure_column',
                     order   : 4
                 },{
-                    chartId: 'riskNumbers_bar',
+                    chartId: 'dv01Exposure_column',
                     order   : 5
                 },{
-                    chartId: 'interestRatesExposure_column',
+                    chartId: 'fixedIncome_grid',
                     order   : 6
                 },{
-                    chartId: 'creditSpreadsExposure_column',
-                    order   : 7
-                },{
-                    chartId: 'dv01Exposure_column',
-                    order   : 8
-                },{
-                    chartId: 'fixedIncome_grid',
-                    order   : 9
-                },{
                     chartId: 'fixedIncomeExposure_grid',
-                    order   : 10
+                    order   : 7
                 }]   
-        },{
-            name        : 'User Defined Test Page',
-            id          : 'test1',
-            order       : 100,
-            userDefined : true,
-            charts      : [{
-                    chartId: 'fi_contribution_group',
-                    order   : 1
-                }]             
         }]
     });
 
