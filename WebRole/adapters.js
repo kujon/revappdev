@@ -101,12 +101,12 @@ function addRow(rowArray, segment) {
 function addBubbleChartRow(rowArray, segment) {
     rowArray.push({
         c: [
-		    { v: '' }, // Empty string to prevent label displaying over bubble.
-		    {v: segment.measures[0].measures[0].val },
-		    { v: segment.measures[0].measures[1].val },
-		    { v: segment.name },
-		    { v: segment.measures[0].measures[2].val }
-	    ]
+            { v: '' }, // Empty string to prevent label displaying over bubble.
+            { v: segment.measures[0].measures[0].val },
+            { v: segment.measures[0].measures[1].val },
+            { v: segment.name },
+            { v: segment.measures[0].measures[2].val }
+        ]
     });
 }
 
@@ -137,11 +137,11 @@ function addTreeMapRow(rowArray, nodeName, parentName, sizeValue, colorValue, cl
 
     rowArray.push({
         c: [
-		    { v: generateUniqueNodeName(nodeName) },
-		    { v: parentName },
+            { v: generateUniqueNodeName(nodeName) },
+            { v: parentName },
             { v: sizeValue },
-		    { v: colorValue }
-	    ]
+            { v: colorValue }
+        ]
     });
 }
 
@@ -222,20 +222,40 @@ function addMeasureRows(rowArray, measures, analysis, language) {
 function convert(node, includeMeasuresFor, analysis, measures, language) {
     var columnArray = [],
         rowArray = [],
-        children;
+        segment = null, 
+        childSegments = null, 
+        securities = null,
+        children,
+        returnObj;
+
+    // Define an empty object to be returned.
+    returnObj = {
+        cols: [],
+        rows: []
+    };
+
+    // Given the node, attempt to get the total level segment, child segments or securities.
+    segment = node['segment'];
+    childSegments = node['childSegments'];
+    securities = node['securities'];
+
+    // If we've got none of these, return the empty return object.
+    if (!segment && !childSegments && !securities) {
+        return returnObj;
+    }
 
     // If the only data to include string is 'segment',
     // we know we're just getting top level data.
     if ((includeMeasuresFor.length === 1) && (includeMeasuresFor.indexOf('segment') !== -1)) {
 
         if (this.addMeasureRows) {
-            this.addColumn(columnArray, node.segment.name);
-            this.addMeasureRows(rowArray, node.segment.measures[0].measures, analysis, language);
+            this.addColumn(columnArray, segment.name);
+            this.addMeasureRows(rowArray, segment.measures[0].measures, analysis, language);
         } else {
             if (this.addMeasureColumns) {
                 this.addMeasureColumns(columnArray, measures, analysis, language);
             }
-            this.addRow(rowArray, node.segment);
+            this.addRow(rowArray, segment);
         }
 
     } else {
@@ -245,30 +265,36 @@ function convert(node, includeMeasuresFor, analysis, measures, language) {
         }
 
         // If we've got the total level to add here...
-        if (includeMeasuresFor.indexOf('segment') !== -1) {
+        if ((includeMeasuresFor.indexOf('segment') !== -1) && segment) {
             // ...add the row.
-            this.addRow(rowArray, node.segment);
+            this.addRow(rowArray, segment);
         }
 
         // Retrieve the segments or securities from the relevant 'included data' property.
-        children = (includeMeasuresFor.indexOf('childSegments') !== -1) ?
-            node['childSegments'].segments :
-            node['securities'].securities;
+        if ((includeMeasuresFor.indexOf('childSegments') !== -1) && childSegments) {            
+            children = childSegments.segments;
+        } else if ((includeMeasuresFor.indexOf('securities') !== -1) && securities) {        
+            children = securities.securities;
+        } else {            
+            // We've found neither child segments or securities, so something
+            // has gone wrong. Return the empty return object.
+            return returnObj;
+        }
         
         this.addSegmentRows(rowArray, children);
     }
 
+    // Assign the columns and rows to our return object.
+    returnObj.cols = this.columns.concat(columnArray);
+    returnObj.rows = rowArray;
+
     // Return the object required by the Google Visualization API.
-    return {
-        cols: this.columns.concat(columnArray),
-        rows: rowArray
-    };
-};
+    return returnObj;
+}
 
 function lineChartConvert(dataPoints, seriesType, analysis, measures, language) {
     var columnArray = [],
-        rowArray = [],
-        children;
+        rowArray = [];
 
     if (this.addMeasureColumns) {
         this.addMeasureColumns(columnArray, measures, analysis, language);
@@ -280,30 +306,51 @@ function lineChartConvert(dataPoints, seriesType, analysis, measures, language) 
         cols: this.columns.concat(columnArray),
         rows: rowArray
     };
-};
+}
 
 function treeMapConvert(node, includeMeasuresFor, analysis) {
     var i,
         len,
-        parent,
+        segment = null, 
+        childSegments = null, 
+        securities = null,
         children,
         child,
         measures,
         isSecurityLevel = (includeMeasuresFor.indexOf('securities') !== -1),
         classifierName = '',
-        rowArray = [];
+        rowArray = [],
+        returnObj;
 
-    // Get the parent segment.
-    parent = node.segment;
+    // Define an empty object to be returned.
+    returnObj = {
+        cols: [],
+        rows: []
+    };
+
+    // Given the node, attempt to get the total level segment, child segments or securities.
+    segment = node['segment'];
+    childSegments = node['childSegments'];
+    securities = node['securities'];
+
+    // If we've got none of these, return an empty object.
+    if (!segment && !childSegments && !securities) {
+        return returnObj;
+    }
 
     // Add the root node.
-    this.addRow(rowArray, parent.name, null, 0, 0);
+    this.addRow(rowArray, segment.name, null, 0, 0);
 
     // Retrieve the segments or securities from the relevant 'included data' property.
-    children = isSecurityLevel ? node['securities'].securities : node['childSegments'].segments;
-
-    if (!isSecurityLevel) {
-        classifierName = node['childSegments'].classifier.name;
+    if (isSecurityLevel && securities) {            
+        children = securities.securities;
+    } else if (childSegments) {
+        children = childSegments.segments;
+        classifierName = childSegments.classifier.name;
+    } else {            
+        // We've found neither child segments or securities, so something
+        // has gone wrong. Return the empty return object.
+        return returnObj;
     }
 
     // Determine the number of child segments.
@@ -313,15 +360,16 @@ function treeMapConvert(node, includeMeasuresFor, analysis) {
     for (i = 0; i < len; i++) {
         child = children[i];
         measures = child.measures[0].measures;
-        this.addRow(rowArray, child.name, parent.name, measures[0].val, measures[1].val, classifierName);
+        this.addRow(rowArray, child.name, segment.name, measures[0].val, measures[1].val, classifierName);
     }
 
+    // Assign the columns and rows to our return object.
+    returnObj.cols = this.columns;
+    returnObj.rows = rowArray;
+
     // Return the object required by the Google Visualization API.
-    return {
-        cols: this.columns,
-        rows: rowArray
-    };
-};
+    return returnObj;
+}
 
 // ------------------------------------------
 // COMMON ADAPTER OBJECTS

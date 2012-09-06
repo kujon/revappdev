@@ -10,6 +10,7 @@ var https           = require('https'),
     defaultLanguage = 'en-US',
     currentLanguage = {},
     currentAnalysis = {},
+    resourceLinks = {},
     RETRY_ATTEMPTS  = 3,
     MAX_ATTEMPTS    = 3;
 
@@ -19,17 +20,22 @@ var https           = require('https'),
 
 // Returns the server-side language dictionary 
 // object for the current user, or null if not defined.
-function getCurrentDictionary() {
-    return currentLanguage['object'] || null;
+// 'token'      - A Base64-encoded string representing a user's username and password.
+function getCurrentDictionary(token) {
+    return currentLanguage[token]['object'] || null;
 }
 
 // Returns the current language culture code string 
 // for the current user, or null if not defined.
-function getCurrentLanguage() {
-    return currentLanguage['string'] || null;
+// 'token'      - A Base64-encoded string representing a user's username and password.
+function getCurrentLanguage(token) {
+    return currentLanguage[token]['string'] || null;
 }
-
-function setCurrentLanguage(value) {
+// Sets the current language culture code string and 
+// the server-side language dictionary for the current user.
+// 'token'      - A Base64-encoded string representing a user's username and password.
+// 'value'      - (Optional) A language culture code to be set as the current language.
+function setCurrentLanguage(token, value) {
     var language = value || defaultLanguage;
 
     language = language.charAt(0).toLowerCase() +
@@ -37,12 +43,23 @@ function setCurrentLanguage(value) {
                '-' +
                language.charAt(3).toUpperCase() +
                language.charAt(4).toUpperCase();
-
-    currentLanguage['string'] = language;
-
-    if (languages[language] && languages[language]['server']) {
-        currentLanguage['object'] = languages[language]['server'];
+    
+    // If the language requested doesn't actually exist in the app...
+    if (!languages[language]) {
+        // ...return to the default.
+        language = defaultLanguage;
     }
+
+    // If the language for this user is not yet defined, 
+    // create an empty object to store the preferences.
+    if (!currentLanguage[token]){
+        currentLanguage[token] = {};
+    }
+
+    // Define references to the current language code, and the
+    // string resource dictionary for use on the server side.
+    currentLanguage[token]['string'] = language;
+    currentLanguage[token]['object'] = languages[language]['server'];
 }
 
 // ------------------------------------------
@@ -68,8 +85,6 @@ function setCurrentAnalysis(token, analysis, value){
 // ------------------------------------------
 // RESOURCE LINKS HELPER FUNCTIONS
 // ------------------------------------------
-
-var resourceLinks = {};
 
 function getResourceLink(token, resource){
     return resourceLinks[token][resource];
@@ -118,7 +133,7 @@ function getRequestOptions(uri, token) {
 //
 // 'statusCode' - The HTTP status code returned by the response.
 // 'data'       - The body content of the response.
-function processResponse(statusCode, data) {
+function processResponse(statusCode, data, token) {
     var parts, code, error, dictionary;
 
     // If the HTTP status code isn't an error...
@@ -128,7 +143,7 @@ function processResponse(statusCode, data) {
     }
 
     // Get our error dictionary.
-    dictionary = getCurrentDictionary().errors;
+    dictionary = getCurrentDictionary(token).errors;
 
     // Assume this is an unknown error.
     error = {
@@ -179,7 +194,7 @@ function processResponse(statusCode, data) {
 //                    may be null, and an error property, which will either be boolean false 
 //                    (indicating that the request was successful), a boolean true, or a 
 //                    complete error object (both indicating that the request failed).
-function getResource(resourceName, attempts, options, callback) {
+function getResource(resourceName, attempts, options, token, callback) {
     var request, data = '', resource;
 
     // Define an empty resource object.
@@ -210,7 +225,7 @@ function getResource(resourceName, attempts, options, callback) {
             var obj, error;
 
             // Process the response.
-            error = processResponse(response.statusCode, data);            
+            error = processResponse(response.statusCode, data, token);            
 
             // If we've had an error object returned by the processing of the response...
             if (error) {
@@ -270,7 +285,7 @@ function getResource(resourceName, attempts, options, callback) {
         attempts -= 1;
 
         // Attempt to get the resource again.
-        getResource(resourceName, attempts, options, callback);
+        getResource(resourceName, attempts, options, token, callback);
     });
 
     // Post the data.
@@ -336,7 +351,7 @@ function applySegmentParamsToURI(params, uri) {
 // 'uri'        - The Uniform Resource Identifier representing the entry point of the Web API.
 // 'language'   - An object containing display strings for use on the server side.
 //                This will be localized if the request contains a valid 'lang' 
-//                querystring, otherwise defaulting to 'en_US'.
+//                querystring, otherwise defaulting to 'en-US'.
 // 'callback'   - A JavaScript function to be called when the response has arrived.
 //                Will always be called, regardless of the outcome of the request,
 //                and will receive an object containing a 'data' property, which 
@@ -350,10 +365,10 @@ exports.initService = function (email, token, uri, language, callback) {
     options = getRequestOptions(uri, token);
 
     // Set the current language.
-    setCurrentLanguage(language);
+    setCurrentLanguage(token, language);
 
     // Attempt to get the service's entry point resource.
-    getResource('service', RETRY_ATTEMPTS, options, function (resource) {
+    getResource('service', RETRY_ATTEMPTS, options, token, function (resource) {
         
         if (!resource.error && resource.data) {
             // Populate the resources object.
@@ -391,7 +406,7 @@ exports.getPortfolios = function (oData, datatype, token, callback) {
         options = getRequestOptions(portfoliosQuery, token);
 
         // Attempt to get a list of the user's portfolios, filtered by the query.
-        getResource('portfolios', RETRY_ATTEMPTS, options, function (resource) {
+        getResource('portfolios', RETRY_ATTEMPTS, options, token, function (resource) {
             callback(resource, datatype);
         });
 
@@ -424,7 +439,7 @@ exports.getPortfolioAnalysis = function (uri, attempts, token, callback) {
     // the additional retry logic in the callback, which deals with retrying 
     // to retrieve portfolio analyses which have either not finished calculating, 
     // or have failed to calculate for some reason.
-    getResource('portfolioAnalysis', RETRY_ATTEMPTS, options, function (resource) {
+    getResource('portfolioAnalysis', RETRY_ATTEMPTS, options, token, function (resource) {
         var status, dictionary;
 
         if (!resource.error && resource.data) {
@@ -503,8 +518,8 @@ exports.getSegmentsTreeNode = function (oData, params, token, callback) {
         options = getRequestOptions(segmentsTreeNodeQuery, token);
 
         // Attempt to get the specified segment tree nodes.
-        getResource('segmentsTreeNode', RETRY_ATTEMPTS, options, function (resource) {
-            callback(resource, getCurrentAnalysis(token), getCurrentLanguage());
+        getResource('segmentsTreeNode', RETRY_ATTEMPTS, options, token, function (resource) {
+            callback(resource, getCurrentAnalysis(token), getCurrentLanguage(token));
         });
 
     } else {
@@ -536,8 +551,8 @@ exports.getTimeSeries = function (params, token, callback) {
         options = getRequestOptions(timeSeriesQuery, token);
 
         // Attempt to get the specified time series.
-        getResource('timeSeries', RETRY_ATTEMPTS, options, function (resource) {
-            callback(resource, getCurrentAnalysis(token), getCurrentLanguage());
+        getResource('timeSeries', RETRY_ATTEMPTS, options, token, function (resource) {
+            callback(resource, getCurrentAnalysis(token), getCurrentLanguage(token));
         });
 
     } else {
@@ -567,7 +582,7 @@ exports.getEula = function (eulaFormat, token, callback) {
         // NOTE: We pass up null here as the resourceName as we don't 
         // expect a standard JavaScript object resource back, rather 
         // an HTML fragment to be rendered in its entirety.
-        getResource(null, RETRY_ATTEMPTS, options, function (eulaDoc) {
+        getResource(null, RETRY_ATTEMPTS, options, token, function (eulaDoc) {
             callback(eulaDoc);
         });
     }
@@ -576,7 +591,7 @@ exports.getEula = function (eulaFormat, token, callback) {
     options = getRequestOptions(getResourceLink(token, 'eula'), token);
 
     // Attempt to get the EULA link dependent on the format requested.
-    getResource('eula', RETRY_ATTEMPTS, options, function (resource) {
+    getResource('eula', RETRY_ATTEMPTS, options, token, function (resource) {
         var eulaUri = '';
         
         switch (eulaFormat) {

@@ -17,9 +17,9 @@ function getServerLanguage(lang) {
                language.charAt(3).toUpperCase() +
                language.charAt(4).toUpperCase();
 
-    return (languages[language] && languages[language]['server'])
-        ? languages[language]['server']
-        : languages[defaultLanguage]['server'];
+    return (languages[language] && languages[language]['server']) ? 
+            languages[language]['server'] : 
+            languages[defaultLanguage]['server'];
 }
 
 // Function to get the token stored either in the currently 
@@ -81,21 +81,24 @@ exports.segmentsTreeNode = function (req, res) {
 
     // Attempt to consume the service.
     webApi.getSegmentsTreeNode(oData, params, getToken(req), function (segments, analysis, language) {
-        var currentLanguage, jsonObj;
+        var currentLanguage, jsonObj = {};
 
         // Retrieve the language passed from the API.
         currentLanguage = getServerLanguage(language);
 
-        // Pass the segments and other parameters to this chart's
-        // data adapter, which returns a JSON-encoded object
-        // suitable for use with the Google Visualization API.
-        jsonObj = adapter.convert(
-            segments.data,
-            req.body.includeMeasuresFor,
-            analysis,
-            req.body.measures,
-            currentLanguage            
-        );
+        // If we have any segment data...
+        if (segments && segments.data) {
+            // ...pass the segments and other parameters to this chart's
+            // data adapter, which returns a JSON-encoded object suitable 
+            // for use with the Google Visualization API.
+            jsonObj = adapter.convert(
+                segments.data,
+                req.body.includeMeasuresFor,
+                analysis,
+                req.body.measures,
+                currentLanguage            
+            );
+        }
 
         // Return the JSON.
         res.json(jsonObj);
@@ -121,21 +124,24 @@ exports.timeSeries = function (req, res) {
 
     // Attempt to consume the service.
     webApi.getTimeSeries(params, getToken(req), function (series, analysis, language) {
-        var currentLanguage, jsonObj;
+        var currentLanguage, jsonObj = {};
 
         // Retrieve the language passed from the API.
         currentLanguage = getServerLanguage(language);
 
-        // Pass the segments and other parameters to this chart's
-        // data adapter, which returns a JSON-encoded object
-        // suitable for use with the Google Visualization API.
-        jsonObj = adapter.convert(
-            series.data.dataPoints,
-            req.body.seriesType,
-            analysis,            
-            req.body.measures,
-            currentLanguage
-        );
+        // If we have any series data...
+        if (series && series.data && series.data.dataPoints) {
+            // ...pass the series and other parameters to this chart's
+            // data adapter, which returns a JSON-encoded object suitable 
+            // for use with the Google Visualization API.
+            jsonObj = adapter.convert(
+                series.data.dataPoints,
+                req.body.seriesType,
+                analysis,            
+                req.body.measures,
+                currentLanguage
+            );
+        }
 
         // Return the JSON.
         res.json(jsonObj);
