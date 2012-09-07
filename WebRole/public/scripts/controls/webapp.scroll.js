@@ -139,7 +139,7 @@ function () {
 
         options.bounce = (options.bounce)
             ? options.bounce
-            : false;
+            : true;
 
         // Overriden events.
         options.onBeforeScrollStart = function (e) {

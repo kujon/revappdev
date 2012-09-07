@@ -76,6 +76,7 @@
 		#settings(data-pageEvents="both")
 			.toolbar
 				h1 #{lang.settingsPages.settingsText}
+				a.back(href='#analysis') #{lang.shared.backText}
 			#wrapper.settingsWrapper
 				#scroller
 					ul.rounded
@@ -101,7 +102,7 @@
 							a(href="#eula") #{lang.settingsPages.licenseText}
 					ul.rounded
 						li#userEmailLabel.centeredText
-					ul.rounded
+					// ul.rounded
 						li
 							a#testButton(href="#experimental") Experimental Page
 						
@@ -177,17 +178,16 @@
 							h2 #{lang.aboutPage.mobileText} 
 							p &copy; #{new Date().getFullYear()} #{lang.shared.statProText} | #{lang.shared.versionText} #{version}
 							p
-								!{lang.aboutPage.githubText} <br />
 								#{lang.aboutPage.poweredText} <br />								
 								#{lang.aboutPage.openSourceText} 								
 							p.links
-								a(href='http://nodejs.org/') Node
-								a(href='http://expressjs.com/') Express
-								a(href='http://zeptojs.com/') Zepto
-								a(href='http://www.jqtouch.com/') jQTouch
-								a(href='http://www.datejs.com/') Datejs
-								a(href='http://cubiq.org/iscroll') iScroll
-								a.last(href='http://itabbar.com/') iTabbar
+								span Node
+								span Express
+								span Zepto
+								span jQTouch
+								span Datejs
+								span iScroll
+								span.last iTabbar
 		
 		#experimental(data-pageEvents="both")
 			.toolbar

@@ -196,7 +196,7 @@ exports.client = {
     // ------------------------------------------------------------------ | T |
     
     tabbar: {
-        favourites                  : 'Favourites',
+        favourites                  : 'Favorites',
         home                        : 'Home',
         portfolios                  : 'Portfolios',
         analysis                    : 'Analysis',

@@ -123,12 +123,9 @@ div .google-visualization-table-div-page img /* :first-child */
     padding: 15px;
     border: 1px solid #000000;
     background-color: #ffffff;
-    -webkit-border-radius: 15px;
-    -webkit-box-shadow: inset 0 0 10px #666666;
     overflow: hidden;
     -webkit-transition: height .5s;
     min-height: 250px;
-    /*height: 500px;*/
 }
 
 .analysisComponentContainer h2 {
@@ -161,30 +158,21 @@ div .google-visualization-table-div-page img /* :first-child */
 .chartContainer 
 {
     width: 960px;
-    /*height: 500px;*/
     min-height: 500px;
     background-color: transparent;
-    /*-webkit-transition: -webkit-transform 1s;*/
 }
 
 .gridContainer 
 {
     background-color: transparent;
-    /*overflow: auto;*/
-
     width: 980px;
-    /* min-height: 380px;*/
     margin: 20px 0 20px 20px;
-    /* padding-bottom: 30px;*/
-
-    /*-webkit-transition: -webkit-transform 1;*/
 }
 .treeMapContainer 
 {
     margin-top: 15px;	
     padding-left: 15px;
     width: 980px;
-    /*height: 500px;*/
     min-height: 500px;    
 }
 
@@ -569,7 +557,7 @@ table { border: none !important; }
 #about_partial p { margin: 0 0 20px 0; }
 #about_partial a { text-shadow: none !important; }
 
-#about_partial .links a {
+#about_partial .links span {
     display: inline-block;
     padding: 0 10px 0 0; 
     border-right: 1px solid #aaaaaa; 

@@ -7197,7 +7197,7 @@ function () {
 
         options.bounce = (options.bounce)
             ? options.bounce
-            : false;
+            : true;
 
         // Overriden events.
         options.onBeforeScrollStart = function (e) {
@@ -8590,9 +8590,9 @@ function () {
             title: lang.chart.riskTreemapTitle,
             isGradientReversed: true,
             chartType: 'TreeMap',
-            include: 'childSegments',
+            include: 'securities',
             measures: ['wpabsoluteend', 'contributionvar'],
-            includeMeasuresFor: ['childSegments']
+            includeMeasuresFor: ['securities']
         },
 
         // ------------------------------------------
@@ -8748,7 +8748,7 @@ function () {
 
             chartOrder += 1;
 
-            // In order to increase the performances we add the chart to the presentation container here.
+            // In order to increase the performance we add the chart to the presentation container here.
             addChartToPresentation(chartId, chartTitle);
         }
 
@@ -8757,9 +8757,7 @@ function () {
                 containerId = "presentation-" + chartId;
 
             sb.append('<div class="presentationContainer"><h2>{0}</h2>', chartTitle);
-            // sb.append('<div id="{0}" style="width: 1024px; overflow: hidden;">', 'scroll-' + containerId);
             sb.append('<div id="{0}" data-title="{1}">{1}</div>', containerId, chartTitle);
-            // sb.append('</div>');
             sb.append('</div>');
 
             $(el.presentationChartsContainer).append(sb.toString());
@@ -10068,7 +10066,7 @@ function () {
         appSettingsDataObj  = this.getDataObject('appSettings');
 
     userSettingsDataObj.define({
-        automaticLogin      : false,
+        automaticLogin      : true,
         username            : '',
         password            : '',
         language            : 'en-US',

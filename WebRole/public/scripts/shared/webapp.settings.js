@@ -20,7 +20,7 @@ function () {
         appSettingsDataObj  = this.getDataObject('appSettings');
 
     userSettingsDataObj.define({
-        automaticLogin      : false,
+        automaticLogin      : true,
         username            : '',
         password            : '',
         language            : 'en-US',
