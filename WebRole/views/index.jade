@@ -4,31 +4,17 @@
 		#login.login_background(data-pageEvents="both")
 			#login_content
 				.login_r
-				ul.rounded.login_style
-					li.login_style
-						div
-							input#userNameTextbox.login_style(type='email', placeholder='#{lang.loginPage.userNamePlaceholderText}', name='user[username]', value='')
-					li.login_style
-						div
-							input#passwordTextbox.login_style(type='password', placeholder='#{lang.loginPage.passwordPlaceholderText}', name='user[password]', value='')
-				a#loginButton.whiteButton(href='#')  #{lang.loginPage.loginText}
+				form#loginForm
+					ul.rounded.login_style
+						li.login_style
+							div
+								input#userNameTextbox.login_style(type='email', placeholder='#{lang.loginPage.userNamePlaceholderText}', name='user[username]', value='')
+						li.login_style
+							div
+								input#passwordTextbox.login_style(type='password', placeholder='#{lang.loginPage.passwordPlaceholderText}', name='user[password]', value='')
+					input#loginButton.whiteButton(type='submit', value='#{lang.loginPage.loginText}') 
 				p#loginErrorText
 				p.login_style &copy; #{new Date().getFullYear()} #{lang.shared.statProText} | #{lang.shared.versionText} #{version} <br /> [#{environment}]
-
-		#home(data-pageEvents="both")
-			.toolbar
-				#toolbar_logo
-				a.back(href='#') #{lang.homePage.logOutText}
-			#wrapper
-				#scroller
-					ul.rounded
-						li.arrow 
-							a#portfoliosButton.slide(href='#portfolios') #{lang.homePage.portfoliosText}
-						li.arrow 
-							a#eulaButton.slide(href='#eula') #{lang.homePage.viewEulaText}
-						li.arrow 
-							a#testButton(href='#test') #{lang.homePage.testText}
-					#home_partial
 
 		#portfolios(data-pageEvents="both")
 			.toolbar
@@ -102,9 +88,9 @@
 							a(href="#eula") #{lang.settingsPages.licenseText}
 					ul.rounded
 						li#userEmailLabel.centeredText
-					// ul.rounded
+					ul.rounded
 						li
-							a#testButton(href="#experimental") Experimental Page
+							a#logoutButton(href="#") #{lang.settingsPages.logOutText}
 						
 		#reset
 			.toolbar

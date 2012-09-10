@@ -165,6 +165,7 @@ exports.client = {
     // ------------------------------------------------------------------ | E |
 
     errors: {
+        noCredentialsProvidedText   : 'Please enter your email address and password.',
         chartFailedText             : 'Das Diagramm konnte nicht geladen werden.',
         accountEmptyText            : 'Dieser Konto enthält keine Portfoliodaten.',
         portfolioNotFoundText       : 'Das angeforderte Portfolio wurde nicht gefunden.',        
@@ -252,8 +253,7 @@ exports.server = {
 
     // ------------------------------------------------------------------ | H |
     
-    homePage: {
-        logOutText                  : 'Abmelden',
+    homePage: {        
         portfoliosText              : 'Portfolios',
         viewEulaText                : 'EULA übersehen',
         testText                    : 'Test'
@@ -578,7 +578,8 @@ exports.server = {
         resetText                   : 'Zurücksetzen',
         aboutText                   : 'Über StatPro Revolution Mobile',
         resetCurrentSettingsText    : 'Aktuelle Einstellungen zurücksetzen',
-        resetAllSettingsText        : 'Alle Einstellungen zurücksetzen'
+        resetAllSettingsText        : 'Alle Einstellungen zurücksetzen',
+        logOutText                  : 'Abmelden'
     },
 
     shared: {

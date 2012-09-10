@@ -527,9 +527,15 @@ div#jqt ul li input[type="email"].login_style, div#jqt ul li input[type="passwor
     font-size: 13pt;
 }
 
+#loginForm {
+    text-align: center;    
+}
+
 #loginButton {
     font-family: HelveticaNeue-Bold !important; 
     font-weight: normal !important; 
+    display: inline-block !important;
+    width: 90%;
 }
 
 p.login_style

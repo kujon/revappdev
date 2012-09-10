@@ -165,6 +165,7 @@ exports.client = {
     // ------------------------------------------------------------------ | E |
 
     errors: {
+        noCredentialsProvidedText   : 'Please enter your email address and password.',
         chartFailedText             : 'Unable to load chart.',
         accountEmptyText            : 'This account contains no portfolio data.',
         portfolioNotFoundText       : 'The requested portfolio could not be found.',
@@ -243,7 +244,7 @@ exports.server = {
 
     errors: {
         unknownErrorText            : 'An unknown error occurred.',
-        invalidCredentialsText      : 'The username or password you entered is incorrect.'
+        invalidCredentialsText      : 'The email address or password you entered is incorrect.'
     },
 
     eulaPage: {
@@ -252,8 +253,7 @@ exports.server = {
 
     // ------------------------------------------------------------------ | H |
     
-    homePage: {
-        logOutText                  : 'Log out',
+    homePage: {        
         portfoliosText              : 'Portfolios',
         viewEulaText                : 'View EULA',
         testText                    : 'Test'
@@ -578,7 +578,8 @@ exports.server = {
         resetText                   : 'Reset',
         aboutText                   : 'About',
         resetCurrentSettingsText    : 'Reset Current Settings',
-        resetAllSettingsText        : 'Reset All Settings'
+        resetAllSettingsText        : 'Reset All Settings',
+        logOutText                  : 'Log Out'
     },
 
     shared: {

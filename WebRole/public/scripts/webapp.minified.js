@@ -3124,9 +3124,12 @@ break
 }}return t
 }function g(q){var s=decodeURIComponent((location.search.match(RegExp("[?|&]"+q+"=(.+?)(&|$)"))||[,null])[1]);
 return(s==="null")?null:s
-}function k(s){var q=document.createElement("div");
-q.innerHTML=s;
-return q.childNodes[0].nodeValue
+}function k(u){var q=document.createElement("div"),t,s="";
+q.innerHTML=u;
+for(t=0;
+t<q.childNodes.length;
+t++){s+=q.childNodes[t].nodeValue
+}return s
 }function m(t){var u={},s,q=[];
 for(s in t){if(t.hasOwnProperty(s)){q.push(s)
 }}q.sort();
@@ -3998,7 +4001,7 @@ i.clearUserSettings=b;
 return i
 });
 WebAppLoader.addModule({name:"pageElements",isShared:true},function(){var a={};
-a={blankPage:"#blank_page",dashboardPage:"#dashboard",homePage:"#home",portfoliosPage:"#portfolios",portfolioAnalysisPage:"#portfolioAnalysis",analysisPage:"#analysis",eulaPage:"#eula",settingsPage:"#settings",loginPage:"#login",startupPage:"#startup",chartSettingsPage:"#chartSettings",themesPage:"#themes",languageSettingsPages:"#languageSettings",errorPage:"#error",fullScreenPage:"#fullScreenPage",portfolioAnalysisLink:".defaultAnalysisLink",toolbar:".toolbar",loginButton:"#loginButton",loginErrorText:"#loginErrorText",ajaxLoadingMask:"#ajaxLoadingMask",chartLoadingMask:"#chartLoadingMask",preventTapMask:"#preventTapMask",userNameTextbox:"#userNameTextbox",passwordTextbox:"#passwordTextbox",tabbar:"nav#tabbar",listAnalysisSettingsDefaultPages:"#listAnalysisSettingsDefaultPages",listAnalysisSettingsUserPages:"#listAnalysisSettingsUserPages",chartsSelectbox:"#chartsSelectbox",analysisPageNameTextbox:"#analysisPageNameTextbox",saveChartSettings:"#saveChartSettings",addNewAnalysisPage:"#addNewAnalysisPage",analysisTitle:"#analysisTitle",loadingText:"#loadingText",listLanguagesPages:"#listLanguagesPages",timePeriodStartDateText:"#timePeriodStartDateText",timePeriodEndDateText:"#timePeriodEndDateText",errorMessageText:"#errorMessageText",errorReasonText:"#errorReasonText",stayLoggedCheckbox:"#stayLoggedCheckbox",userEmailLabel:"#userEmailLabel",summaryTitleName:"#summaryTitleName",summaryTitleBenchmarkName:"#summaryTitleBenchmarkName",resetCurrentSettingsButton:"#resetCurrentSettingsButton",resetAllSettingsButton:"#resetAllSettingsButton",reloadAppButton:"#reloadAppButton",analysisComponentFullScreenButton:".analysisComponentFullScreenButton",fullScreenContainer:"#fullScreenContainer",minimizeButton:"#minimizeButton",fullScreenMask:"#fullScreenMask",turnIcon:"#turnIcon",presentationTitle:"#presentationTitle",presentationChartsContainer:"#presentationChartsContainer",presentationTimePeriodStartDateText:"#presentationTimePeriodStartDateText",presentationTimePeriodEndDateText:"#presentationTimePeriodEndDateText",presentationSummaryTitleName:"#presentationSummaryTitleName",presentationSummaryTitleBenchmarkName:"#presentationSummaryTitleBenchmarkName"};
+a={blankPage:"#blank_page",dashboardPage:"#dashboard",homePage:"#home",portfoliosPage:"#portfolios",portfolioAnalysisPage:"#portfolioAnalysis",analysisPage:"#analysis",eulaPage:"#eula",settingsPage:"#settings",loginPage:"#login",startupPage:"#startup",chartSettingsPage:"#chartSettings",themesPage:"#themes",languageSettingsPages:"#languageSettings",errorPage:"#error",fullScreenPage:"#fullScreenPage",portfolioAnalysisLink:".defaultAnalysisLink",toolbar:".toolbar",loginForm:"#loginForm",loginButton:"#loginButton",loginErrorText:"#loginErrorText",ajaxLoadingMask:"#ajaxLoadingMask",chartLoadingMask:"#chartLoadingMask",preventTapMask:"#preventTapMask",userNameTextbox:"#userNameTextbox",passwordTextbox:"#passwordTextbox",tabbar:"nav#tabbar",listAnalysisSettingsDefaultPages:"#listAnalysisSettingsDefaultPages",listAnalysisSettingsUserPages:"#listAnalysisSettingsUserPages",chartsSelectbox:"#chartsSelectbox",analysisPageNameTextbox:"#analysisPageNameTextbox",saveChartSettings:"#saveChartSettings",addNewAnalysisPage:"#addNewAnalysisPage",analysisTitle:"#analysisTitle",loadingText:"#loadingText",listLanguagesPages:"#listLanguagesPages",timePeriodStartDateText:"#timePeriodStartDateText",timePeriodEndDateText:"#timePeriodEndDateText",errorMessageText:"#errorMessageText",errorReasonText:"#errorReasonText",stayLoggedCheckbox:"#stayLoggedCheckbox",userEmailLabel:"#userEmailLabel",summaryTitleName:"#summaryTitleName",summaryTitleBenchmarkName:"#summaryTitleBenchmarkName",resetCurrentSettingsButton:"#resetCurrentSettingsButton",resetAllSettingsButton:"#resetAllSettingsButton",reloadAppButton:"#reloadAppButton",logoutButton:"#logoutButton",analysisComponentFullScreenButton:".analysisComponentFullScreenButton",fullScreenContainer:"#fullScreenContainer",minimizeButton:"#minimizeButton",fullScreenMask:"#fullScreenMask",turnIcon:"#turnIcon",presentationTitle:"#presentationTitle",presentationChartsContainer:"#presentationChartsContainer",presentationTimePeriodStartDateText:"#presentationTimePeriodStartDateText",presentationTimePeriodEndDateText:"#presentationTimePeriodEndDateText",presentationSummaryTitleName:"#presentationSummaryTitleName",presentationSummaryTitleBenchmarkName:"#presentationSummaryTitleBenchmarkName"};
 return a
 });
 WebAppLoader.addModule({name:"settings",dataObjects:["appSettings","userSettings"],isShared:true},function(){var h={},a={},i={},f=[],g=this.getConsole(),j=this.getDataObject("userSettings"),b=this.getDataObject("appSettings");
@@ -4030,14 +4033,17 @@ function h(){b=c.getData()
 a.update=f;
 return a
 });
-WebAppLoader.addModule({name:"auth",plugins:["base64"],sharedModules:["ajaxManager"],hasEvents:true},function(){var b={},h=this.getConsole(),e=this.getEventManager(),c=this.getPlugin("base64"),a=this.getSharedModule("ajaxManager"),g="";
-function d(n,j,m,i){var k,l;
-g="";
-l=c.encode(n+":"+j);
-k="Basic "+l;
-a.post(m,{email:n,token:k,lang:i},function(o){if(o.authenticated){g=l;
-e.raiseEvent("onLoginSuccess",k)
-}else{e.raiseEvent("onLoginFailed",o.message)
+WebAppLoader.addModule({name:"auth",plugins:["base64"],sharedModules:["ajaxManager","localizationManager"],hasEvents:true},function(){var b={},i=this.getConsole(),e=this.getEventManager(),c=this.getPlugin("base64"),a=this.getSharedModule("ajaxManager"),h=this.getSharedModule("localizationManager").getLanguage()||{},g="";
+function d(p,k,o,j){var l,m,n;
+l=new RegExp("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$","i");
+if(!p||!k||!l.test(p)){e.raiseEvent("onLoginFailed",h.errors.noCredentialsProvidedText);
+return
+}g="";
+n=c.encode(p+":"+k);
+m="Basic "+n;
+a.post(o,{email:p,token:m,lang:j},function(q){if(q.authenticated){g=n;
+e.raiseEvent("onLoginSuccess",m)
+}else{e.raiseEvent("onLoginFailed",q.message)
 }},"json")
 }function f(){return g
 }b.doLogin=d;
@@ -4692,10 +4698,14 @@ if(o){m.setLastAnalysisObjectUsed(o);
 m.updateAnalysisPage()
 }});
 m.auth=f.loadModule("auth");
-a(c.loginButton).on("click",function(){var p,o;
-p=a(c.userNameTextbox).val();
-o=a(c.passwordTextbox).val();
-m.doLogin(p,o)
+a(c.loginForm).submit(function(){var s,p,q,o;
+s=a(c.userNameTextbox);
+p=a(c.passwordTextbox);
+q=s.val();
+o=p.val();
+m.doLogin(q,o);
+s.blur();
+p.blur()
 });
 m.auth.on("onLoginSuccess",function(o){m.ajaxManager.setToken(o);
 m.init()
@@ -4763,6 +4773,15 @@ a(c.stayLoggedCheckbox).on("click",function(){var o=a(c.stayLoggedCheckbox+":che
 p.automaticLogin=o;
 m.settings.saveData("userSettings",m.lastUsernameUsed);
 g.log(o)
+});
+a(c.logoutButton).on("click",function(){var o=m.settings.loadData("userSettings",m.lastUsernameUsed);
+o.automaticLogin=true;
+o.username="";
+o.password="";
+o.language="en-US";
+o.lastUsedLanguage="none";
+m.settings.saveData("userSettings",m.lastUsernameUsed);
+m.nav.reloadApp()
 });
 m.analysisManager=f.loadModule("analysisManager");
 m.analysisManager.on("onUpdated",function(o){m.updateAnalysisSlot(o)

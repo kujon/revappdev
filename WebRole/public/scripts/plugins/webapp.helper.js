@@ -207,9 +207,19 @@ function () {
     }
 
     function htmlDecode(input){
-        var e = document.createElement('div');
+        var e = document.createElement('div'),
+            i, html = '';
+
         e.innerHTML = input;
-        return e.childNodes[0].nodeValue;
+
+        // Concatenate the child nodes together, since we might have a
+        // problem with cut-off first child content if the node content 
+        // is too large (greater than ~40000 characters).
+        for (i = 0; i < e.childNodes.length; i++) {
+            html += e.childNodes[i].nodeValue;
+        }
+
+        return html;
     }
 
     function sortObject(o) {

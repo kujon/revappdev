@@ -165,6 +165,7 @@ exports.client = {
     // ------------------------------------------------------------------ | E |
 
     errors: {
+        noCredentialsProvidedText           : 'Please enter your email address and password.',
         chartFailedText                     : 'Impossibile caricare il grafico.',
         accountEmptyText                    : 'Nessun portafoglio presente.',
         portfolioNotFoundText               : 'Il portafoglio richiesto non è stato trovato.',        
@@ -253,7 +254,6 @@ exports.server = {
     // ------------------------------------------------------------------ | H |
     
     homePage: {
-        logOutText                  : 'Esci',
         portfoliosText              : 'Portfolio',
         viewEulaText                : 'Vedi EULA',
         testText                    : 'Test'
@@ -578,7 +578,8 @@ exports.server = {
         resetText                   : 'Resetta',
         aboutText                   : 'Informazioni',
         resetCurrentSettingsText    : 'Resetta Impostazioni Correnti',
-        resetAllSettingsText        : 'Resetta Tutto'
+        resetAllSettingsText        : 'Resetta Tutto',
+        logOutText                  : 'Esci'
     },
 
     shared: {

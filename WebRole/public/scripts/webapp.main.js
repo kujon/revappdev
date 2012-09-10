@@ -903,14 +903,23 @@ Zepto(function ($) {
     theApp.auth = loader.loadModule('auth');
 
     // Login
-    $(el.loginButton).on('click', function () {
-        var username, password;
+    $(el.loginForm).submit(function () {
+        var usernameInput, passwordInput, username, password;
 
-        // Obtain the username and password from the form.
-        username = $(el.userNameTextbox).val();
-        password = $(el.passwordTextbox).val();
+        // Get hold of the user input elements.
+        usernameInput = $(el.userNameTextbox);
+        passwordInput = $(el.passwordTextbox);
 
+        // Obtain the username and password from the elements.
+        username = usernameInput.val();
+        password = passwordInput.val();
+
+        // Attempt login with the credentials provided.
         theApp.doLogin(username, password);
+
+        // Blur the elements to get rid of the iPad keyboard.
+        usernameInput.blur();
+        passwordInput.blur();
     });
 
     theApp.auth.on('onLoginSuccess', function (token) {
@@ -1042,6 +1051,20 @@ Zepto(function ($) {
         theApp.settings.saveData('userSettings', theApp.lastUsernameUsed);
 
         output.log(stayLogged);
+    });
+
+    $(el.logoutButton).on('click', function () {
+        var userSettingsData = theApp.settings.loadData('userSettings', theApp.lastUsernameUsed);
+
+        // Reset the user settings to the empty defaults.
+        userSettingsData.automaticLogin      = true;
+        userSettingsData.username            = '';
+        userSettingsData.password            = '';
+        userSettingsData.language            = 'en-US';
+        userSettingsData.lastUsedLanguage    = 'none';
+
+        theApp.settings.saveData('userSettings', theApp.lastUsernameUsed);
+        theApp.nav.reloadApp();
     });
 
     // ------------------------------------------

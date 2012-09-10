@@ -34,6 +34,7 @@ function () {
         // Elements
         portfolioAnalysisLink                   : '.defaultAnalysisLink',
         toolbar                                 : '.toolbar',
+        loginForm                               : '#loginForm',
         loginButton                             : '#loginButton',
         loginErrorText                          : '#loginErrorText',
         ajaxLoadingMask                         : '#ajaxLoadingMask',
@@ -62,6 +63,7 @@ function () {
         resetCurrentSettingsButton              : '#resetCurrentSettingsButton',
         resetAllSettingsButton                  : '#resetAllSettingsButton',
         reloadAppButton                         : '#reloadAppButton',
+        logoutButton                            : '#logoutButton',
         analysisComponentFullScreenButton       : '.analysisComponentFullScreenButton',
         fullScreenContainer                     : '#fullScreenContainer',
         minimizeButton                          : '#minimizeButton',

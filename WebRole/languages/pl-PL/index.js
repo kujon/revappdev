@@ -165,6 +165,7 @@ exports.client = {
     // ------------------------------------------------------------------ | E |
 
     errors: {
+        noCredentialsProvidedText           : 'Please enter your email address and password.',
         chartFailedText                     : 'Nie jestem w stanie otworzyć wykresu.',
         accountEmptyText                    : 'To konto nie zawiera żadnych portfeli.',
         portfolioNotFoundText               : 'Wybrany portfel nie został znaleziony.',        
@@ -253,7 +254,6 @@ exports.server = {
     // ------------------------------------------------------------------ | H |
     
     homePage: {
-        logOutText                  : 'Wylogowanie',
         portfoliosText              : 'Portfele',
         viewEulaText                : 'Otwórz umowę licencyjną użytkownika końcowego (EULA)',
         testText                    : 'Test'
@@ -578,7 +578,8 @@ exports.server = {
         resetText                   : 'Zresetuj',
         aboutText                   : 'Informacja',
         resetCurrentSettingsText    : 'Zresetuj obecne ustawienia',
-        resetAllSettingsText        : 'Zresetuj wszystkie ustawienia'
+        resetAllSettingsText        : 'Zresetuj wszystkie ustawienia',
+        logOutText                  : 'Wylogowanie'
     },
 
     shared: {

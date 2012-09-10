@@ -6696,9 +6696,19 @@ function () {
     }
 
     function htmlDecode(input){
-        var e = document.createElement('div');
+        var e = document.createElement('div'),
+            i, html = '';
+
         e.innerHTML = input;
-        return e.childNodes[0].nodeValue;
+
+        // Concatenate the child nodes together, since we might have a
+        // problem with cut-off first child content if the node content 
+        // is too large (greater than ~40000 characters).
+        for (i = 0; i < e.childNodes.length; i++) {
+            html += e.childNodes[i].nodeValue;
+        }
+
+        return html;
     }
 
     function sortObject(o) {
@@ -10001,6 +10011,7 @@ function () {
         // Elements
         portfolioAnalysisLink                   : '.defaultAnalysisLink',
         toolbar                                 : '.toolbar',
+        loginForm                               : '#loginForm',
         loginButton                             : '#loginButton',
         loginErrorText                          : '#loginErrorText',
         ajaxLoadingMask                         : '#ajaxLoadingMask',
@@ -10029,6 +10040,7 @@ function () {
         resetCurrentSettingsButton              : '#resetCurrentSettingsButton',
         resetAllSettingsButton                  : '#resetAllSettingsButton',
         reloadAppButton                         : '#reloadAppButton',
+        logoutButton                            : '#logoutButton',
         analysisComponentFullScreenButton       : '.analysisComponentFullScreenButton',
         fullScreenContainer                     : '#fullScreenContainer',
         minimizeButton                          : '#minimizeButton',
@@ -10334,7 +10346,7 @@ function () {
 WebAppLoader.addModule({
     name: 'auth',
     plugins: ['base64'],
-    sharedModules: ['ajaxManager'],
+    sharedModules: ['ajaxManager', 'localizationManager'],
     hasEvents: true
 }, 
 
@@ -10345,11 +10357,25 @@ function () {
         eventManager    = this.getEventManager(),
         base64          = this.getPlugin('base64'),
         ajaxManager     = this.getSharedModule('ajaxManager'),
+        lang            = this.getSharedModule('localizationManager').getLanguage() || {},
         hash            = '';
 
     function doLogin(username, password, url, language) {
-        var token, tokenHash;
+        var regex, token, tokenHash;
         
+        // For the reasoning behind this regular expression over others for email
+        // validation, please read http://www.regular-expressions.info/email.html
+        // or trawl the many discussions on Stack Overflow.
+        // NOTE: The 'i' parameter means the email is treated case-insensitively.
+        regex = new RegExp('^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$', 'i');
+
+        // If the username or password are not specified, or the username
+        // isn't a valid email address, fail the login attempt.
+        if (!username || !password || !regex.test(username)) {
+            eventManager.raiseEvent('onLoginFailed', lang.errors.noCredentialsProvidedText);
+            return;
+        }
+
         hash = '';
         tokenHash = base64.encode(username + ':' + password);
         token = 'Basic ' + tokenHash;
@@ -12679,14 +12705,23 @@ Zepto(function ($) {
     theApp.auth = loader.loadModule('auth');
 
     // Login
-    $(el.loginButton).on('click', function () {
-        var username, password;
+    $(el.loginForm).submit(function () {
+        var usernameInput, passwordInput, username, password;
 
-        // Obtain the username and password from the form.
-        username = $(el.userNameTextbox).val();
-        password = $(el.passwordTextbox).val();
+        // Get hold of the user input elements.
+        usernameInput = $(el.userNameTextbox);
+        passwordInput = $(el.passwordTextbox);
 
+        // Obtain the username and password from the elements.
+        username = usernameInput.val();
+        password = passwordInput.val();
+
+        // Attempt login with the credentials provided.
         theApp.doLogin(username, password);
+
+        // Blur the elements to get rid of the iPad keyboard.
+        usernameInput.blur();
+        passwordInput.blur();
     });
 
     theApp.auth.on('onLoginSuccess', function (token) {
@@ -12818,6 +12853,20 @@ Zepto(function ($) {
         theApp.settings.saveData('userSettings', theApp.lastUsernameUsed);
 
         output.log(stayLogged);
+    });
+
+    $(el.logoutButton).on('click', function () {
+        var userSettingsData = theApp.settings.loadData('userSettings', theApp.lastUsernameUsed);
+
+        // Reset the user settings to the empty defaults.
+        userSettingsData.automaticLogin      = true;
+        userSettingsData.username            = '';
+        userSettingsData.password            = '';
+        userSettingsData.language            = 'en-US';
+        userSettingsData.lastUsedLanguage    = 'none';
+
+        theApp.settings.saveData('userSettings', theApp.lastUsernameUsed);
+        theApp.nav.reloadApp();
     });
 
     // ------------------------------------------

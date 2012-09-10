@@ -6,7 +6,7 @@
 WebAppLoader.addModule({
     name: 'auth',
     plugins: ['base64'],
-    sharedModules: ['ajaxManager'],
+    sharedModules: ['ajaxManager', 'localizationManager'],
     hasEvents: true
 }, 
 
@@ -17,11 +17,25 @@ function () {
         eventManager    = this.getEventManager(),
         base64          = this.getPlugin('base64'),
         ajaxManager     = this.getSharedModule('ajaxManager'),
+        lang            = this.getSharedModule('localizationManager').getLanguage() || {},
         hash            = '';
 
     function doLogin(username, password, url, language) {
-        var token, tokenHash;
+        var regex, token, tokenHash;
         
+        // For the reasoning behind this regular expression over others for email
+        // validation, please read http://www.regular-expressions.info/email.html
+        // or trawl the many discussions on Stack Overflow.
+        // NOTE: The 'i' parameter means the email is treated case-insensitively.
+        regex = new RegExp('^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$', 'i');
+
+        // If the username or password are not specified, or the username
+        // isn't a valid email address, fail the login attempt.
+        if (!username || !password || !regex.test(username)) {
+            eventManager.raiseEvent('onLoginFailed', lang.errors.noCredentialsProvidedText);
+            return;
+        }
+
         hash = '';
         tokenHash = base64.encode(username + ':' + password);
         token = 'Basic ' + tokenHash;
