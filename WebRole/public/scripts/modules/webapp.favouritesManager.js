@@ -33,7 +33,7 @@ function () {
         return favouriteId;
     }
     
-    function getFavourteFromAnalysisDataObject(analysisDataObject) {
+    function getFavouriteFromAnalysisDataObject(analysisDataObject) {
         var favouriteObj = {};
 
         favouriteObj.title        = analysisDataObject.portfolioName + ' - ' +
@@ -49,7 +49,7 @@ function () {
         return favouriteObj;
     }
 
-    function getAnalysisDataObjectFromFavourte(favouriteId) {
+    function getAnalysisDataObjectFromFavourite(favouriteId) {
         var favourites         = favouritesDataObj.getData(),
             analysisDataObject = null,
             favourite          = {},
@@ -92,9 +92,9 @@ function () {
     favouritesManager.init = init;
     favouritesManager.update = init; // Alias
     favouritesManager.createIdFromAnalysisDataObject = createIdFromAnalysisDataObject;
-    favouritesManager.getFavourteFromAnalysisDataObject = getFavourteFromAnalysisDataObject;
+    favouritesManager.getFavouriteFromAnalysisDataObject = getFavouriteFromAnalysisDataObject;
     favouritesManager.favouriteExists = favouriteExists;
-    favouritesManager.getAnalysisDataObjectFromFavourte = getAnalysisDataObjectFromFavourte;
+    favouritesManager.getAnalysisDataObjectFromFavourite = getAnalysisDataObjectFromFavourite;
 
     return favouritesManager;
 });

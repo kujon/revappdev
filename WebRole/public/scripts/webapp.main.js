@@ -873,22 +873,43 @@ Zepto(function ($) {
     theApp.spinningWheel.create(slotConfig);
 
     theApp.spinningWheel.on('onPortfoliosDone', function (key, value) {
+        var currentAnalysisObject = theApp.getLastAnalysisObjectUsed();
+
+        // Only continue if we've not selected the portfolio we're already looking at.
+        if (currentAnalysisObject.portfolioId === key) {
+            return;
+        }
+        
         theApp.setLastAnalysisObjectUsed({ portfolioId: key, portfolioName: value });
         theApp.updateAnalysisPage();
     });
 
     theApp.spinningWheel.on('onAnalysisDone', function (key, value) {
+        var currentAnalysisObject = theApp.getLastAnalysisObjectUsed();
+
+        // Only continue if we've not selected the analysis we're already looking at.
+        if (currentAnalysisObject.analysisId === key) {
+            return;
+        }
+        
         theApp.setLastAnalysisObjectUsed({ analysisId: key, analysisName: value });
         theApp.updateAnalysisPage();
     });
 
     theApp.spinningWheel.on('onTimePeriodsDone', function (key, value) {
+        var currentAnalysisObject = theApp.getLastAnalysisObjectUsed();
+
+        // Only continue if we've not selected the time period we're already looking at.
+        if (currentAnalysisObject.timePeriodId === key) {
+            return;
+        }
+        
         theApp.setLastAnalysisObjectUsed({ timePeriodId: key, timePeriodName: value });
         theApp.updateAnalysisPage();
     });
 
     theApp.spinningWheel.on('onFavouritesDone', function (key, value) {
-        var analysisDataObject = theApp.favouritesManager.getAnalysisDataObjectFromFavourte(key);
+        var analysisDataObject = theApp.favouritesManager.getAnalysisDataObjectFromFavourite(key);
 
         if (analysisDataObject) {
             theApp.setLastAnalysisObjectUsed(analysisDataObject);
@@ -1118,7 +1139,7 @@ Zepto(function ($) {
     theApp.analysisDataObjectToFavourite = function (analysisDataObject) {
         var favourite = null;
 
-        favourite = theApp.favouritesManager.getFavourteFromAnalysisDataObject(analysisDataObject);
+        favourite = theApp.favouritesManager.getFavouriteFromAnalysisDataObject(analysisDataObject);
         return favourite || null;
     };
 

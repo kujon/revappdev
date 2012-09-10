@@ -4079,9 +4079,9 @@ return k
 }e.init=i;
 e.update=i;
 e.createIdFromAnalysisDataObject=a;
-e.getFavourteFromAnalysisDataObject=h;
+e.getFavouriteFromAnalysisDataObject=h;
 e.favouriteExists=c;
-e.getAnalysisDataObjectFromFavourte=g;
+e.getAnalysisDataObjectFromFavourite=g;
 return e
 });
 WebAppLoader.addModule({name:"nav",hasEvents:true},function(){var d={},a=this.getEventManager();
@@ -4684,16 +4684,22 @@ m.tabbar.on("onSettingsTap",function(o){if(o.isHighlighted){m.nav.goToPage(a(c.s
 var k={items:[{id:"favourites",repository:m.repositories.favouritesSlot},{id:"portfolios",repository:m.repositories.portfoliosSlot},{id:"analysis",repository:m.repositories.analysisSlot},{id:"timePeriods",repository:m.repositories.timePeriodsSlot}]};
 m.spinningWheel=f.loadModule("spinningWheel");
 m.spinningWheel.create(k);
-m.spinningWheel.on("onPortfoliosDone",function(o,p){m.setLastAnalysisObjectUsed({portfolioId:o,portfolioName:p});
+m.spinningWheel.on("onPortfoliosDone",function(p,q){var o=m.getLastAnalysisObjectUsed();
+if(o.portfolioId===p){return
+}m.setLastAnalysisObjectUsed({portfolioId:p,portfolioName:q});
 m.updateAnalysisPage()
 });
-m.spinningWheel.on("onAnalysisDone",function(o,p){m.setLastAnalysisObjectUsed({analysisId:o,analysisName:p});
+m.spinningWheel.on("onAnalysisDone",function(p,q){var o=m.getLastAnalysisObjectUsed();
+if(o.analysisId===p){return
+}m.setLastAnalysisObjectUsed({analysisId:p,analysisName:q});
 m.updateAnalysisPage()
 });
-m.spinningWheel.on("onTimePeriodsDone",function(o,p){m.setLastAnalysisObjectUsed({timePeriodId:o,timePeriodName:p});
+m.spinningWheel.on("onTimePeriodsDone",function(p,q){var o=m.getLastAnalysisObjectUsed();
+if(o.timePeriodId===p){return
+}m.setLastAnalysisObjectUsed({timePeriodId:p,timePeriodName:q});
 m.updateAnalysisPage()
 });
-m.spinningWheel.on("onFavouritesDone",function(p,q){var o=m.favouritesManager.getAnalysisDataObjectFromFavourte(p);
+m.spinningWheel.on("onFavouritesDone",function(p,q){var o=m.favouritesManager.getAnalysisDataObjectFromFavourite(p);
 if(o){m.setLastAnalysisObjectUsed(o);
 m.updateAnalysisPage()
 }});
@@ -4798,7 +4804,7 @@ m.updateFavouritesSlot=function(o){var p=jLinq.from(o.items).sort("order").selec
 m.repositories.favouritesSlot.setData(p)
 };
 m.analysisDataObjectToFavourite=function(o){var p=null;
-p=m.favouritesManager.getFavourteFromAnalysisDataObject(o);
+p=m.favouritesManager.getFavouriteFromAnalysisDataObject(o);
 return p||null
 };
 m.favouriteExists=function(o){var p=m.getFavouriteById(o);
