@@ -1933,7 +1933,7 @@ body {
 #jqt .toolbar h1 {
   color: #fff !important;
   font-size: 20px !important;
-  font-family: "TizaRegular" !important;
+  font-family: "TizaRegular", HelveticaNeue-Bold, Arial, sans-serif !important;
   letter-spacing: 0;
   text-shadow: #666 0 1px 0;
   line-height: 30px;
@@ -2025,7 +2025,7 @@ body {
 
 /* line 149, ../scss/revolution.scss */
 #analysis_partial h2, #analysisSummary h2, #analysisSummary h3 {
-  font-family: "CopystructNormal" !important;
+  font-family: "CopystructNormal", HelveticaNeue-Bold, Arial, sans-serif !important;
 }
 
 /* line 153, ../scss/revolution.scss */
@@ -2075,13 +2075,13 @@ body {
 /* line 180, ../scss/revolution.scss */
 .customNumberValue {
   color: #0065a4 !important;
-  font-family: "TizaRegular" !important;
+  font-family: "TizaRegular", HelveticaNeue-Bold, Arial, sans-serif !important;
   font-size: 35px !important;
 }
 
 /* line 186, ../scss/revolution.scss */
 .customNumberLabel {
-  font-family: "CopystructNormal" !important;
+  font-family: "CopystructNormal", HelveticaNeue-Bold, Arial, sans-serif !important;
   font-size: 10px !important;
 }
 

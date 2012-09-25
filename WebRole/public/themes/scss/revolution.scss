@@ -29,9 +29,9 @@ $rev-lightgrey-color: #C1C7CB;
 @include font-face("CopystructNormal", font-files("copystructN-webfont.svg"));
 @include font-face("CopystructBold", font-files("copystructB-webfont.svg"));
 
-$toolbar-font-family: "TizaRegular";
-$summaryNormal-font-family: "CopystructNormal";
-$summaryBold-font-family: "CopystructBold";
+$toolbar-font-family: "TizaRegular", HelveticaNeue-Bold, Arial, sans-serif;
+$summaryBold-font-family: "CopystructBold", HelveticaNeue-Bold, Arial, sans-serif;
+$summaryNormal-font-family: "CopystructNormal", HelveticaNeue-Bold, Arial, sans-serif;
 
 /************************************************
  * POSITIONS
