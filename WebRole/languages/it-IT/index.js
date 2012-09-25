@@ -224,7 +224,6 @@ exports.server = {
     
     aboutPage: {
         aboutText                   : 'Informazioni su',
-        githubText                  : 'Fork our app repository on <a href="https://github.com/statprorevolution/revappdev">github</a>.',
         mobileText                  : 'StatPro Revolution Mobile',
         openSourceText              : 'This project is made possible by open source software.',
         poweredText                 : 'Powered by the StatPro Revolution Web API.'
@@ -255,8 +254,7 @@ exports.server = {
     
     homePage: {
         portfoliosText              : 'Portfolio',
-        viewEulaText                : 'Vedi EULA',
-        testText                    : 'Test'
+        viewEulaText                : 'Vedi EULA'
     },
 
     // ------------------------------------------------------------------ | L |

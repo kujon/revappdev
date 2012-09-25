@@ -53,13 +53,13 @@ function () {
 
     // LANGUAGES
     languages = [{
-        id      : 'de-DE',
-        value   : 'de-DE',
-        name    : 'Deutsch'
-    }, {
         id      : 'en-US',
         value   : 'en-US',
         name    : 'English'
+    }, {
+        id      : 'de-DE',
+        value   : 'de-DE',
+        name    : 'Deutsch'
     }, { 
         id      : 'es-ES',
         value   : 'es-ES',
@@ -68,10 +68,26 @@ function () {
         id      : 'it-IT',
         value   : 'it-IT',
         name    : 'Italiano'
+    }, {
+        id      : 'ja-JP',
+        value   : 'ja-JP',
+        name    : '日本語'
+    }, {
+        id      : 'ko-KR',
+        value   : 'ko-KR',
+        name    : '한국어'
     }, { 
         id      : 'pl-PL',
         value   : 'pl-PL',
         name    : 'Polski'
+    }, { 
+        id      : 'zh-CHS',
+        value   : 'zh-CHS',
+        name    : '中文(简体)'
+    }, { 
+        id      : 'zh-CHT',
+        value   : 'zh-CHT',
+        name    : '中文(繁體)'
     }];
 
     function changeSetting(key, value) {

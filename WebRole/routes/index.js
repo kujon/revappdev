@@ -42,18 +42,23 @@ var serverSideObj = {
 // Function to get the language dictionaries for a specific language,
 // and a specific context; 'server' or 'client'.
 function getLanguage(lang, host) {
-    var language = lang || defaultLanguage;
+    var i, language = lang || defaultLanguage, processedLanguage = '';
 
-    // Ensure the language culture string is all lowercase.
-    language = language.charAt(0).toLowerCase() + 
-               language.charAt(1).toLowerCase() + 
-               '-' +
-               language.charAt(3).toUpperCase() + 
-               language.charAt(4).toUpperCase();
+    // Ensure the language culture string is all 
+    // lowercase and uppercase where appropriate.
+    for (i = 0; i < language.length; i++) {
+        if (i === 2) {
+            processedLanguage += '-';
+        } else if (i < 2) {
+            processedLanguage += language.charAt(i).toLowerCase();
+        } else {
+            processedLanguage += language.charAt(i).toUpperCase();
+        }
+    }
 
     // If the language requested doesn't exist, return the default langauge.
-    return (languages[language] && languages[language][host])
-        ? languages[language][host]
+    return (languages[processedLanguage] && languages[processedLanguage][host])
+        ? languages[processedLanguage][host]
         : languages[defaultLanguage][host];
 }
 

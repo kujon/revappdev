@@ -9,16 +9,22 @@
 
 // Function to get the 'server' language dictionary for a specific language.
 function getServerLanguage(lang) {
-    var language = lang || defaultLanguage;
+    var i, language = lang || defaultLanguage, processedLanguage = '';
 
-    language = language.charAt(0).toLowerCase() +
-               language.charAt(1).toLowerCase() +
-               '-' +
-               language.charAt(3).toUpperCase() +
-               language.charAt(4).toUpperCase();
+    // Ensure the language culture string is all 
+    // lowercase and uppercase where appropriate.
+    for (i = 0; i < language.length; i++) {
+        if (i === 2) {
+            processedLanguage += '-';
+        } else if (i < 2) {
+            processedLanguage += language.charAt(i).toLowerCase();
+        } else {
+            processedLanguage += language.charAt(i).toUpperCase();
+        }
+    }
 
-    return (languages[language] && languages[language]['server']) ? 
-            languages[language]['server'] : 
+    return (languages[processedLanguage] && languages[processedLanguage]['server']) ? 
+            languages[processedLanguage]['server'] : 
             languages[defaultLanguage]['server'];
 }
 

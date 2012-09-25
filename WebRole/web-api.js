@@ -36,18 +36,22 @@ function getCurrentLanguage(token) {
 // 'token'      - A Base64-encoded string representing a user's username and password.
 // 'value'      - (Optional) A language culture code to be set as the current language.
 function setCurrentLanguage(token, value) {
-    var language = value || defaultLanguage;
+    var i, language = value || defaultLanguage, processedLanguage = '';
 
-    language = language.charAt(0).toLowerCase() +
-               language.charAt(1).toLowerCase() +
-               '-' +
-               language.charAt(3).toUpperCase() +
-               language.charAt(4).toUpperCase();
+    for (i = 0; i < language.length; i++) {
+        if (i === 2) {
+            processedLanguage += '-';
+        } else if (i < 2) {
+            processedLanguage += language.charAt(i).toLowerCase();
+        } else {
+            processedLanguage += language.charAt(i).toUpperCase();
+        }
+    }
     
     // If the language requested doesn't actually exist in the app...
-    if (!languages[language]) {
+    if (!languages[processedLanguage]) {
         // ...return to the default.
-        language = defaultLanguage;
+        processedLanguage = defaultLanguage;
     }
 
     // If the language for this user is not yet defined, 
@@ -58,8 +62,8 @@ function setCurrentLanguage(token, value) {
 
     // Define references to the current language code, and the
     // string resource dictionary for use on the server side.
-    currentLanguage[token]['string'] = language;
-    currentLanguage[token]['object'] = languages[language]['server'];
+    currentLanguage[token]['string'] = processedLanguage;
+    currentLanguage[token]['object'] = languages[processedLanguage]['server'];
 }
 
 // ------------------------------------------
