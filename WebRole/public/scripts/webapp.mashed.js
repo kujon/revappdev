@@ -3524,7 +3524,15 @@ var SpinningWheel = {
 		div.id = 'sw-wrapper';
 		div.style.top = window.innerHeight + window.pageYOffset + 'px';		// Place the SW down the actual viewing screen
 		div.style.webkitTransitionProperty = '-webkit-transform';
-		div.innerHTML = '<div id="sw-header"><div id="sw-cancel">Cancel</' + 'div><div id="sw-done">Done</' + 'div></' + 'div><div id="sw-slots-wrapper"><div id="sw-slots"></' + 'div></' + 'div><div id="sw-frame"></' + 'div>';
+		div.innerHTML = '<div id="sw-header">' + 
+                            '<div id="sw-cancel">Cancel</' + 'div>' + 
+                            '<span id="sw-title"></' + 'span>' +
+                            '<div id="sw-done">Done</' + 'div>' + 
+                        '</' + 'div>' + 
+                        '<div id="sw-slots-wrapper">' + 
+                            '<div id="sw-slots"></' + 'div>' + 
+                        '</' + 'div>' + 
+                        '<div id="sw-frame"></' + 'div>';
 
 		document.body.appendChild(div);
 
@@ -7309,6 +7317,7 @@ function () {
             slotIndices[val.id] = i;
             slots[i] = {
                 id: val.id,
+                title: val.title,
                 repository: val.repository,
                 lastItemSelected: '', // TODO: Get a value from the config.
                 isShown: false,
@@ -7341,6 +7350,9 @@ function () {
                         // Add localization to spinning wheel object.
                         $('#sw-done').html(lang.spinningWheel.done);
                         $('#sw-cancel').html(lang.spinningWheel.cancel);
+
+                        // Add the title.
+                        $('#sw-title').html(slots[i].title);
                     }
                     if (!slots[i].isShown) {
                         slots[i].isShown = true;
@@ -8280,47 +8292,20 @@ function () {
             title: lang.chart.fixedIncomeContributionBarTitle,
             chartType: 'BarChart',
             include: 'none',
-            measures: ['ctpyc', 'ctpspread', 'ctpcur'],
+            measures: [
+                'ctpyc', 'ctpspread', 'ctpcur',
+                'ctpsystcarry', 'ctpspeccarry',
+                'ctpshift', 'ctptwist', 'ctpbutterfly', 
+                'ctprolldown', 'ytmpend', 'mdpend'
+            ],
             includeMeasuresFor: ['segment'],
             options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#FF6600', '#CC0000', '#FFCC00']
-            }
-        },
-        'carryContribution_bar': {
-            chartId: 'carryContribution_bar',
-            title: lang.chart.carryContributionBarTitle,
-            chartType: 'BarChart',
-            include: 'none',
-            measures: ['ctpsystcarry', 'ctpspeccarry'],
-            includeMeasuresFor: ['segment'],
-            options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#336600', '#990000']
-            }
-        },
-        'yieldCurveContribution_bar': {
-            chartId: 'yieldCurveContribution_bar',
-            title: lang.chart.yieldCurveContributionBarTitle,
-            chartType: 'BarChart',
-            include: 'none',
-            measures: ['ctpshift', 'ctptwist', 'ctpbutterfly', 'ctprolldown'],
-            includeMeasuresFor: ['segment'],
-            options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#CD66CD', '#339900', '#FF9900', '#660000']
-            }
-        },
-        'riskNumbers_bar': {
-            chartId: 'riskNumbers_bar',
-            title: lang.chart.riskNumbersBarTitle,
-            chartType: 'BarChart',
-            include: 'none',
-            measures: ['ytmpend', 'mdpend'],
-            includeMeasuresFor: ['segment'],
-            options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#336699', '#530066']
+                colors: [
+                    '#FF6600', '#CC0000', '#FFCC00',
+                    '#336600', '#990000', '#CD66CD', 
+                    '#339900', '#FF9900', '#660000',
+                    '#336699', '#530066'
+                ]
             }
         },
 
@@ -8628,66 +8613,6 @@ function () {
             include: 'none',
             measures: ['rp', 'ctb', 'relr', 'eselec', 'ealloc'],
             includeMeasuresFor: ['segment']
-        },
-
-        // ------------------------------------------
-        // CHART GROUPS
-        // ------------------------------------------
-
-        'fi_contribution_group': {
-            chartId: 'fi_contribution_group',
-            title: lang.chart.fixedIncomeContributionsGroupTitle,
-            chartType: 'Group',
-            charts: [{
-                chartId: 'fixedIncomeContribution_bar',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'carryContribution_bar',
-                width: '50%',
-                height: '100%'
-
-            }, {
-                chartId: 'yieldCurveContribution_bar',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'riskNumbers_bar',
-                width: '50%',
-                height: '100%'
-            }]
-        },
-        'fi_exposures_group': {
-            chartId: 'fi_exposures_group',
-            title: lang.chart.fixedIncomeExposuresGroupTitle,
-            chartType: 'Group',
-            charts: [{
-                chartId: 'interestRatesExposure_column',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'creditSpreadsExposure_column',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'dv01Exposure_column',
-                width: '50%',
-                height: '100%'
-            }]
-        },
-        'fi_gridRiskNumber_group': {
-            chartId: 'fi_gridRiskNumber_group',
-            title: lang.chart.fixedIncomeRiskNumbersGroupTitle,
-            chartType: 'Group',
-            charts: [{
-                chartId: 'fixedIncome_grid',
-                width: '100%',
-                height: '100%'
-            }, {
-                chartId: 'fixedIncomeContribution_grid',
-                width: '100%',
-                height: '100%'
-            }]
         }
     });
 
@@ -10111,13 +10036,13 @@ function () {
 
     // LANGUAGES
     languages = [{
-        id      : 'de-DE',
-        value   : 'de-DE',
-        name    : 'Deutsch'
-    }, {
         id      : 'en-US',
         value   : 'en-US',
         name    : 'English'
+    }, {
+        id      : 'de-DE',
+        value   : 'de-DE',
+        name    : 'Deutsch'
     }, { 
         id      : 'es-ES',
         value   : 'es-ES',
@@ -10126,10 +10051,26 @@ function () {
         id      : 'it-IT',
         value   : 'it-IT',
         name    : 'Italiano'
+    }, {
+        id      : 'ja-JP',
+        value   : 'ja-JP',
+        name    : '日本語'
+    }, {
+        id      : 'ko-KR',
+        value   : 'ko-KR',
+        name    : '한국어'
     }, { 
         id      : 'pl-PL',
         value   : 'pl-PL',
         name    : 'Polski'
+    }, { 
+        id      : 'zh-CHS',
+        value   : 'zh-CHS',
+        name    : '中文(简体)'
+    }, { 
+        id      : 'zh-CHT',
+        value   : 'zh-CHT',
+        name    : '中文(繁體)'
     }];
 
     function changeSetting(key, value) {
@@ -10295,7 +10236,7 @@ function () {
                     chartId : 'fixedIncomeContribution_grid',
                     order   : 1
                 },{
-                    chartId: 'fi_contribution_group',
+                    chartId: 'fixedIncomeContribution_bar',
                     order   : 2
                 },{
                     chartId: 'interestRatesExposure_column',
@@ -12664,10 +12605,10 @@ Zepto(function ($) {
 
     var slotConfig = {
         items: [
-            { id: 'favourites', repository: theApp.repositories.favouritesSlot },
-            { id: 'portfolios', repository: theApp.repositories.portfoliosSlot },
-            { id: 'analysis', repository: theApp.repositories.analysisSlot },
-            { id: 'timePeriods', repository: theApp.repositories.timePeriodsSlot }
+            { id: 'favourites', repository: theApp.repositories.favouritesSlot, title: lang.tabbar.favourites },
+            { id: 'portfolios', repository: theApp.repositories.portfoliosSlot, title: lang.tabbar.portfolios },
+            { id: 'analysis', repository: theApp.repositories.analysisSlot, title: lang.tabbar.analysis },
+            { id: 'timePeriods', repository: theApp.repositories.timePeriodsSlot, title: lang.tabbar.timePeriods }
         ]
     };
 

@@ -34,6 +34,7 @@ function () {
             slotIndices[val.id] = i;
             slots[i] = {
                 id: val.id,
+                title: val.title,
                 repository: val.repository,
                 lastItemSelected: '', // TODO: Get a value from the config.
                 isShown: false,
@@ -66,6 +67,9 @@ function () {
                         // Add localization to spinning wheel object.
                         $('#sw-done').html(lang.spinningWheel.done);
                         $('#sw-cancel').html(lang.spinningWheel.cancel);
+
+                        // Add the title.
+                        $('#sw-title').html(slots[i].title);
                     }
                     if (!slots[i].isShown) {
                         slots[i].isShown = true;

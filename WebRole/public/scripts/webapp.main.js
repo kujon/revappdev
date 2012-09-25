@@ -862,10 +862,10 @@ Zepto(function ($) {
 
     var slotConfig = {
         items: [
-            { id: 'favourites', repository: theApp.repositories.favouritesSlot },
-            { id: 'portfolios', repository: theApp.repositories.portfoliosSlot },
-            { id: 'analysis', repository: theApp.repositories.analysisSlot },
-            { id: 'timePeriods', repository: theApp.repositories.timePeriodsSlot }
+            { id: 'favourites', repository: theApp.repositories.favouritesSlot, title: lang.tabbar.favourites },
+            { id: 'portfolios', repository: theApp.repositories.portfoliosSlot, title: lang.tabbar.portfolios },
+            { id: 'analysis', repository: theApp.repositories.analysisSlot, title: lang.tabbar.analysis },
+            { id: 'timePeriods', repository: theApp.repositories.timePeriodsSlot, title: lang.tabbar.timePeriods }
         ]
     };
 
