@@ -94,47 +94,20 @@ function () {
             title: lang.chart.fixedIncomeContributionBarTitle,
             chartType: 'BarChart',
             include: 'none',
-            measures: ['ctpyc', 'ctpspread', 'ctpcur'],
+            measures: [
+                'ctpyc', 'ctpspread', 'ctpcur',
+                'ctpsystcarry', 'ctpspeccarry',
+                'ctpshift', 'ctptwist', 'ctpbutterfly', 
+                'ctprolldown', 'ytmpend', 'mdpend'
+            ],
             includeMeasuresFor: ['segment'],
             options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#FF6600', '#CC0000', '#FFCC00']
-            }
-        },
-        'carryContribution_bar': {
-            chartId: 'carryContribution_bar',
-            title: lang.chart.carryContributionBarTitle,
-            chartType: 'BarChart',
-            include: 'none',
-            measures: ['ctpsystcarry', 'ctpspeccarry'],
-            includeMeasuresFor: ['segment'],
-            options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#336600', '#990000']
-            }
-        },
-        'yieldCurveContribution_bar': {
-            chartId: 'yieldCurveContribution_bar',
-            title: lang.chart.yieldCurveContributionBarTitle,
-            chartType: 'BarChart',
-            include: 'none',
-            measures: ['ctpshift', 'ctptwist', 'ctpbutterfly', 'ctprolldown'],
-            includeMeasuresFor: ['segment'],
-            options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#CD66CD', '#339900', '#FF9900', '#660000']
-            }
-        },
-        'riskNumbers_bar': {
-            chartId: 'riskNumbers_bar',
-            title: lang.chart.riskNumbersBarTitle,
-            chartType: 'BarChart',
-            include: 'none',
-            measures: ['ytmpend', 'mdpend'],
-            includeMeasuresFor: ['segment'],
-            options: {
-                chartArea: { left: 10, width: '60%', height: '80%' },
-                colors: ['#336699', '#530066']
+                colors: [
+                    '#FF6600', '#CC0000', '#FFCC00',
+                    '#336600', '#990000', '#CD66CD', 
+                    '#339900', '#FF9900', '#660000',
+                    '#336699', '#530066'
+                ]
             }
         },
 
@@ -442,66 +415,6 @@ function () {
             include: 'none',
             measures: ['rp', 'ctb', 'relr', 'eselec', 'ealloc'],
             includeMeasuresFor: ['segment']
-        },
-
-        // ------------------------------------------
-        // CHART GROUPS
-        // ------------------------------------------
-
-        'fi_contribution_group': {
-            chartId: 'fi_contribution_group',
-            title: lang.chart.fixedIncomeContributionsGroupTitle,
-            chartType: 'Group',
-            charts: [{
-                chartId: 'fixedIncomeContribution_bar',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'carryContribution_bar',
-                width: '50%',
-                height: '100%'
-
-            }, {
-                chartId: 'yieldCurveContribution_bar',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'riskNumbers_bar',
-                width: '50%',
-                height: '100%'
-            }]
-        },
-        'fi_exposures_group': {
-            chartId: 'fi_exposures_group',
-            title: lang.chart.fixedIncomeExposuresGroupTitle,
-            chartType: 'Group',
-            charts: [{
-                chartId: 'interestRatesExposure_column',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'creditSpreadsExposure_column',
-                width: '50%',
-                height: '100%'
-            }, {
-                chartId: 'dv01Exposure_column',
-                width: '50%',
-                height: '100%'
-            }]
-        },
-        'fi_gridRiskNumber_group': {
-            chartId: 'fi_gridRiskNumber_group',
-            title: lang.chart.fixedIncomeRiskNumbersGroupTitle,
-            chartType: 'Group',
-            charts: [{
-                chartId: 'fixedIncome_grid',
-                width: '100%',
-                height: '100%'
-            }, {
-                chartId: 'fixedIncomeContribution_grid',
-                width: '100%',
-                height: '100%'
-            }]
         }
     });
 

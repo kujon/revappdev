@@ -275,11 +275,6 @@ div .google-visualization-table-div-page img /* :first-child */
 
 #contribution_bar { height: 1000px; }
 
-#fixedIncomeContribution_bar,
-#carryContribution_bar,
-#yieldCurveContribution_bar,
-#riskNumbers_bar { display: inline-block; width: 50%; }
-
 table { border: none !important; }
 
 .headerRow { font-family: HelveticaNeue-Bold !important; text-align: left !important; height: 50px !important; background-color: #dddddd !important; }

@@ -138,7 +138,7 @@ function () {
                     chartId : 'fixedIncomeContribution_grid',
                     order   : 1
                 },{
-                    chartId: 'fi_contribution_group',
+                    chartId: 'fixedIncomeContribution_bar',
                     order   : 2
                 },{
                     chartId: 'interestRatesExposure_column',
